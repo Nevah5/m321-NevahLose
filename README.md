@@ -18,7 +18,9 @@ Every card that is being played is hidden for the other players, but the effects
 
 ### Player Turns
 
-Each player takes turn after each other. There is the possibility to draw a card from the deck
+Each player takes turn after each other. There is the possibility to draw a card from the deck each turn, but this skips the turn for the player.
+
+The direction and order of player is chosen randomly at the beginning of the game.
 
 ### Cards
 
