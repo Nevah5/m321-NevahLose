@@ -1,5 +1,5 @@
 <div align="center">
-  <img align="center" src="./logo.svg" alt="API Aces Logo" width="200"/>
+  <img align="center" src="./resources/logo.svg" alt="API Aces Logo" width="200"/>
   <h1>API Aces - Card Game</h1>
   <span>Project for Module 321</span>
 </div>
