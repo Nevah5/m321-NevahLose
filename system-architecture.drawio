@@ -1,0 +1,34 @@
+<mxfile host="app.diagrams.net" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:133.0) Gecko/20100101 Firefox/133.0" version="25.0.3">
+  <diagram name="Page-1" id="SH8RLEqv7sG_9owjO2nq">
+    <mxGraphModel dx="1051" dy="596" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="WlsjLUGcPNecuGsmqDj--1" value="&lt;div&gt;Frontend&lt;/div&gt;&lt;div&gt;Vue.js&lt;br&gt;&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="90" y="180" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="WlsjLUGcPNecuGsmqDj--2" value="&lt;div&gt;cards&lt;/div&gt;&lt;div&gt;database&lt;br&gt;&lt;/div&gt;" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=15;" vertex="1" parent="1">
+          <mxGeometry x="740" y="60" width="60" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="WlsjLUGcPNecuGsmqDj--3" value="&lt;div&gt;game&lt;/div&gt;&lt;div&gt;database&lt;br&gt;&lt;/div&gt;" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=15;" vertex="1" parent="1">
+          <mxGeometry x="740" y="170" width="60" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="WlsjLUGcPNecuGsmqDj--4" value="&lt;div&gt;player&lt;/div&gt;&lt;div&gt;database&lt;br&gt;&lt;/div&gt;" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=15;" vertex="1" parent="1">
+          <mxGeometry x="740" y="280" width="60" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="WlsjLUGcPNecuGsmqDj--5" value="&lt;div&gt;Eureka Server&lt;/div&gt;&lt;div&gt;Springboot&lt;br&gt;&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="330" y="180" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="WlsjLUGcPNecuGsmqDj--6" value="Player Service" style="whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="590" y="300" width="100" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="WlsjLUGcPNecuGsmqDj--7" value="Game Service" style="whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="590" y="190" width="100" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="WlsjLUGcPNecuGsmqDj--8" value="Cards Service" style="whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="590" y="80" width="100" height="40" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
