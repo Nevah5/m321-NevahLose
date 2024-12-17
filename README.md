@@ -57,7 +57,9 @@ Each card is exactly contained 4 times in the deck.
 
 ### Special Rules
 
-If a player takes the last card from the deck, the game is over and the player with the most cards on their hand wins.
+If a player takes the last card from the deck, he loses.
+
+If there is only one player left, that player wins.
 
 ## Architecture
 
