@@ -5,12 +5,14 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.Getter;
 
+import java.util.UUID;
+
 @Entity(name = "card")
 @Table(name = "cards")
 public class Card {
     @Id
     @Getter
-    private String id;
+    private UUID id;
 
     @Getter
     private String name;
@@ -28,10 +30,11 @@ public class Card {
     private Integer amountInDeck;
 
     public static class Builder {
-        private final Card card = new Card();
+        private final Card card;
 
-        public void setId(String id) {
-            card.id = id;
+        public Builder() {
+            card = new Card();
+            card.id = UUID.randomUUID();
         }
 
         public void setName(String name) {
