@@ -2,6 +2,7 @@ package dev.geeler.apiaces.gameservice.service;
 
 import dev.geeler.apiaces.gameservice.model.Game;
 import dev.geeler.apiaces.gameservice.model.GamePlayer;
+import dev.geeler.apiaces.gameservice.model.GameStatus;
 import dev.geeler.apiaces.gameservice.repository.GamePlayerRepository;
 import dev.geeler.apiaces.gameservice.repository.GameRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +19,8 @@ public class GameServiceImpl implements GameService {
 
     @Override
     public Game createGame(UUID playerId) {
-        final Game game = new Game.Builder(playerId)
+        final Game game = new Game.Builder()
+                .setOwnerId(playerId)
                 .setCreatedAt()
                 .build();
         gameRepository.save(game);
@@ -55,5 +57,21 @@ public class GameServiceImpl implements GameService {
         gamePlayerRepository.save(gamePlayer);
         gameRepository.save(game);
         return game;
+    }
+
+    @Override
+    public void startGame(UUID gameId, UUID playerId) {
+        final Game game = gameRepository.findById(gameId).orElse(null);
+        if (game == null) {
+            return;
+        }
+        if (!game.getOwnerId().equals(playerId)) {
+            return;
+        }
+        game.builder()
+                .setStatus(GameStatus.IN_PROGRESS)
+                .setStartedAt()
+                .build();
+        gameRepository.save(game);
     }
 }
