@@ -19,6 +19,9 @@ public class Card {
     private String description;
 
     @Getter
+    private String image;
+
+    @Getter
     private CardType cardType;
 
     @Getter
@@ -37,6 +40,10 @@ public class Card {
 
         public void setDescription(String description) {
             card.description = description;
+        }
+
+        public void setImage(String image) {
+            card.image = image;
         }
 
         public void setCardType(CardType cardType) {
