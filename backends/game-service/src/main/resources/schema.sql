@@ -9,8 +9,8 @@ CREATE TABLE `games` (
   `status` int NOT NULL,
   `maxPlayers` int NOT NULL,
   `createdAt` long NOT NULL,
-  `startedAt` long NOT NULL,
-  `currentTurnId` varchar(36) NOT NULL,
+  `startedAt` long,
+  `currentTurnId` varchar(36),
   `winnerId` varchar(36),
   PRIMARY KEY (`id`)
 );

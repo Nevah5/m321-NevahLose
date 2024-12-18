@@ -31,7 +31,7 @@ public class Game {
     private long createdAt;
 
     @Getter
-    private long startedAt;
+    private Long startedAt;
 
     @Getter
     private UUID currentTurnId;
@@ -52,6 +52,11 @@ public class Game {
             this.game.status = GameStatus.WAITING_FOR_PLAYERS;
             this.game.ownerId = ownerId;
             this.game.createdAt = System.currentTimeMillis();
+        }
+
+        public Builder setStatus(final GameStatus status) {
+            this.game.status = status;
+            return this;
         }
 
         public Builder setMaxPlayers(final int maxPlayers) {

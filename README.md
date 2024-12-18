@@ -1,3 +1,6 @@
+> [!CAUTION]
+> This project is still in development.
+
 <div align="center">
   <img align="center" src="./resources/logo.svg" alt="API Aces Logo" width="200"/>
   <h1>API Aces - Card Game</h1>
