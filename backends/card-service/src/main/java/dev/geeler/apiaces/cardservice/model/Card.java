@@ -29,7 +29,8 @@ public class Card {
     @Getter
     private Integer amountInDeck;
 
-    public static class Builder {
+    // builder is not needed, but if it is, set to public
+    private static class Builder {
         private final Card card;
 
         public Builder() {
