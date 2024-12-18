@@ -7,7 +7,9 @@ CREATE TABLE `games` (
   `roomId` varchar(8) NOT NULL,
   `ownerId` varchar(36) NOT NULL,
   `status` int NOT NULL,
-  `createdTimestamp` int NOT NULL,
+  `maxPlayers` int NOT NULL,
+  `createdAt` long NOT NULL,
+  `startedAt` long NOT NULL,
   `currentTurnId` varchar(36) NOT NULL,
   `winnerId` varchar(36),
   PRIMARY KEY (`id`)
@@ -28,7 +30,7 @@ CREATE TABLE `game_turns` (
   `gameId` varchar(36) NOT NULL,
   `playerId` varchar(36) NOT NULL,
   `nextTurnId` varchar(36),
-  `timestamp` int NOT NULL,
+  `playedAt` long,
   `playedCardId` varchar(36),
   PRIMARY KEY (`id`)
 );
