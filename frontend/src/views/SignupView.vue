@@ -1,6 +1,6 @@
 <template>
   <div class="wrapper">
-    <form>
+    <form @submit.prevent="confirm">
       <h2>What's your name?</h2>
       <p>
         By pressing confirm below, you agree to the
@@ -11,13 +11,26 @@
         name="username"
         placeholder="LazyCoder123"
         maxlength="20"
+        v-model="username"
       />
-      <input type="button" value="Confirm" />
+      <input type="submit" value="Confirm" />
     </form>
   </div>
 </template>
 
-<script lang="ts" setup></script>
+<script lang="ts" setup>
+import { ref } from "vue";
+
+const username = ref("");
+
+const confirm = () => {
+  if (username.value === "") {
+    alert("Please enter a username");
+  } else {
+    alert(`Welcome, ${username.value}!`);
+  }
+};
+</script>
 
 <style lang="scss" scoped>
 .wrapper {
@@ -36,7 +49,7 @@ input[type="text"] {
   border-radius: 0.5rem;
 }
 
-input[type="button"] {
+input[type="submit"] {
   width: calc(30% - $input-gap / 2);
   padding: 10px;
   margin: 10px 0;
