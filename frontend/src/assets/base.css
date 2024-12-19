@@ -6,14 +6,14 @@
 
   --vt-c-stratos: #000343;
   --vt-c-stratos-500: rgba(#000343, 0.5);
-}
 
-/* semantic color variables for this project */
-:root {
+  /* ---------------- */
+
   --color-background: var(--vt-c-white);
 
   --color-heading: var(--vt-c-stratos);
   --color-text: var(--vt-c-stratos);
+  --color-primary: var(--vt-c-stratos);
 }
 
 /* @media (prefers-color-scheme: dark) {
