@@ -9,7 +9,7 @@ import lombok.Setter;
 import java.util.Random;
 import java.util.UUID;
 
-@Entity(name = "Game")
+@Entity(name = "game")
 @Table(name = "games")
 public class Game {
     @Id
