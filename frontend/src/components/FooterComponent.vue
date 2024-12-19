@@ -10,7 +10,7 @@
           <router-link to="/privacy">Privacy Policy</router-link>
         </li>
         <li>
-          <router-link to="/tos">Terms of Service</router-link>
+          <router-link to="/tos">Terms of Use</router-link>
         </li>
       </ul>
       <span>&copy; 2024 API Aces - Nevah5</span>
