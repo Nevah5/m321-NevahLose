@@ -58,7 +58,7 @@ public class Player implements UserDetails {
         public Builder() {
             player = new Player();
             player.id = UUID.randomUUID();
-            player.authorities = Set.of(Role.ROLE_USER);
+            player.authorities = Set.of(Role.USER);
         }
 
         public Builder setUsername(String username) {
