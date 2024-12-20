@@ -24,7 +24,7 @@ public class SecurityConfig {
     private final PlayerService userService;
 
     private static final String[] WHITE_LIST_URL = {
-            "/users/register",
+            "/auth/register",
             "/actuator/health",
             "/actuator/info",
     };

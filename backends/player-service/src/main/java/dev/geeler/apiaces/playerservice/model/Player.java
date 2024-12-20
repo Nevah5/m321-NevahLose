@@ -1,9 +1,6 @@
 package dev.geeler.apiaces.playerservice.model;
 
-import jakarta.persistence.ElementCollection;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*; // TODO: Remove star import
 import lombok.Getter;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -21,6 +18,12 @@ public class Player implements UserDetails {
     private String username;
 
     @ElementCollection(targetClass = Role.class)
+    @JoinTable(
+            name = "player_authorities",
+            joinColumns = @JoinColumn(name = "player_id")
+    )
+    @Column(name = "name", nullable = false)
+    @Enumerated(EnumType.STRING)
     @Getter
     private Set<Role> authorities;
 
@@ -46,7 +49,7 @@ public class Player implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return UserDetails.super.isEnabled();
+        return UserDetails.super.isEnabled(); // TODO: make accounts expire
     }
 
     public static class Builder {
@@ -55,10 +58,16 @@ public class Player implements UserDetails {
         public Builder() {
             player = new Player();
             player.id = UUID.randomUUID();
+            player.authorities = Set.of(Role.ROLE_USER);
         }
 
         public Builder setUsername(String username) {
             player.username = username;
+            return this;
+        }
+
+        public Builder addAuthority(Role authority) {
+            player.authorities.add(authority);
             return this;
         }
 

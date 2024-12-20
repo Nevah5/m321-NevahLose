@@ -1,7 +1,7 @@
 USE `player-svc`;
 
-DROP TABLE IF EXISTS `players`;
 DROP TABLE IF EXISTS `player_authorities`;
+DROP TABLE IF EXISTS `players`;
 
 CREATE TABLE `players` (
   `id` varchar(36) NOT NULL,
@@ -11,7 +11,7 @@ CREATE TABLE `players` (
 
 CREATE TABLE `player_authorities` (
   `player_id` CHAR(36) NOT NULL,
-  `authority` VARCHAR(255) NOT NULL,
+  `name` VARCHAR(255) NOT NULL,
   FOREIGN KEY (`player_id`) REFERENCES `players`(`id`)
 );
 
