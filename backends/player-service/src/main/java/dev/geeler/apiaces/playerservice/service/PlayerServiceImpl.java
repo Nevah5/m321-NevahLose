@@ -17,6 +17,9 @@ public class PlayerServiceImpl implements PlayerService {
 
     @Override
     public Player register(PlayerDto playerDto) {
+        System.out.println("Registering player");
+        System.out.println(playerDto.getUsername());
+        System.out.println(playerDto.getUsername().length());
         if (playerDto.getUsername().length() > 20) {
             throw new IllegalArgumentException("Username is too long");
         }

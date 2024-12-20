@@ -1,5 +1,7 @@
 package dev.geeler.apiaces.playerservice.exception;
 
+import dev.geeler.apiaces.playerservice.model.ErrorResponse;
+import dev.geeler.apiaces.playerservice.model.HttpResponse;
 import dev.geeler.apiaces.playerservice.model.ServerErrorResponse;
 import org.apache.logging.log4j.Logger;
 import org.springframework.http.HttpStatus;
@@ -12,6 +14,17 @@ import org.apache.logging.log4j.LogManager;
 @ControllerAdvice
 public class GlobalExceptionHandler {
     private static final Logger LOGGER = LogManager.getLogger(GlobalExceptionHandler.class);
+
+    // 400 - Bad Request
+    @ExceptionHandler(IllegalArgumentException.class)
+    @ResponseBody
+    public ResponseEntity<ErrorResponse> handleClientError(IllegalArgumentException e) {
+        final ErrorResponse errorResponse = new ErrorResponse(
+                HttpStatus.BAD_REQUEST,
+                e.getMessage()
+        );
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
+    }
 
     // 500 - Internal Server Error
     @ExceptionHandler(Exception.class)

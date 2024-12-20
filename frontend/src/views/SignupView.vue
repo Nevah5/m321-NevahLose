@@ -26,7 +26,9 @@
 import LoadingOverlay from "@/components/LoadingOverlay.vue";
 import LoadingIcon from "@/components/icons/LoadingIcon.vue";
 import { onMounted, ref } from "vue";
-import { getRandomUsername } from "@/api/playerService";
+import { getRandomUsername, register } from "@/api/playerService";
+import router from "@/router";
+import type ErrorResponse from "@/api/models/error";
 
 const isLoading = ref(true);
 const isConfirmed = ref(false);
@@ -41,7 +43,24 @@ const confirm = () => {
     return;
   }
   isConfirmed.value = true;
+  login();
 };
+
+const login = async () => {
+  register(username.value)
+    .then((token) => {
+      localStorage.setItem("token", token.token);
+      setTimeout(() => {
+        isConfirmed.value = false;
+        router.push("/");
+      }, Math.floor(Math.random() * 1000));
+    })
+    .catch((error) => {
+      alert(`${error}`);
+      isConfirmed.value = false;
+    });
+};
+
 onMounted(async () => {
   usernamePlaceholder.value = await getRandomUsername();
   isLoading.value = false;
