@@ -17,7 +17,7 @@ public class Player implements UserDetails {
     @Getter
     private String username;
 
-    @ElementCollection(targetClass = Role.class)
+    @ElementCollection(targetClass = Role.class, fetch = FetchType.EAGER)
     @JoinTable(
             name = "player_authorities",
             joinColumns = @JoinColumn(name = "player_id")

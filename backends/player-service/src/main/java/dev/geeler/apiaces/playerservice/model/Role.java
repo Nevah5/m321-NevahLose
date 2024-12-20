@@ -1,5 +1,6 @@
 package dev.geeler.apiaces.playerservice.model;
 
+import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;
 
 public enum Role implements GrantedAuthority {
