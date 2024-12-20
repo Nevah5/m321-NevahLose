@@ -14,13 +14,17 @@
         maxlength="20"
         v-model="username"
       />
-      <input type="submit" value="Confirm" />
+      <button type="submit" :disabled="isConfirmed">
+        <slot v-if="!isConfirmed">Confirm</slot>
+        <slot v-if="isConfirmed"><LoadingIcon height="13" /></slot>
+      </button>
     </form>
   </div>
 </template>
 
 <script lang="ts" setup>
 import LoadingOverlay from "@/components/LoadingOverlay.vue";
+import LoadingIcon from "@/components/icons/LoadingIcon.vue";
 import { onMounted, ref } from "vue";
 import { getRandomUsername } from "@/api/playerService";
 
@@ -56,13 +60,16 @@ $input-gap: 0.5rem;
 input[type="text"] {
   width: calc(70% - $input-gap / 2);
   padding: 10px;
+  margin: 10px 0;
   margin-right: $input-gap;
   border: solid 2px var(--vt-c-stratos);
   border-radius: 0.5rem;
 }
 
-input[type="submit"] {
+button[type="submit"] {
   width: calc(30% - $input-gap / 2);
+  height: 40px;
+  max-height: 40px;
   padding: 10px;
   margin: 10px 0;
   border: 1px solid var(--vt-c-stratos);
@@ -71,5 +78,10 @@ input[type="submit"] {
   font-weight: 1000;
   cursor: pointer;
   border-radius: 0.5rem;
+
+  .loading-icon {
+    max-height: 100%;
+    scale: 2;
+  }
 }
 </style>
