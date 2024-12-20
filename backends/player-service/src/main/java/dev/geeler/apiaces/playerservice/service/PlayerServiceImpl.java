@@ -4,7 +4,11 @@ import dev.geeler.apiaces.playerservice.dto.PlayerDto;
 import dev.geeler.apiaces.playerservice.model.Player;
 import dev.geeler.apiaces.playerservice.repository.PlayerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+
+import java.util.Optional;
 
 @Service
 public class PlayerServiceImpl implements PlayerService {
@@ -21,5 +25,11 @@ public class PlayerServiceImpl implements PlayerService {
                 .build();
         playerRepository.save(player);
         return player;
+    }
+
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        return Optional.of(playerRepository.findByUsername(username))
+                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
     }
 }
