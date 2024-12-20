@@ -27,6 +27,7 @@ public class SecurityConfig {
             "/auth/register",
             "/actuator/health",
             "/actuator/info",
+            "/usernames/random"
     };
 
     @Bean

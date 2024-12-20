@@ -1,5 +1,6 @@
 <template>
-  <div class="wrapper">
+  <LoadingOverlay :enabled="isLoading" v-if="isLoading" />
+  <div class="wrapper" v-else>
     <form @submit.prevent="confirm">
       <h2>What's your name?</h2>
       <p>
@@ -9,7 +10,7 @@
       <input
         type="text"
         name="username"
-        placeholder="LazyCoder123"
+        :placeholder="usernamePlaceholder"
         maxlength="20"
         v-model="username"
       />
@@ -19,17 +20,28 @@
 </template>
 
 <script lang="ts" setup>
-import { ref } from "vue";
+import LoadingOverlay from "@/components/LoadingOverlay.vue";
+import { onMounted, ref } from "vue";
+import { getRandomUsername } from "@/api/playerService";
 
+const isLoading = ref(true);
+const isConfirmed = ref(false);
 const username = ref("");
+const usernamePlaceholder = ref("");
 
 const confirm = () => {
   if (username.value === "") {
-    alert("Please enter a username");
-  } else {
-    alert(`Welcome, ${username.value}!`);
+    username.value = usernamePlaceholder.value;
+  } else if (username.value.length < 4) {
+    alert(`Please enter a username with the minimum length of 4 characters.`);
+    return;
   }
+  isConfirmed.value = true;
 };
+onMounted(async () => {
+  usernamePlaceholder.value = await getRandomUsername();
+  isLoading.value = false;
+});
 </script>
 
 <style lang="scss" scoped>
