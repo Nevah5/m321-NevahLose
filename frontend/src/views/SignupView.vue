@@ -2,19 +2,26 @@
   <LoadingOverlay :enabled="isLoading" v-if="isLoading" />
   <div class="wrapper" v-else>
     <form @submit.prevent="confirm">
-      <h2>What's your name?</h2>
-      <p>
+      <h2 v-if="!currentUsername">What's your name?</h2>
+      <h2 v-else>Hey, {{ currentUsername }}!</h2>
+      <p v-if="currentUsername">
+        You are already logged in, if you want to logout, click
+        <a href="#logout" @click="logout">here</a>.
+      </p>
+      <p v-else>
         By pressing confirm below, you agree to the
         <router-link to="/">Terms of Use</router-link>.
       </p>
       <input
+        v-if="!currentUsername"
         type="text"
         name="username"
         :placeholder="usernamePlaceholder"
         maxlength="20"
         v-model="username"
+        :disabled="isConfirmed"
       />
-      <button type="submit" :disabled="isConfirmed">
+      <button v-if="!currentUsername" type="submit" :disabled="isConfirmed">
         <slot v-if="!isConfirmed">Confirm</slot>
         <slot v-if="isConfirmed"><LoadingIcon height="13" /></slot>
       </button>
@@ -32,6 +39,7 @@ import type { ApiError, TokenResponse } from "@/api/types";
 
 const isLoading = ref(true);
 const isConfirmed = ref(false);
+const currentUsername = ref("");
 const username = ref("");
 const usernamePlaceholder = ref("");
 const router = useRouter();
@@ -66,9 +74,19 @@ const login = async () => {
   }
 };
 
+const logout = () => {
+  localStorage.clear();
+  router.push("/");
+};
+
 onMounted(async () => {
   usernamePlaceholder.value = await playerService.getRandomUsername();
   isLoading.value = false;
+
+  const name = localStorage.getItem("username");
+  if (name != "") {
+    currentUsername.value = name as string;
+  }
 });
 </script>
 
