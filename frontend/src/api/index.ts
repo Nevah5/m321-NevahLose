@@ -1,5 +1,5 @@
 import type { AxiosInstance, AxiosResponse } from "axios";
-import type { Player, ApiError } from "./types";
+import type { Player, ApiError, TokenResponse } from "./types";
 
 import axios from "axios";
 import { handleApiError } from "./errorHandler";
@@ -56,6 +56,14 @@ class PlayerService extends ApiService {
 
   async getSelf(token: string): Promise<Player> {
     return this.get<Player>("/self", token);
+  }
+
+  async register(username: string): Promise<TokenResponse> {
+    return this.post<TokenResponse>("/auth/register", { username });
+  }
+
+  async getRandomUsername(): Promise<string> {
+    return this.get<string>("/usernames/random");
   }
 }
 

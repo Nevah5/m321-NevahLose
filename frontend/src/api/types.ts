@@ -7,7 +7,7 @@ export type ApiError = {
 export interface TokenResponse {
   token: string;
   type: string;
-  expires_at: number;
+  expires_in: number;
 }
 
 export interface Player {

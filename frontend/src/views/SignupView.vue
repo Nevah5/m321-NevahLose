@@ -26,14 +26,15 @@
 import LoadingOverlay from "@/components/LoadingOverlay.vue";
 import LoadingIcon from "@/components/icons/LoadingIcon.vue";
 import { onMounted, ref } from "vue";
-import { getRandomUsername, register } from "@/api/playerService";
-import router from "@/router";
-import type ErrorResponse from "@/api/models/error";
+import { playerService } from "@/api";
+import { useRouter } from "vue-router";
+import type { ApiError, TokenResponse } from "@/api/types";
 
 const isLoading = ref(true);
 const isConfirmed = ref(false);
 const username = ref("");
 const usernamePlaceholder = ref("");
+const router = useRouter();
 
 const confirm = () => {
   if (username.value === "") {
@@ -47,22 +48,26 @@ const confirm = () => {
 };
 
 const login = async () => {
-  register(username.value)
-    .then((token) => {
-      localStorage.setItem("token", token.token);
-      setTimeout(() => {
-        isConfirmed.value = false;
-        router.push("/");
-      }, Math.floor(Math.random() * 1000));
-    })
-    .catch((error) => {
-      alert(`${error}`);
+  try {
+    const token: TokenResponse = await playerService.register(username.value);
+    localStorage.setItem("token", token.token);
+    localStorage.setItem(
+      "expires_in",
+      (Date.now() + token.expires_in * 1000).toString()
+    );
+    setTimeout(() => {
       isConfirmed.value = false;
-    });
+      router.push("/");
+    }, Math.floor(Math.random() * 1000));
+  } catch (e: ApiError | any) {
+    // TODO: emit toast error
+    alert(e.message);
+    isConfirmed.value = false;
+  }
 };
 
 onMounted(async () => {
-  usernamePlaceholder.value = await getRandomUsername();
+  usernamePlaceholder.value = await playerService.getRandomUsername();
   isLoading.value = false;
 });
 </script>

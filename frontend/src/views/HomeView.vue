@@ -7,14 +7,15 @@
 
 <script lang="ts" setup>
 import { onMounted, ref } from "vue";
-import router from "@/router";
 import LoadingOverlay from "@/components/LoadingOverlay.vue";
 import type Player from "@/api/models/user";
 import { playerService } from "@/api";
 import type { ApiError } from "@/api/types";
+import { useRouter } from "vue-router";
 
 const isLoading = ref(false);
 const username = ref("");
+const router = useRouter();
 
 onMounted(async () => {
   isLoading.value = true;
@@ -28,7 +29,7 @@ onMounted(async () => {
   }
 
   try {
-    const player: Player = await playerService.getSelf("afds");
+    const player: Player = await playerService.getSelf(token);
     isLoading.value = false;
     localStorage.setItem("playerId", player.id);
     localStorage.setItem("username", player.username);
