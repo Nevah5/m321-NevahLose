@@ -1,10 +1,10 @@
 <template>
   <header>
     <LogoIcon />
-
     <nav>
       <RouterLink to="/">Home</RouterLink>
-      <RouterLink to="/signup">Singup</RouterLink>
+      <RouterLink to="/rules">Rules</RouterLink>
+      <RouterLink to="/login">Login</RouterLink>
     </nav>
   </header>
 </template>
@@ -15,11 +15,14 @@ import LogoIcon from "./icons/LogoIcon.vue";
 
 <style lang="scss" scoped>
 header {
+  position: sticky;
+  top: 0;
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 1rem;
   width: 100vw;
+  background: var(--color-background);
 
   .logo {
     width: 10rem;

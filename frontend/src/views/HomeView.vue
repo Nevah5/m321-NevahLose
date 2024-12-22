@@ -23,7 +23,7 @@ onMounted(async () => {
   if (token == null || token == "") {
     setTimeout(() => {
       isLoading.value = false;
-      router.push("/signup");
+      router.push("/login");
     }, 1000);
     return;
   }
@@ -38,7 +38,7 @@ onMounted(async () => {
     // TODO: implement error Toast on App.vue where you emit "upwards"
     isLoading.value = true;
     localStorage.clear();
-    router.push("/signup");
+    router.push("/login");
   }
 });
 </script>
