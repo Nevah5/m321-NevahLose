@@ -9,13 +9,14 @@
 import { onMounted, ref } from "vue";
 import router from "@/router";
 import LoadingOverlay from "@/components/LoadingOverlay.vue";
-import { getSelf } from "@/api/playerService";
 import type Player from "@/api/models/user";
+import { playerService } from "@/api";
+import type { ApiError } from "@/api/types";
 
 const isLoading = ref(false);
 const username = ref("");
 
-onMounted(() => {
+onMounted(async () => {
   isLoading.value = true;
   const token = localStorage.getItem("token");
   if (token == null || token == "") {
@@ -26,18 +27,17 @@ onMounted(() => {
     return;
   }
 
-  getSelf(token)
-    .then((player: Player) => {
-      isLoading.value = false;
-      localStorage.setItem("playerId", player.id);
-      localStorage.setItem("username", player.username);
-      username.value = player.username;
-    })
-    .catch(() => {
-      // TODO: implement error Toast on App.vue where you emit "upwards"
-      isLoading.value = true;
-      localStorage.clear();
-      router.push("/signup");
-    });
+  try {
+    const player: Player = await playerService.getSelf("afds");
+    isLoading.value = false;
+    localStorage.setItem("playerId", player.id);
+    localStorage.setItem("username", player.username);
+    username.value = player.username;
+  } catch (e: ApiError | any) {
+    // TODO: implement error Toast on App.vue where you emit "upwards"
+    isLoading.value = true;
+    localStorage.clear();
+    router.push("/signup");
+  }
 });
 </script>
