@@ -1,7 +1,7 @@
 version: "3"
 services:
   database:
-    container_name: db
+    container_name: database
     image: mariadb:11.4
     volumes:
       - db_data:/var/lib/mysql:Z
@@ -27,7 +27,7 @@ services:
     environment:
       ALLOW_ANONYMOUS_LOGIN: "yes"
   kafka:
-    container_name: kfk
+    container_name: kafka
     image: bitnami/kafka
     ports:
       - "9092:9092"
