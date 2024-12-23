@@ -1,6 +1,6 @@
 <template>
   <LoadingOverlay :enabled="isLoading" v-if="isLoading" />
-  <div class="wrapper" v-else>
+  <main class="wrapper" v-else>
     <form @submit.prevent="confirm">
       <h2 v-if="!currentUsername">What's your name?</h2>
       <h2 v-else>Hey, {{ currentUsername }}!</h2>
@@ -26,7 +26,7 @@
         <slot v-if="isConfirmed"><LoadingIcon height="13" /></slot>
       </button>
     </form>
-  </div>
+  </main>
 </template>
 
 <script lang="ts" setup>
@@ -91,11 +91,9 @@ onMounted(async () => {
 </script>
 
 <style lang="scss" scoped>
-.wrapper {
-  display: flex;
+main {
   justify-content: center;
   align-items: center;
-  margin-top: 30vh;
 }
 
 $input-gap: 0.5rem;
