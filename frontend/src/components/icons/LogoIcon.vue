@@ -3,7 +3,7 @@
     <img
       alt="API Aces Logo"
       class="logo"
-      src="@/assets/logo.svg"
+      :src="logoStyle === 'dark' ? logoDark : logoLight"
       :width="logoWidth"
     />
   </router-link>
@@ -11,15 +11,23 @@
     v-else
     alt="API Aces Logo"
     class="logo"
-    src="@/assets/logo.svg"
+    :src="logoStyle === 'dark' ? logoDark : logoLight"
     :width="logoWidth"
   />
 </template>
 
 <script lang="ts" setup>
 import { RouterLink } from "vue-router";
-const { logoWidth = 120, disableLink = false } = defineProps<{
+import logoLight from "@/assets/logo_light.svg";
+import logoDark from "@/assets/logo.svg";
+
+const {
+  logoWidth = 120,
+  disableLink = false,
+  logoStyle = "light",
+} = defineProps<{
   logoWidth?: number;
   disableLink?: boolean;
+  logoStyle?: "dark" | "light";
 }>();
 </script>
