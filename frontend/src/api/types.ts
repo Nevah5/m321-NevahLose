@@ -14,3 +14,12 @@ export interface Player {
   id: string;
   username: string;
 }
+
+export interface Card {
+  id: string;
+  name: string;
+  description: string;
+  image: string;
+  cardType: string;
+  amountInDeck: number;
+}

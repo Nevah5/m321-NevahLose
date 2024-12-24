@@ -21,6 +21,7 @@ public class CardServiceImpl implements CardService {
     @Override
     public List<Card> getCards() {
         return cardRepository.findAll();
+        // TODO: sort by cardType
     }
 
     @Override

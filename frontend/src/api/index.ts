@@ -1,5 +1,5 @@
 import type { AxiosInstance, AxiosResponse } from "axios";
-import type { Player, ApiError, TokenResponse } from "./types";
+import type { Player, ApiError, TokenResponse, Card } from "./types";
 
 import axios from "axios";
 import { handleApiError } from "./errorHandler";
@@ -49,6 +49,16 @@ class ApiService {
   }
 }
 
+class CardService extends ApiService {
+  constructor(cardServiceUrl: string) {
+    super(`${cardServiceUrl}`);
+  }
+
+  async getCards(): Promise<Card[]> {
+    return this.get<Card[]>("/cards");
+  }
+}
+
 class PlayerService extends ApiService {
   constructor(playerServiceUrl: string) {
     super(`${playerServiceUrl}`);
@@ -71,4 +81,6 @@ const playerService = new PlayerService(
   import.meta.env.VITE_PLAYER_SERVICE_URL
 );
 
-export { playerService };
+const cardService = new CardService(import.meta.env.VITE_CARD_SERVICE_URL);
+
+export { playerService, cardService };
