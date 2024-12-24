@@ -39,6 +39,18 @@
         <li><b>OPTIONS</b>: Does things (4 cards)</li>
       </ul>
       <h3>Card Actions</h3>
+      <div class="cards">
+        <CardComponent
+          type="get"
+          name="The Watcher"
+          background-name="TheWatcher.webp"
+          subject-name="TheWatcher_subject.webp"
+        />
+        <CardComponent type="post" />
+        <CardComponent type="put" />
+        <CardComponent type="delete" />
+        <CardComponent type="options" />
+      </div>
       <ul>
         <li>
           <b>See a player's card</b>: Allows you to see what cards a player has
@@ -104,4 +116,16 @@
   </main>
 </template>
 
-<script setup></script>
+<script setup>
+import CardComponent from "@/components/CardComponent.vue";
+</script>
+
+<style lang="scss" scoped>
+div.cards {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 1em;
+  flex-wrap: wrap;
+}
+</style>

@@ -14,6 +14,12 @@
   --color-heading: var(--vt-c-stratos);
   --color-text: var(--vt-c-stratos);
   --color-primary: var(--vt-c-stratos);
+
+  --color-api-method-get: #65cb50;
+  --color-api-method-post: #d3b718;
+  --color-api-method-put: #5e8adc;
+  --color-api-method-delete: #dc5e5e;
+  --color-api-method-options: #935edc;
 }
 
 /* @media (prefers-color-scheme: dark) {
