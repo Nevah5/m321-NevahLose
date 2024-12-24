@@ -1,11 +1,12 @@
 <template>
   <div :class="'card card-' + type">
-    <div class="title">
-      <span class="title-name">{{ name }}</span>
-      <span class="method">{{ type.toUpperCase() }}</span>
-    </div>
-    <section class="top" :style="cardTopStyle">
+    <section class="top">
+      <div class="title">
+        <span class="title-name">{{ name }}</span>
+        <span class="method">{{ type.toUpperCase() }}</span>
+      </div>
       <div class="subject" :style="cardSubjectStyle"></div>
+      <div class="background" :style="cardTopStyle"></div>
     </section>
     <section class="middle"></section>
     <section class="bottom">
@@ -51,14 +52,22 @@ onMounted(async () => {
 </script>
 
 <style lang="scss" scoped>
+@use "sass:math";
 .card {
+  $card-aspect-ratio-width: 3;
+  $card-aspect-ratio-height: 4;
+  $card-width: 250px;
+  $card-height: calc(
+    $card-width / $card-aspect-ratio-width * $card-aspect-ratio-height
+  );
+  $card-padding: 9.6px;
+  aspect-ratio: calc($card-aspect-ratio-width / $card-aspect-ratio-height);
   position: relative;
-  aspect-ratio: 3/4;
-  width: 250px;
+  width: $card-width;
   border-radius: 15px;
   overflow: hidden;
   box-shadow: 10px 10px 12px 0px rgba(0, 0, 0, 0.25);
-  padding: 0.6em;
+  padding: $card-padding;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -100,45 +109,91 @@ onMounted(async () => {
     }
   }
 
-  div.title {
-    z-index: 10;
-    position: absolute;
-    top: 7%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background-color: var(--color-background);
-    font-size: 12px;
-    font-weight: bold;
-    padding: 1px 10px;
-    width: 80%;
-  }
-
   section {
     width: 100%;
+    position: relative;
 
     &.top {
-      height: 45%;
-      position: relative;
-      margin-top: 5%;
-      background-position: top;
-      background-size: cover;
-      background-repeat: no-repeat;
       overflow: hidden;
-      // TODO: clip path
+      $image-width: calc($card-width - $card-padding * 2);
+      $image-height: calc($card-height * 0.5);
+      $corner-cut-radius: 20px;
+
+      // only cut bottom, because of subject image
+      clip-path: polygon(
+        0 0,
+        100% 0,
+        100%
+          math.percentage(
+            calc(1 / $image-height * ($image-height - $corner-cut-radius))
+          ),
+        math.percentage(
+            calc(1 / $image-width * ($image-width - $corner-cut-radius))
+          )
+          100%,
+        math.percentage(calc(1 / $image-width * $corner-cut-radius)) 100%,
+        0
+          math.percentage(
+            calc(1 / $image-height * ($image-height - $corner-cut-radius))
+          )
+      );
+
+      div.title {
+        position: absolute;
+        top: 5%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background-color: var(--color-background);
+        font-size: 12px;
+        font-weight: bold;
+        padding: 1px 10px;
+        width: 80%;
+        z-index: 10;
+      }
 
       div.subject {
-        z-index: 11;
         position: absolute;
         height: 110%;
-        width: 80%;
+        width: 90%;
         left: 50%;
+        top: 5%;
         transform: translateX(-50%);
         background-position: top;
         background-size: cover;
         background-repeat: no-repeat;
+        z-index: 20;
+      }
+      div.background {
+        height: $image-height;
+        margin-top: 5%;
+        background-position: top;
+        background-size: cover;
+        background-repeat: no-repeat;
+        clip-path: polygon(
+          0
+            math.percentage(
+              calc(1 / $image-height * ($image-height - $corner-cut-radius))
+            ),
+          0 math.percentage(calc(1 / $image-height * $corner-cut-radius)),
+          math.percentage(calc(1 / $image-width * $corner-cut-radius)) 0,
+          math.percentage(
+              calc(1 / $image-width * ($image-width - $corner-cut-radius))
+            )
+            0,
+          100% math.percentage(calc(1 / $image-height * $corner-cut-radius)),
+          100%
+            math.percentage(
+              calc(1 / $image-height * ($image-height - $corner-cut-radius))
+            ),
+          math.percentage(
+              calc(1 / $image-width * ($image-width - $corner-cut-radius))
+            )
+            100%,
+          math.percentage(calc(1 / $image-width * $corner-cut-radius)) 100%
+        );
       }
     }
     &.middle {
