@@ -8,7 +8,9 @@
       <div class="subject" :style="cardSubjectStyle"></div>
       <div class="background" :style="cardTopStyle"></div>
     </section>
-    <section class="middle"></section>
+    <section class="middle">
+      <p>{{ description }}</p>
+    </section>
     <section class="bottom">
       <LogoIcon :logoWidth="50" :disableLink="true" logoStyle="light" />
       <p>API Aces</p>
@@ -27,11 +29,13 @@ const {
   name = "placeholder",
   backgroundName = "TheWatcher.webp",
   subjectName = "TheWatcher_subject.webp",
+  description = "This is a placeholder description",
 } = defineProps<{
   type: string;
   name: string;
   backgroundName: string;
   subjectName: string;
+  description: string;
 }>();
 
 onMounted(async () => {
@@ -112,12 +116,12 @@ onMounted(async () => {
   section {
     width: 100%;
     position: relative;
+    $corner-cut-radius: 20px;
 
     &.top {
       overflow: hidden;
       $image-width: calc($card-width - $card-padding * 2);
       $image-height: calc($card-height * 0.5);
-      $corner-cut-radius: 20px;
 
       // only cut bottom, because of subject image
       clip-path: polygon(
@@ -197,14 +201,39 @@ onMounted(async () => {
       }
     }
     &.middle {
-      height: 30%;
+      $text-height: calc($card-height * 0.3);
+      height: $text-height;
       display: flex;
       justify-content: center;
       align-items: center;
-      background-color: var(--color-white);
-      color: var(--color-black);
+      background-color: var(--color-background);
+      color: var(--color-text);
       font-size: 1.5rem;
       font-weight: bold;
+      position: relative;
+      $text-width: $card-width - $card-padding * 2;
+      clip-path: polygon(
+        0 0,
+        math.percentage(
+            calc(1 / $text-width * ($text-width - $corner-cut-radius))
+          )
+          0,
+        100% math.percentage(calc(1 / $text-height * $corner-cut-radius)),
+        100% 100%,
+        math.percentage(calc(1 / $text-width * $corner-cut-radius)) 100%,
+        0
+          math.percentage(
+            calc(1 / $text-height * ($text-height - $corner-cut-radius))
+          )
+      );
+
+      p {
+        text-align: center;
+        font-size: 12px;
+        width: 80%;
+        margin: 0;
+        margin-bottom: 5%;
+      }
     }
     &.bottom {
       height: 5%;
