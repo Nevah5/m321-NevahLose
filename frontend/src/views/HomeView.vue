@@ -1,7 +1,8 @@
 <template>
   <main>
     <LoadingOverlay :enabled="isLoading" />
-    <h1>Welcome {{ username }}</h1>
+    <h1>Welcome, {{ username }}!</h1>
+    <RoomManageComponent />
   </main>
 </template>
 
@@ -12,6 +13,7 @@ import type Player from "@/api/models/user";
 import { playerService } from "@/api";
 import type { ApiError } from "@/api/types";
 import { useRouter } from "vue-router";
+import RoomManageComponent from "@/components/RoomManageComponent.vue";
 
 const isLoading = ref(false);
 const username = ref("");
