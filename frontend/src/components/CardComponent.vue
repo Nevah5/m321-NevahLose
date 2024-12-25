@@ -92,7 +92,6 @@ watch(
 onMounted(async () => {
   isTurned.value = isTurnedProp;
 
-  // TODO: fix hover effect after card turned, don't allow hover when is turned on it's back
   setupBackgroundImage();
   setupSubjectImage();
   setupHoverEffect();
@@ -122,7 +121,7 @@ let bounds: DOMRect;
 
 const setupHoverEffect = () => {
   if (!hoverEffect) return;
-  if (hoverEffect && !isTurned.value) return;
+  if (hoverEffect && isTurned.value) return;
   if (card.value === undefined) return;
   card.value!.addEventListener("mouseenter", () => {
     bounds = card.value!.getBoundingClientRect();
@@ -174,7 +173,7 @@ const revealCard = () => {
   cardContent.value!.classList.add("card-turned-open");
 
   setTimeout(() => {
-    isTurned.value = true;
+    isTurned.value = false;
     setupHoverEffect();
   }, 300);
 };
@@ -206,7 +205,6 @@ const revealCard = () => {
   width: $card-width;
   border-radius: 15px;
   overflow: hidden;
-  // box-shadow: 0 0 12px 0px rgba(0, 0, 0, 0.2);
   transition-duration: 300ms;
   transition-property: transform, box-shadow;
   transition-timing-function: ease-out;
@@ -272,6 +270,7 @@ const revealCard = () => {
     flex-direction: column;
     justify-content: space-between;
     align-items: center;
+    box-shadow: 0 0 12px 0px rgba(0, 0, 0, 0.2);
 
     &.card-turned {
       transform: rotateY(90deg);
