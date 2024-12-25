@@ -291,7 +291,7 @@ const rotateToMouse = (e: MouseEvent) => {
       height: $text-height;
       display: flex;
       justify-content: center;
-      align-items: center;
+      align-items: flex-start;
       background-color: var(--color-background);
       color: var(--color-text);
       font-size: 1.5rem;
@@ -317,8 +317,7 @@ const rotateToMouse = (e: MouseEvent) => {
         text-align: center;
         font-size: 12px;
         width: 80%;
-        margin: 0;
-        margin-bottom: 5%;
+        margin-top: calc($text-height * 0.382 - 12px);
       }
     }
     &.bottom {
