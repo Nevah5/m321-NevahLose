@@ -154,7 +154,7 @@ const rotateToMouse = (e: MouseEvent) => {
       height: 100%;
       left: 0;
       top: 5%;
-      z-index: 15;
+      z-index: 9;
       transition: background-image 150ms;
 
       background-image: radial-gradient(
