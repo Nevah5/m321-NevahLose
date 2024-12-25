@@ -22,7 +22,7 @@ header {
   justify-content: space-between;
   align-items: center;
   padding: 1rem;
-  width: 100vw;
+  width: calc(100vw - 2rem);
   background: var(--color-background);
 
   .logo {
