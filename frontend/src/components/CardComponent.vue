@@ -77,6 +77,7 @@ const setupHoverEffect = () => {
     document.removeEventListener("mousemove", rotateToMouse);
     card.value!.style.transform = "";
     card.value!.style.background = "";
+    cardGlow.value!.style.backgroundImage = "";
   });
 };
 
@@ -152,6 +153,7 @@ const rotateToMouse = (e: MouseEvent) => {
       height: 100%;
       left: 0;
       top: 0;
+      transition: background-image 150ms;
 
       background-image: radial-gradient(
         circle at 50% -20%,
