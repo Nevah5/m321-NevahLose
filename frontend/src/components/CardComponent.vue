@@ -44,7 +44,7 @@
 
 <script lang="ts" setup>
 import LogoIcon from "./icons/LogoIcon.vue";
-import { onMounted, ref, useTemplateRef } from "vue";
+import { onMounted, ref, useTemplateRef, watch } from "vue";
 
 const card = useTemplateRef<HTMLDivElement>("card");
 const cardGlow = useTemplateRef<HTMLDivElement>("card-glow");
@@ -74,26 +74,49 @@ const {
   isTurnable?: boolean;
 }>();
 
+watch(
+  () => backgroundName,
+  async (newValue) => {
+    if (backgroundName === "") return;
+    setupBackgroundImage();
+  }
+);
+watch(
+  () => subjectName,
+  async (newValue) => {
+    if (subjectName === "") return;
+    setupSubjectImage();
+  }
+);
+
 onMounted(async () => {
   isTurned.value = isTurnedProp;
 
-  // TODO: watch props and initiate background again
   // TODO: fix hover effect after card turned, don't allow hover when is turned on it's back
+  setupBackgroundImage();
+  setupSubjectImage();
+  setupHoverEffect();
+});
+
+const setupBackgroundImage = async () => {
+  if (backgroundName === "") return;
   const backgroundImage = (
     await import(/* @vite-ignore */ `../assets/cards/${backgroundName}`)
   ).default;
-  const subjectImage = (
-    await import(/* @vite-ignore */ `../assets/cards/${subjectName}`)
-  ).default;
-
   cardTopStyle.value = {
     backgroundImage: `url(${backgroundImage})`,
   };
+};
+
+const setupSubjectImage = async () => {
+  if (subjectName === "") return;
+  const subjectImage = (
+    await import(/* @vite-ignore */ `../assets/cards/${subjectName}`)
+  ).default;
   cardSubjectStyle.value = {
     backgroundImage: `url(${subjectImage})`,
   };
-  setupHoverEffect();
-});
+};
 
 let bounds: DOMRect;
 
