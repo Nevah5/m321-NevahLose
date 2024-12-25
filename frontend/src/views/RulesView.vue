@@ -1,14 +1,5 @@
 <template>
   <main>
-    <CardComponent
-      :isTurnedProp="true"
-      type="get"
-      name="test"
-      backgroundName="TheWatcher.webp"
-      subjectName="TheWatcher_subject.webp"
-      description="This is a test card"
-      :hoverEffect="true"
-    />
     <h1>Rules</h1>
     <section>
       <h2>Basics</h2>
