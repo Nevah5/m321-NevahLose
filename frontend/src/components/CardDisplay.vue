@@ -5,8 +5,8 @@
       :key="card.id"
       :type="card.cardType.toLowerCase()"
       :name="card.name"
-      :background-name="card.imageName"
-      :subject-name="card.subjectName"
+      :background-name="card.backgroundFilename"
+      :subject-name="card.subjectFilename"
       :description="card.description"
     />
   </div>

@@ -21,10 +21,10 @@ public class Card {
     private String description;
 
     @Getter
-    private String imageName;
+    private String backgroundFilename;
 
     @Getter
-    private String subjectName;
+    private String subjectFilename;
 
     @Getter
     private CardType cardType;
@@ -50,11 +50,11 @@ public class Card {
         }
 
         public void setImageName(String imageName) {
-            card.imageName = imageName;
+            card.backgroundFilename = imageName;
         }
 
         public void setSubjectName(String subjectName) {
-            card.subjectName = subjectName;
+            card.subjectFilename = subjectName;
         }
 
         public void setCardType(CardType cardType) {

@@ -6,8 +6,8 @@ CREATE TABLE `cards` (
   `id` varchar(36) NOT NULL,
   `name` varchar(255) NOT NULL,
   `description` text NOT NULL,
-  `imageName` varchar(255) NOT NULL,
-  `subjectName` varchar(255) NOT NULL,
+  `backgroundFilename` varchar(255) NOT NULL,
+  `subjectFilename` varchar(255) NOT NULL,
   `cardType` int NOT NULL,
   `amountInDeck` int NOT NULL,
   PRIMARY KEY (`id`)

@@ -19,8 +19,8 @@ export interface Card {
   id: string;
   name: string;
   description: string;
-  imageName: string;
-  subjectName: string;
+  backgroundFilename: string;
+  subjectFilename: string;
   cardType: string;
   amountInDeck: number;
 }
