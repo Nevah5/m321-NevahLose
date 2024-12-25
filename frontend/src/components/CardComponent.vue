@@ -8,6 +8,7 @@
         <span class="title-name">{{ name }}</span>
         <span class="method">{{ type.toUpperCase() }}</span>
       </div>
+      <div class="card-glow" v-if="hoverEffect" ref="card-glow"></div>
       <div class="subject" :style="cardSubjectStyle"></div>
       <div class="background" :style="cardTopStyle"></div>
     </section>
@@ -18,7 +19,6 @@
       <LogoIcon :logoWidth="50" :disableLink="true" logoStyle="light" />
       <p>API Aces</p>
     </section>
-    <div class="card-glow" v-if="hoverEffect" ref="card-glow"></div>
   </div>
 </template>
 
@@ -119,6 +119,7 @@ const rotateToMouse = (e: MouseEvent) => {
 .card {
   $card-aspect-ratio-width: 3;
   $card-aspect-ratio-height: 4;
+  $corner-cut-radius: 20px;
   $card-width: 250px;
   $card-height: calc(
     $card-width / $card-aspect-ratio-width * $card-aspect-ratio-height
@@ -152,13 +153,39 @@ const rotateToMouse = (e: MouseEvent) => {
       width: 100%;
       height: 100%;
       left: 0;
-      top: 0;
+      top: 5%;
+      z-index: 15;
       transition: background-image 150ms;
 
       background-image: radial-gradient(
         circle at 50% -20%,
         #ffffff22,
         #0000000f
+      );
+
+      $image-width: calc($card-width - $card-padding * 2);
+      $image-height: calc($card-height * 0.5);
+      clip-path: polygon(
+        0
+          math.percentage(
+            calc(1 / $image-height * ($image-height - $corner-cut-radius))
+          ),
+        0 math.percentage(calc(1 / $image-height * $corner-cut-radius)),
+        math.percentage(calc(1 / $image-width * $corner-cut-radius)) 0,
+        math.percentage(
+            calc(1 / $image-width * ($image-width - $corner-cut-radius))
+          )
+          0,
+        100% math.percentage(calc(1 / $image-height * $corner-cut-radius)),
+        100%
+          math.percentage(
+            calc(1 / $image-height * ($image-height - $corner-cut-radius))
+          ),
+        math.percentage(
+            calc(1 / $image-width * ($image-width - $corner-cut-radius))
+          )
+          100%,
+        math.percentage(calc(1 / $image-width * $corner-cut-radius)) 100%
       );
     }
   }
@@ -202,7 +229,6 @@ const rotateToMouse = (e: MouseEvent) => {
   section {
     width: 100%;
     position: relative;
-    $corner-cut-radius: 20px;
 
     &.top {
       overflow: hidden;
