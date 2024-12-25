@@ -21,7 +21,10 @@ public class Card {
     private String description;
 
     @Getter
-    private String image;
+    private String imageName;
+
+    @Getter
+    private String subjectName;
 
     @Getter
     private CardType cardType;
@@ -46,8 +49,12 @@ public class Card {
             card.description = description;
         }
 
-        public void setImage(String image) {
-            card.image = image;
+        public void setImageName(String imageName) {
+            card.imageName = imageName;
+        }
+
+        public void setSubjectName(String subjectName) {
+            card.subjectName = subjectName;
         }
 
         public void setCardType(CardType cardType) {

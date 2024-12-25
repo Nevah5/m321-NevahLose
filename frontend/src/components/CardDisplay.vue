@@ -5,8 +5,8 @@
       :key="card.id"
       :type="card.cardType.toLowerCase()"
       :name="card.name"
-      :background-name="card.image"
-      subject-name="TheWatcher_subject.webp"
+      :background-name="card.imageName"
+      :subject-name="card.subjectName"
       :description="card.description"
     />
   </div>

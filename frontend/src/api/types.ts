@@ -19,7 +19,8 @@ export interface Card {
   id: string;
   name: string;
   description: string;
-  image: string;
+  imageName: string;
+  subjectName: string;
   cardType: string;
   amountInDeck: number;
 }
