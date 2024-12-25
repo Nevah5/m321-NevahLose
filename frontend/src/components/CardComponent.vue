@@ -128,7 +128,7 @@ const rotateToMouse = (e: MouseEvent) => {
   width: $card-width;
   border-radius: 15px;
   overflow: hidden;
-  box-shadow: 10px 10px 12px 0px rgba(0, 0, 0, 0.25);
+  box-shadow: 0 0 12px 0px rgba(0, 0, 0, 0.2);
   padding: $card-padding;
   display: flex;
   flex-direction: column;
@@ -245,12 +245,12 @@ const rotateToMouse = (e: MouseEvent) => {
       div.subject {
         position: absolute;
         height: 110%;
-        width: 90%;
+        width: 100%;
         left: 50%;
         top: 5%;
         transform: translateX(-50%);
         background-position: top;
-        background-size: cover;
+        background-size: contain;
         background-repeat: no-repeat;
         z-index: 20;
       }
