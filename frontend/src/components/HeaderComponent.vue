@@ -15,6 +15,7 @@ import LogoIcon from "./icons/LogoIcon.vue";
 
 <style lang="scss" scoped>
 header {
+  z-index: 100;
   position: sticky;
   top: 0;
   display: flex;

@@ -30,70 +30,7 @@
     </section>
     <section>
       <h2>Cards</h2>
-      <h3>Card Types</h3>
-      <ul>
-        <li><b>GET</b>: Retrieves information (12 cards)</li>
-        <li><b>POST</b>: Creates new game rules (12 cards)</li>
-        <li><b>PUT</b>: Modifies game rules (12 cards)</li>
-        <li><b>DELETE</b>: Removes game rules (12 cards)</li>
-        <li><b>OPTIONS</b>: Does things (4 cards)</li>
-      </ul>
-      <h3>Card Actions</h3>
       <CardDisplay />
-      <ul>
-        <li>
-          <b>See a player's card</b>: Allows you to see what cards a player has
-          (GET)
-        </li>
-        <li>
-          <b>See current game rules</b>: Allows you to see the current game
-          rules for one turn (GET)
-        </li>
-        <li>
-          <b>See remaining cards in deck</b>: Allows you to see how many cards
-          are left in the deck (GET)
-        </li>
-        <li>
-          <b>Winning condition 10</b>: Creates a game rule and makes players
-          with exactly 10 cards win (POST)
-        </li>
-        <li>
-          <b>Winning condition 0</b>: Creates a game rule and makes players with
-          exactly 0 cards win (POST)
-        </li>
-        <li>
-          <b>Drawing condition 3</b>: Creates a game rule and makes players draw
-          3 cards instead of 1 (POST)
-        </li>
-        <li>
-          <b>Change card owner</b>: Allows you to steal a card from another
-          player (PUT)
-        </li>
-        <li>
-          <b>Disable random rule</b>: Disables a random rule for everyone until
-          your next play (PUT)
-        </li>
-        <li>
-          <b>Give card to another player</b>: Allows you to give a card to
-          another player (PUT)
-        </li>
-        <li>
-          <b>Remove random rule</b>: Removes a random rule for everyone until
-          your next play (DELETE)
-        </li>
-        <li>
-          <b>Remove random card from player</b>: Allows you to remove a card
-          from another player (DELETE)
-        </li>
-        <li>
-          <b>Remove card from random player</b>: Allows you to pick a specific
-          card from a random player (DELETE)
-        </li>
-        <li>
-          <b>Random Action</b>: Will act as a random card as soon as played
-          (OPTIONS)
-        </li>
-      </ul>
     </section>
     <section>
       <h2>Special Rules</h2>
@@ -109,3 +46,14 @@
 import CardComponent from "@/components/CardComponent.vue";
 import CardDisplay from "@/components/CardDisplay.vue";
 </script>
+
+<style lang="scss" scoped>
+main {
+  margin: 0 auto 2rem;
+  max-width: 900px;
+}
+
+p {
+  max-width: 900px;
+}
+</style>
