@@ -1,5 +1,8 @@
 <template>
-  <div :class="'card card-' + type">
+  <div
+    :class="'card card-' + type + (hoverEffect ? ' card-hover' : '')"
+    ref="card"
+  >
     <section class="top">
       <div class="title">
         <span class="title-name">{{ name }}</span>
@@ -15,13 +18,16 @@
       <LogoIcon :logoWidth="50" :disableLink="true" logoStyle="light" />
       <p>API Aces</p>
     </section>
+    <div class="card-glow" v-if="hoverEffect" ref="card-glow"></div>
   </div>
 </template>
 
 <script lang="ts" setup>
 import LogoIcon from "./icons/LogoIcon.vue";
-import { onMounted, ref } from "vue";
+import { onMounted, ref, useTemplateRef } from "vue";
 
+const card = useTemplateRef<HTMLDivElement>("card");
+const cardGlow = useTemplateRef<HTMLDivElement>("card-glow");
 const cardTopStyle = ref({});
 const cardSubjectStyle = ref({});
 const {
@@ -30,12 +36,14 @@ const {
   backgroundName = "TheWatcher.webp",
   subjectName = "TheWatcher_subject.webp",
   description = "This is a placeholder description",
+  hoverEffect = true,
 } = defineProps<{
   type: string;
   name: string;
   backgroundName: string;
   subjectName: string;
   description: string;
+  hoverEffect?: boolean;
 }>();
 
 onMounted(async () => {
@@ -52,7 +60,57 @@ onMounted(async () => {
   cardSubjectStyle.value = {
     backgroundImage: `url(${subjectImage})`,
   };
+  setupHoverEffect();
 });
+
+let bounds: DOMRect;
+
+const setupHoverEffect = () => {
+  if (!hoverEffect) return;
+  if (card.value === undefined) return;
+  card.value!.addEventListener("mouseenter", () => {
+    bounds = card.value!.getBoundingClientRect();
+    document.addEventListener("mousemove", rotateToMouse);
+  });
+
+  card.value!.addEventListener("mouseleave", () => {
+    document.removeEventListener("mousemove", rotateToMouse);
+    card.value!.style.transform = "";
+    card.value!.style.background = "";
+  });
+};
+
+const rotateToMouse = (e: MouseEvent) => {
+  const mouseX = e.clientX;
+  const mouseY = e.clientY;
+  const leftX = mouseX - bounds.x;
+  const topY = mouseY - bounds.y;
+  const center = {
+    x: leftX - bounds.width / 2,
+    y: topY - bounds.height / 2,
+  };
+  const distance = Math.sqrt(center.x ** 2 + center.y ** 2);
+
+  card.value!.style.transform = `
+    scale3d(1.07, 1.07, 1.07)
+    rotate3d(
+      ${center.y / 100},
+      ${-center.x / 100},
+      0,
+      ${Math.log(distance) * 2}deg
+    )
+  `;
+
+  cardGlow.value!.style.backgroundImage = `
+    radial-gradient(
+      circle at
+      ${center.x * 2 + bounds.width / 2}px
+      ${center.y * 2 + bounds.height / 2}px,
+      #ffffff55,
+      #0000000f
+    )
+  `;
+};
 </script>
 
 <style lang="scss" scoped>
@@ -76,6 +134,32 @@ onMounted(async () => {
   flex-direction: column;
   justify-content: space-between;
   align-items: center;
+  transition-duration: 300ms;
+  transition-property: transform, box-shadow;
+  transition-timing-function: ease-out;
+  transform: rotate3d(0);
+
+  &-hover {
+    &:hover {
+      transition-duration: 150ms;
+      transform: scale(1.05);
+      box-shadow: 0 5px 20px 5px #00000044;
+    }
+
+    & .card-glow {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      left: 0;
+      top: 0;
+
+      background-image: radial-gradient(
+        circle at 50% -20%,
+        #ffffff22,
+        #0000000f
+      );
+    }
+  }
 
   &-get {
     background-color: var(--color-api-method-get);
