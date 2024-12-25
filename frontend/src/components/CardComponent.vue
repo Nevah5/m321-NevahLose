@@ -1,9 +1,27 @@
 <template>
   <div
-    :class="'card card-' + type + (hoverEffect ? ' card-hover' : '')"
+    :class="'card' + (hoverEffect && !isTurned ? ' card-hover' : '')"
     ref="card"
   >
-    <div class="card__content">
+    <div class="card__back" v-if="isTurned && isTurnable">
+      <div class="inner">
+        <LogoIcon :logoWidth="100" :disableLink="true" />
+      </div>
+    </div>
+    <div
+      class="card__back card-clickable"
+      v-else-if="isTurned"
+      @click="revealCard"
+      ref="card-turn"
+    >
+      <div class="inner">
+        <LogoIcon :logoWidth="100" :disableLink="true" />
+      </div>
+    </div>
+    <div
+      :class="'card__content card-' + type + (isTurned ? ' card-turned' : '')"
+      ref="card-content"
+    >
       <section class="top">
         <div class="title">
           <span class="title-name">{{ name }}</span>
@@ -30,15 +48,21 @@ import { onMounted, ref, useTemplateRef } from "vue";
 
 const card = useTemplateRef<HTMLDivElement>("card");
 const cardGlow = useTemplateRef<HTMLDivElement>("card-glow");
+const cardTurn = useTemplateRef<HTMLDivElement>("card-turn");
+const cardContent = useTemplateRef<HTMLDivElement>("card-content");
 const cardTopStyle = ref({});
 const cardSubjectStyle = ref({});
+const isTurned = ref(false);
+
 const {
   type = "options",
-  name = "placeholder",
-  backgroundName = "TheWatcher.webp",
-  subjectName = "TheWatcher_subject.webp",
-  description = "This is a placeholder description",
+  name = "",
+  backgroundName = "",
+  subjectName = "",
+  description = "",
   hoverEffect = true,
+  isTurnedProp = false,
+  isTurnable = false,
 } = defineProps<{
   type: string;
   name: string;
@@ -46,9 +70,15 @@ const {
   subjectName: string;
   description: string;
   hoverEffect?: boolean;
+  isTurnedProp?: boolean;
+  isTurnable?: boolean;
 }>();
 
 onMounted(async () => {
+  isTurned.value = isTurnedProp;
+
+  // TODO: watch props and initiate background again
+  // TODO: fix hover effect after card turned, don't allow hover when is turned on it's back
   const backgroundImage = (
     await import(/* @vite-ignore */ `../assets/cards/${backgroundName}`)
   ).default;
@@ -69,6 +99,7 @@ let bounds: DOMRect;
 
 const setupHoverEffect = () => {
   if (!hoverEffect) return;
+  if (hoverEffect && !isTurned.value) return;
   if (card.value === undefined) return;
   card.value!.addEventListener("mouseenter", () => {
     bounds = card.value!.getBoundingClientRect();
@@ -114,10 +145,30 @@ const rotateToMouse = (e: MouseEvent) => {
     )
   `;
 };
+
+const revealCard = () => {
+  cardTurn.value!.classList.add("card-open");
+  cardContent.value!.classList.add("card-turned-open");
+
+  setTimeout(() => {
+    isTurned.value = true;
+    setupHoverEffect();
+  }, 300);
+};
 </script>
 
 <style lang="scss" scoped>
 @use "sass:math";
+
+@keyframes card-flip {
+  from {
+    transform: rotateY(0deg);
+  }
+  to {
+    transform: rotateY(90deg);
+  }
+}
+
 .card {
   $card-aspect-ratio-width: 3;
   $card-aspect-ratio-height: 4;
@@ -132,7 +183,7 @@ const rotateToMouse = (e: MouseEvent) => {
   width: $card-width;
   border-radius: 15px;
   overflow: hidden;
-  box-shadow: 0 0 12px 0px rgba(0, 0, 0, 0.2);
+  // box-shadow: 0 0 12px 0px rgba(0, 0, 0, 0.2);
   transition-duration: 300ms;
   transition-property: transform, box-shadow;
   transition-timing-function: ease-out;
@@ -187,42 +238,6 @@ const rotateToMouse = (e: MouseEvent) => {
     }
   }
 
-  &-get {
-    background-color: var(--color-api-method-get);
-
-    div.title span.method {
-      color: var(--color-api-method-get);
-    }
-  }
-  &-post {
-    background-color: var(--color-api-method-post);
-
-    div.title span.method {
-      color: var(--color-api-method-post);
-    }
-  }
-  &-put {
-    background-color: var(--color-api-method-put);
-
-    div.title span.method {
-      color: var(--color-api-method-put);
-    }
-  }
-  &-delete {
-    background-color: var(--color-api-method-delete);
-
-    div.title span.method {
-      color: var(--color-api-method-delete);
-    }
-  }
-  &-options {
-    background-color: var(--color-api-method-options);
-
-    div.title span.method {
-      color: var(--color-api-method-options);
-    }
-  }
-
   .card__content {
     position: absolute;
     top: 0;
@@ -235,6 +250,13 @@ const rotateToMouse = (e: MouseEvent) => {
     justify-content: space-between;
     align-items: center;
 
+    &.card-turned {
+      transform: rotateY(90deg);
+
+      &-open {
+        animation: card-flip 100ms 100ms reverse forwards;
+      }
+    }
     section {
       width: 100%;
       position: relative;
@@ -367,6 +389,99 @@ const rotateToMouse = (e: MouseEvent) => {
           font-size: 10px;
         }
       }
+    }
+    &.card-get {
+      background-color: var(--color-api-method-get);
+
+      div.title span.method {
+        color: var(--color-api-method-get);
+      }
+    }
+    &.card-post {
+      background-color: var(--color-api-method-post);
+
+      div.title span.method {
+        color: var(--color-api-method-post);
+      }
+    }
+    &.card-put {
+      background-color: var(--color-api-method-put);
+
+      div.title span.method {
+        color: var(--color-api-method-put);
+      }
+    }
+    &.card-delete {
+      background-color: var(--color-api-method-delete);
+
+      div.title span.method {
+        color: var(--color-api-method-delete);
+      }
+    }
+    &.card-options {
+      background-color: var(--color-api-method-options);
+
+      div.title span.method {
+        color: var(--color-api-method-options);
+      }
+    }
+  }
+  .card__back {
+    z-index: 30;
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    background-color: var(--color-text);
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    .inner {
+      $corner-cut-radius: 35px;
+      $inner-width: calc($card-width - 24px);
+      $inner-height: calc($card-height - 24px);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: $inner-width;
+      height: $inner-height;
+      background-color: var(--color-background);
+      color: var(--color-text);
+      font-size: 1.5rem;
+      font-weight: bold;
+
+      clip-path: polygon(
+        0
+          math.percentage(
+            calc(1 / $inner-height * ($inner-height - $corner-cut-radius))
+          ),
+        0 math.percentage(calc(1 / $inner-height * $corner-cut-radius)),
+        math.percentage(calc(1 / $inner-width * $corner-cut-radius)) 0,
+        math.percentage(
+            calc(1 / $inner-width * ($inner-width - $corner-cut-radius))
+          )
+          0,
+        100% math.percentage(calc(1 / $inner-height * $corner-cut-radius)),
+        100%
+          math.percentage(
+            calc(1 / $inner-height * ($inner-height - $corner-cut-radius))
+          ),
+        math.percentage(
+            calc(1 / $inner-width * ($inner-width - $corner-cut-radius))
+          )
+          100%,
+        math.percentage(calc(1 / $inner-width * $corner-cut-radius)) 100%
+      );
+    }
+
+    &.card-clickable {
+      cursor: pointer;
+    }
+    &.card-open {
+      animation: card-flip 100ms forwards;
     }
   }
 }
