@@ -24,7 +24,7 @@ import logoDark from "@/assets/logo.svg";
 const {
   logoWidth = 120,
   disableLink = false,
-  logoStyle = "light",
+  logoStyle = "dark",
 } = defineProps<{
   logoWidth?: number;
   disableLink?: boolean;
