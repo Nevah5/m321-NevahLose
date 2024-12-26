@@ -4,11 +4,12 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.Getter;
+import lombok.Setter;
 
 import java.util.Random;
 import java.util.UUID;
 
-@Entity(name = "Game")
+@Entity(name = "game")
 @Table(name = "games")
 public class Game {
     @Id
@@ -22,6 +23,7 @@ public class Game {
     private UUID ownerId;
 
     @Getter
+    @Setter
     private GameStatus status;
 
     @Getter
@@ -31,6 +33,7 @@ public class Game {
     private long createdAt;
 
     @Getter
+    @Setter
     private Long startedAt;
 
     @Getter
@@ -39,10 +42,18 @@ public class Game {
     @Getter
     private UUID winnerId;
 
+    public Builder builder() {
+        return new Builder(this);
+    }
+
     public static class Builder {
         private final Game game;
 
-        public Builder(final UUID ownerId) {
+        public Builder(final Game game) {
+            this.game = game;
+        }
+
+        public Builder() {
             Random random = new Random();
             this.game = new Game();
             this.game.id = UUID.randomUUID();
@@ -50,8 +61,12 @@ public class Game {
             this.game.roomId = String.format("%08d", randomNumber);
 
             this.game.status = GameStatus.WAITING_FOR_PLAYERS;
-            this.game.ownerId = ownerId;
             this.game.createdAt = System.currentTimeMillis();
+        }
+
+        public Builder setOwnerId(final UUID ownerId) {
+            this.game.ownerId = ownerId;
+            return this;
         }
 
         public Builder setStatus(final GameStatus status) {

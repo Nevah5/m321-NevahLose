@@ -8,7 +8,7 @@ import lombok.Getter;
 
 import java.util.UUID;
 
-@Entity(name = "GamePlayer")
+@Entity(name = "game-player")
 @Table(name = "game_players")
 @IdClass(GamePlayerId.class)
 public class GamePlayer {
