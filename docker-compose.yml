@@ -1,5 +1,46 @@
 version: "3"
 services:
+  eureka-server:
+    container_name: eureka-server
+    build: ./backends/eureka-server
+    ports:
+      - "8761:8761"
+  player-service:
+    container_name: player-svc
+    build: ./backends/player-service
+    ports:
+      - "8081:8080"
+    depends_on:
+      - eureka-server
+      - database
+      - kafka
+  card-service:
+    container_name: card-svc
+    build: ./backends/card-service
+    ports:
+      - "8082:8080"
+    depends_on:
+      - eureka-server
+      - database
+      - kafka
+  game-service:
+    container_name: game-svc
+    build: ./backends/game-service
+    ports:
+      - "8083:8080"
+    depends_on:
+      - eureka-server
+      - database
+      - kafka
+  frontend:
+    container_name: frontend
+    build: ./frontend
+    ports:
+      - "8568:80"
+    depends_on:
+      - player-service
+      - card-service
+      - game-service
   database:
     container_name: database
     image: mariadb:11.4
