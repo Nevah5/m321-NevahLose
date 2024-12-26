@@ -9,9 +9,8 @@
 <script lang="ts" setup>
 import { onMounted, ref } from "vue";
 import LoadingOverlay from "@/components/LoadingOverlay.vue";
-import type Player from "@/api/models/user";
 import { playerService } from "@/api";
-import type { ApiError } from "@/api/types";
+import type { ApiError, Player } from "@/api/types";
 import { useRouter } from "vue-router";
 import RoomManageComponent from "@/components/RoomManageComponent.vue";
 

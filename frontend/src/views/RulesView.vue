@@ -42,8 +42,7 @@
   </main>
 </template>
 
-<script setup>
-import CardComponent from "@/components/CardComponent.vue";
+<script lang="ts" setup>
 import CardDisplay from "@/components/CardDisplay.vue";
 </script>
 

@@ -9,7 +9,7 @@
   </header>
 </template>
 
-<script setup>
+<script lang="ts" setup>
 import LogoIcon from "./icons/LogoIcon.vue";
 </script>
 
