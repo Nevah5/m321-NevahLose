@@ -16,6 +16,7 @@ services:
       - DATABASE_URL_STRING=jdbc:mariadb://database:3306/player-svc
       - DATABASE_USER=player-svc
       - DATABASE_PASSWORD=Five0-Deepen7-Trowel4-Uncaring7
+      - JWT_SECRET_KEY=REPLACE_THIS_WITH_A_SECRET_KEY
     depends_on:
       - eureka-server
       - database
