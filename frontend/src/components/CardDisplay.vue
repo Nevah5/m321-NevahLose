@@ -16,7 +16,7 @@
         :description="card.description"
       />
     </div>
-    <h3>GET Cards</h3>
+    <h3>POST Cards</h3>
     <p>
       Cards with the type POST create new game rules. There are twelve POST
       cards in a deck.
