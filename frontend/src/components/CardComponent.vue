@@ -271,6 +271,7 @@ const revealCard = () => {
     justify-content: space-between;
     align-items: center;
     box-shadow: 0 0 12px 0px rgba(0, 0, 0, 0.2);
+    background-color: var(--color-primary);
 
     &.card-turned {
       transform: rotateY(90deg);
@@ -413,36 +414,26 @@ const revealCard = () => {
       }
     }
     &.card-get {
-      background-color: var(--color-api-method-get);
-
       div.title span.method {
         color: var(--color-api-method-get);
       }
     }
     &.card-post {
-      background-color: var(--color-api-method-post);
-
       div.title span.method {
         color: var(--color-api-method-post);
       }
     }
     &.card-put {
-      background-color: var(--color-api-method-put);
-
       div.title span.method {
         color: var(--color-api-method-put);
       }
     }
     &.card-delete {
-      background-color: var(--color-api-method-delete);
-
       div.title span.method {
         color: var(--color-api-method-delete);
       }
     }
     &.card-options {
-      background-color: var(--color-api-method-options);
-
       div.title span.method {
         color: var(--color-api-method-options);
       }
