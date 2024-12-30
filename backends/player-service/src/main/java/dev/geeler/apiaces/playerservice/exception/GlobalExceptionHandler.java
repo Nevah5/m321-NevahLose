@@ -3,9 +3,11 @@ package dev.geeler.apiaces.playerservice.exception;
 import dev.geeler.apiaces.playerservice.model.ErrorResponse;
 import dev.geeler.apiaces.playerservice.model.HttpResponse;
 import dev.geeler.apiaces.playerservice.model.ServerErrorResponse;
+import io.jsonwebtoken.security.SignatureException;
 import org.apache.logging.log4j.Logger;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MissingRequestHeaderException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -24,6 +26,28 @@ public class GlobalExceptionHandler {
                 e.getMessage()
         );
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
+    }
+
+    // 401 - Unauthorized
+    @ExceptionHandler(SignatureException.class)
+    @ResponseBody
+    public ResponseEntity<ErrorResponse> handleUnauthorizedError(SignatureException e) {
+        final ErrorResponse errorResponse = new ErrorResponse(
+                HttpStatus.UNAUTHORIZED,
+                "Invalid JWT token provided."
+        );
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(errorResponse);
+    }
+
+    // 401 - Unauthorized
+    @ExceptionHandler(MissingRequestHeaderException.class)
+    @ResponseBody
+    public ResponseEntity<ErrorResponse> handleUnauthorizedError(MissingRequestHeaderException e) {
+        final ErrorResponse errorResponse = new ErrorResponse(
+                HttpStatus.UNAUTHORIZED,
+                "Please authenticate."
+        );
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(errorResponse);
     }
 
     // 500 - Internal Server Error
