@@ -1,13 +1,10 @@
 package dev.geeler.apiaces.playerservice.exception;
 
 import dev.geeler.apiaces.playerservice.model.ErrorResponse;
-import dev.geeler.apiaces.playerservice.model.HttpResponse;
 import dev.geeler.apiaces.playerservice.model.ServerErrorResponse;
-import io.jsonwebtoken.security.SignatureException;
 import org.apache.logging.log4j.Logger;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.MissingRequestHeaderException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
