@@ -23,7 +23,10 @@ RUN echo "server {" > /etc/nginx/conf.d/default.conf && \
   echo "    root /usr/share/nginx/html;" >> /etc/nginx/conf.d/default.conf && \
   echo "    try_files \$uri /index.html;" >> /etc/nginx/conf.d/default.conf && \
   echo "  }" >> /etc/nginx/conf.d/default.conf && \
-  echo "  include  /etc/nginx/mime.types;" >> /etc/nginx/conf.d/default.conf && \
+  echo "  include /etc/nginx/mime.types;" >> /etc/nginx/conf.d/default.conf && \
+  echo "  types {" >> /etc/nginx/conf.d/default.conf && \
+  echo "    image/webp webp;" >> /etc/nginx/conf.d/default.conf && \
+  echo "  }" >> /etc/nginx/conf.d/default.conf && \
   echo "}" >> /etc/nginx/conf.d/default.conf
 
 EXPOSE 80

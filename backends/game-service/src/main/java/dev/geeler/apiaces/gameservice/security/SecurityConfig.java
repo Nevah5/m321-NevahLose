@@ -1,15 +1,14 @@
-package dev.geeler.apiaces.playerservice.security;
+package dev.geeler.apiaces.gameservice.security;
 
-import dev.geeler.apiaces.playerservice.model.ErrorResponse;
-import dev.geeler.apiaces.playerservice.service.PlayerService;
+import dev.geeler.apiaces.gameservice.model.ErrorResponse;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.ws.rs.HttpMethod;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.authentication.AuthenticationProvider;
-import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -25,13 +24,10 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfig {
 
     private final JwtAuthFilter jwtAuthFilter;
-    private final PlayerService userService;
 
     private static final String[] WHITE_LIST_URL = {
-            "/auth/register",
             "/actuator/health",
-            "/actuator/info",
-            "/usernames/random"
+            "/actuator/info"
     };
 
     @Bean
@@ -46,23 +42,21 @@ public class SecurityConfig {
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
                 .exceptionHandling(handler -> handler
-                    .accessDeniedHandler((request, response, accessDeniedException) -> {
-                        response.setStatus(HttpServletResponse.SC_FORBIDDEN);
-                        response.setContentType("application/json");
-                        response.getWriter().write(new ErrorResponse(HttpStatus.UNAUTHORIZED, "You are not allowed to access this resource.").toJsonString());
-                    })
-                    .authenticationEntryPoint((request, response, authException) -> {
-                        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-                        response.setContentType("application/json");
-                        response.getWriter().write(new ErrorResponse(HttpStatus.UNAUTHORIZED, "Invalid authentication").toJsonString());
-                    }))
+                        .accessDeniedHandler((request, response, accessDeniedException) -> {
+                            response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+                            response.setContentType("application/json");
+                            response.getWriter().write(new ErrorResponse(HttpStatus.UNAUTHORIZED, "You are not allowed to access this resource.").toJsonString());
+                        })
+                        .authenticationEntryPoint((request, response, authException) -> {
+                            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                            response.setContentType("application/json");
+                            response.getWriter().write(new ErrorResponse(HttpStatus.UNAUTHORIZED, "Invalid authentication").toJsonString());
+                        }))
                 .build();
     }
 
     @Bean
-    AuthenticationProvider authenticationProvider() {
-        DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
-        provider.setUserDetailsService(userService);
-        return provider;
+    public AuthenticationManager authenticationProvider(AuthenticationConfiguration authenticationConfiguration) throws Exception {
+        return authenticationConfiguration.getAuthenticationManager();
     }
 }

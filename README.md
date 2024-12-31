@@ -67,3 +67,5 @@ If there is only one player left, that player wins.
 ## Architecture
 
 This project is divided into multiple parts. It contains the backend and different microservices to handle the requests for the backend.
+
+![Structure Diagram](./resources/StructureDiagram.png)

@@ -99,9 +99,11 @@ onMounted(async () => {
 
 const setupBackgroundImage = async () => {
   if (backgroundName === "") return;
-  const backgroundImage = (
-    await import(/* @vite-ignore */ `../assets/cards/${backgroundName}`)
-  ).default;
+  const backgroundImage = new URL(
+    `../assets/cards/${backgroundName}`,
+    import.meta.url
+  ).href;
+
   cardTopStyle.value = {
     backgroundImage: `url(${backgroundImage})`,
   };
@@ -109,9 +111,10 @@ const setupBackgroundImage = async () => {
 
 const setupSubjectImage = async () => {
   if (subjectName === "") return;
-  const subjectImage = (
-    await import(/* @vite-ignore */ `../assets/cards/${subjectName}`)
-  ).default;
+  const subjectImage = new URL(
+    `../assets/cards/${subjectName}`,
+    import.meta.url
+  ).href;
   cardSubjectStyle.value = {
     backgroundImage: `url(${subjectImage})`,
   };

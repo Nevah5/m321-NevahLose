@@ -17,6 +17,7 @@ services:
       - DATABASE_USER=player-svc
       - DATABASE_PASSWORD=Five0-Deepen7-Trowel4-Uncaring7
       - JWT_SECRET_KEY=REPLACE_THIS_WITH_A_SECRET_KEY
+      #- API_BASE_PATH=/api/player
     depends_on:
       - eureka-server
       - database
@@ -32,6 +33,7 @@ services:
       - DATABASE_URL_STRING=jdbc:mariadb://database:3306/card-svc
       - DATABASE_USER=card-svc
       - DATABASE_PASSWORD=Module0-Cauterize9-Gothic8-Karaoke7
+      #- API_BASE_PATH=/api/card
     depends_on:
       - eureka-server
       - database
@@ -47,6 +49,7 @@ services:
       - DATABASE_URL_STRING=jdbc:mariadb://database:3306/game-svc
       - DATABASE_USER=game-svc
       - DATABASE_PASSWORD=Rockslide0-Stress0-Agnostic7-Although0
+      #- API_BASE_PATH=/api/game
     depends_on:
       - eureka-server
       - database

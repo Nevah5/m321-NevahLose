@@ -1,27 +1,51 @@
 package dev.geeler.apiaces.playerservice.service;
 
 import dev.geeler.apiaces.playerservice.model.Player;
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import java.security.Key;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 @Service
 public class JwtServiceImpl implements JwtService {
-
-    @Value("${application.security.jwt.secret-key}")
-    private String secretKey;
+    private final Key key;
 
     @Value("${application.security.jwt.expiration}")
     private long expiration;
+
+    public JwtServiceImpl(@Value("${application.security.jwt.secret-key}") String secret) {
+        this.key = Keys.hmacShaKeyFor(secret.getBytes());
+    }
+
+    @Override
+    public Claims extractClaims(String token) {
+        return Jwts.parserBuilder()
+                .setSigningKey(key)
+                .build()
+                .parseClaimsJws(token)
+                .getBody();
+    }
+
+    @Override
+    public Boolean validateToken(String token) {
+        try {
+            extractClaims(token);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
 
     @Override
     public String generateToken(final Player player) {
@@ -32,33 +56,13 @@ public class JwtServiceImpl implements JwtService {
     }
 
     @Override
-    public Boolean validateToken(String token, UserDetails userDetails) {
-        Date expirationDate = extractExpiration(token);
-        if (expirationDate.before(new Date())) {
-            return false;
-        }
-        String username = extractUsername(token);
-        return userDetails.getUsername().equals(username) && !expirationDate.before(new Date());
+    public UUID extractUserId(String token) {
+        return UUID.fromString(extractClaims(token).getId());
     }
 
     @Override
     public String extractUsername(String token) {
-        return Jwts.parserBuilder()
-                .setSigningKey(getSignKey())
-                .build()
-                .parseClaimsJws(token)
-                .getBody()
-                .getSubject();
-    }
-
-    @Override
-    public Date extractExpiration(String token) {
-        return Jwts.parserBuilder()
-                .setSigningKey(getSignKey())
-                .build()
-                .parseClaimsJws(token)
-                .getBody()
-                .getExpiration();
+        return extractClaims(token).getSubject();
     }
 
     private String createToken(Map<String, Object> claims, String username) {
@@ -67,12 +71,7 @@ public class JwtServiceImpl implements JwtService {
                 .setSubject(username)
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + expiration))
-                .signWith(getSignKey(), SignatureAlgorithm.HS256)
+                .signWith(key, SignatureAlgorithm.HS256)
                 .compact();
-    }
-
-    private Key getSignKey() {
-        byte[] keyBytes = Decoders.BASE64.decode(secretKey);
-        return Keys.hmacShaKeyFor(keyBytes);
     }
 }
