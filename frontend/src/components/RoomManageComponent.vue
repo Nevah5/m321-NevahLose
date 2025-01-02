@@ -12,14 +12,19 @@
       </div>
     </form>
     <span>OR</span>
-    <form>
-      <button type="submit">Create Game</button>
+    <form @submit.prevent="createGame">
+      <button type="submit" :disabled="isLoadingNewGame">
+        <slot v-if="!isLoadingNewGame">Create Game</slot>
+        <slot v-if="isLoadingNewGame"><LoadingIcon /></slot>
+      </button>
     </form>
   </div>
 </template>
 
 <script setup lang="ts">
+import LoadingIcon from "@/components/icons/LoadingIcon.vue";
 import { onMounted, ref, useTemplateRef } from "vue";
+import { useRouter } from "vue-router";
 
 const inputWrapper = useTemplateRef<HTMLInputElement>("inputs");
 const inputs = ref<NodeListOf<HTMLInputElement>>();
@@ -29,6 +34,8 @@ const num3 = ref("");
 const num4 = ref("");
 const num5 = ref("");
 const num6 = ref("");
+const isLoadingNewGame = ref(false);
+const router = useRouter();
 
 onMounted(() => {
   inputs.value = inputWrapper.value!.querySelectorAll(
@@ -70,6 +77,12 @@ const handlePaste = (e: ClipboardEvent) => {
     inputs.value![pasteArray.length - 1].focus();
     // TODO: submit
   }
+};
+
+const createGame = () => {
+  isLoadingNewGame.value = true;
+
+  // TODO: send the create game request
 };
 </script>
 
@@ -118,6 +131,7 @@ const handlePaste = (e: ClipboardEvent) => {
   }
   button[type="submit"] {
     width: 100%;
+    height: 36px;
     background-color: var(--color-primary);
     color: var(--color-background);
     outline: none;
@@ -127,6 +141,16 @@ const handlePaste = (e: ClipboardEvent) => {
     font-size: 16px;
     padding: 0.5rem 1rem;
     border-radius: 0.5rem;
+    position: relative;
+
+    img {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      height: 90%;
+      aspect-ratio: 1 / 1;
+      transform: translate(-50%, -50%);
+    }
   }
 }
 </style>
