@@ -5,7 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 @AllArgsConstructor
-public class CreateGameDto {
+public class PlayerIdDto {
     @Getter
     @Setter
     private String playerId;
