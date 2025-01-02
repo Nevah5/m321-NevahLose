@@ -1,18 +1,22 @@
 <template>
   <main>
+    <LoadingOverlay :enabled="isLoading" />
     <h1>Game id {{ gameId }}</h1>
   </main>
 </template>
 
 <script setup lang="ts">
+import LoadingOverlay from "@/components/LoadingOverlay.vue";
 import { onMounted, ref } from "vue";
 import { useRoute } from "vue-router";
 
 const route = useRoute();
 const gameId = ref<string>("");
+const isLoading = ref(true);
 
 onMounted(() => {
   gameId.value = route.params.id;
+  isLoading.value = true;
 });
 </script>
 

@@ -1,5 +1,5 @@
 import type { AxiosInstance, AxiosResponse } from "axios";
-import type { Player, ApiError, TokenResponse, Card } from "./types";
+import type { Player, ApiError, TokenResponse, Card, Game } from "./types";
 
 import axios from "axios";
 import { handleApiError } from "./errorHandler";
@@ -82,8 +82,12 @@ class GameService extends ApiService {
     super(`${gameServiceUrl}`);
   }
 
-  async createGame(token: string): Promise<Player> {
-    return this.post<Player>("/games/create", {}, token);
+  async getGameFromRoomId(roomId: string, token: string): Promise<Game> {
+    return this.get<Game>(`/games/rooms/${roomId}`, token);
+  }
+
+  async createGame(token: string): Promise<Game> {
+    return this.post<Game>("/games/create", {}, token);
   }
 }
 

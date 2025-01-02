@@ -59,7 +59,7 @@ import LoadingIcon from "@/components/icons/LoadingIcon.vue";
 import { onMounted, ref, useTemplateRef } from "vue";
 import { useRouter } from "vue-router";
 import { gameService } from "@/api";
-import { Game } from "@/api/types.ts";
+import { Game, type ApiError } from "@/api/types.ts";
 
 const inputWrapper = useTemplateRef<HTMLInputElement>("inputs");
 const inputs = ref<NodeListOf<HTMLInputElement>>();
@@ -118,7 +118,16 @@ const handlePaste = (e: ClipboardEvent) => {
 
 const joinGame = (roomId: string) => {
   isLoadingGame.value = true;
-  // TODO: submit
+  const token = localStorage.getItem("token");
+  gameService
+    .getGameFromRoomId(roomId, token!)
+    .then((game) => {
+      router.push("/game/" + game.id);
+    })
+    .catch((e: ApiError | any) => {
+      isLoadingGame.value = false;
+      alert(e.message);
+    });
 };
 
 const createGame = async () => {
@@ -126,7 +135,7 @@ const createGame = async () => {
 
   try {
     const token = localStorage.getItem("token");
-    const game: Game = await gameService.createGame(token);
+    const game: Game = await gameService.createGame(token!);
     setTimeout(() => {
       router.push("/game/" + game.id);
     }, Math.floor(Math.random() * 1000));
