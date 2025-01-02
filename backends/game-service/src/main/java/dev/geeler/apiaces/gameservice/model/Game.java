@@ -60,7 +60,7 @@ public class Game {
             int randomNumber = random.nextInt(100000000);
             this.game.roomId = String.format("%08d", randomNumber);
 
-            this.game.status = GameStatus.WAITING_FOR_PLAYERS;
+            this.game.status = GameStatus.INITIALIZING;
             this.game.createdAt = System.currentTimeMillis();
         }
 

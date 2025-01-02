@@ -37,14 +37,13 @@ public class GameServiceImpl implements GameService {
 
     @Override
     public Game getGame(UUID gameId) {
-        return gameRepository.findById(gameId).orElse(null);
+        return gameRepository.findById(gameId).orElseThrow(() -> new NotFoundException("The game was not found"));
     }
 
     @Override
-    public Game joinGame(Long roomId, UUID playerId) {
-        final Game game = gameRepository.findByRoomId(roomId.toString());
-        if (game == null)
-            throw new NotFoundException("The game was not found");
+    public Game joinGame(UUID gameId, UUID playerId) {
+        final Game game = gameRepository.findById(gameId)
+                .orElseThrow(() -> new NotFoundException("The game was not found"));
         if (game.getStatus() != GameStatus.WAITING_FOR_PLAYERS)
             throw new IllegalStateException("Game is already running or complete.");
         if (game.getOwnerId().equals(playerId))

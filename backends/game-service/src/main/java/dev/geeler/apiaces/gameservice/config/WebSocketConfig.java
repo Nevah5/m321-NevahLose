@@ -1,4 +1,4 @@
-package dev.geeler.apiaces.gameservice.controller;
+package dev.geeler.apiaces.gameservice.config;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;
@@ -11,7 +11,7 @@ import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerCo
 public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
-        registry.addEndpoint("/ws")
+        registry.addEndpoint("/ws") // TODO: wss (web socket secure)
                 .setAllowedOrigins("*")
                 .withSockJS();
     }
@@ -19,7 +19,6 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     @Override
     public void configureMessageBroker(MessageBrokerRegistry registry)
     {
-        registry.enableSimpleBroker("/topic");
         registry.setApplicationDestinationPrefixes("/app");
     }
 }
