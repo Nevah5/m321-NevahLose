@@ -36,7 +36,7 @@ class ApiService {
     }
   }
 
-  public async post<T>(url: string, data: any, token?: string): Promise<T> {
+  public async post<T>(url: string, data?: any, token?: string): Promise<T> {
     try {
       const config = token
         ? { headers: { Authorization: `Bearer ${token}` } }
@@ -77,10 +77,20 @@ class PlayerService extends ApiService {
   }
 }
 
+class GameService extends ApiService {
+  constructor(gameServiceUrl: string) {
+    super(`${gameServiceUrl}`);
+  }
+
+  async createGame(token: string): Promise<Player> {
+    return this.post<Player>("/games/create", {}, token);
+  }
+}
+
 const playerService = new PlayerService(
   import.meta.env.VITE_PLAYER_SERVICE_URL
 );
-
 const cardService = new CardService(import.meta.env.VITE_CARD_SERVICE_URL);
+const gameService = new GameService(import.meta.env.VITE_GAME_SERVICE_URL);
 
-export { playerService, cardService };
+export { playerService, cardService, gameService };

@@ -3,12 +3,45 @@
     <form>
       <h2>Join Game</h2>
       <div class="room-id-input" ref="inputs">
-        <input type="text" maxlength="1" v-model="num1" />
-        <input type="text" maxlength="1" v-model="num2" />
-        <input class="space" type="text" maxlength="1" v-model="num3" />
-        <input type="text" maxlength="1" v-model="num4" />
-        <input type="text" maxlength="1" v-model="num5" />
-        <input type="text" maxlength="1" v-model="num6" />
+        <input
+          type="text"
+          maxlength="1"
+          v-model="num1"
+          :disabled="isLoadingGame"
+        />
+        <input
+          type="text"
+          maxlength="1"
+          v-model="num2"
+          :disabled="isLoadingGame"
+        />
+        <input
+          class="space"
+          type="text"
+          maxlength="1"
+          v-model="num3"
+          :disabled="isLoadingGame"
+        />
+        <input
+          type="text"
+          maxlength="1"
+          v-model="num4"
+          :disabled="isLoadingGame"
+        />
+        <input
+          type="text"
+          maxlength="1"
+          v-model="num5"
+          :disabled="isLoadingGame"
+        />
+        <input
+          type="text"
+          maxlength="1"
+          v-model="num6"
+          :disabled="isLoadingGame"
+        />
+        <div id="loading-background" v-if="isLoadingGame"></div>
+        <LoadingIcon v-if="isLoadingGame" :dark="true" />
       </div>
     </form>
     <span>OR</span>
@@ -25,6 +58,8 @@
 import LoadingIcon from "@/components/icons/LoadingIcon.vue";
 import { onMounted, ref, useTemplateRef } from "vue";
 import { useRouter } from "vue-router";
+import { gameService } from "@/api";
+import { Game } from "@/api/types.ts";
 
 const inputWrapper = useTemplateRef<HTMLInputElement>("inputs");
 const inputs = ref<NodeListOf<HTMLInputElement>>();
@@ -35,6 +70,7 @@ const num4 = ref("");
 const num5 = ref("");
 const num6 = ref("");
 const isLoadingNewGame = ref(false);
+const isLoadingGame = ref(false);
 const router = useRouter();
 
 onMounted(() => {
@@ -58,8 +94,9 @@ const handleInput = (e: KeyboardEvent) => {
   } else if (/\d/.test(e.key)) {
     const next: HTMLInputElement | null =
       target.nextElementSibling as HTMLInputElement;
-    if (next == null) {
-      //TODO: submit
+    const code = `${num1.value}${num2.value}${num3.value}${num4.value}${num5.value}${num6.value}`;
+    if (next == null && code.length === 6) {
+      joinGame(code);
       return;
     }
     next.focus();
@@ -75,14 +112,29 @@ const handlePaste = (e: ClipboardEvent) => {
       input.value = pasteArray[index];
     });
     inputs.value![pasteArray.length - 1].focus();
-    // TODO: submit
+    joinGame(paste);
   }
 };
 
-const createGame = () => {
+const joinGame = (roomId: string) => {
+  isLoadingGame.value = true;
+  // TODO: submit
+};
+
+const createGame = async () => {
   isLoadingNewGame.value = true;
 
-  // TODO: send the create game request
+  try {
+    const token = localStorage.getItem("token");
+    const game: Game = await gameService.createGame(token);
+    setTimeout(() => {
+      router.push("/game/" + game.id);
+    }, Math.floor(Math.random() * 1000));
+  } catch (e: ApiError | any) {
+    // TODO: emit toast error
+    alert(e.message);
+    isLoadingNewGame.value = false;
+  }
 };
 </script>
 
@@ -100,6 +152,8 @@ const createGame = () => {
   }
 
   .room-id-input {
+    position: relative;
+
     input {
       height: 50px;
       width: 50px;
@@ -124,6 +178,24 @@ const createGame = () => {
       &.space {
         margin-right: 1rem !important;
       }
+    }
+    #loading-background {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(255, 255, 255, 0.5);
+      z-index: 1;
+    }
+    img {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      height: 90%;
+      aspect-ratio: 1 / 1;
+      transform: translate(-50%, -50%);
+      z-index: 2;
     }
   }
   span {

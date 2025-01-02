@@ -29,6 +29,7 @@ public class JwtServiceImpl implements JwtService {
                 .parseClaimsJws(token)
                 .getBody();
     }
+
     @Override
     public Boolean validateToken(String token) {
         try {
@@ -41,10 +42,19 @@ public class JwtServiceImpl implements JwtService {
     }
 
     @Override
-    public UUID extractUserId(String token) {
-        return UUID.fromString(extractClaims(token).getId());
+    public String extractTokenFromHeader(String header) {
+        return header.substring(7);
     }
 
+    @Override
+    public UUID extractUserId(String token) {
+        return UUID.fromString((String) extractClaims(token).get("id"));
+    }
+
+    @Override
+    public UUID extractUserIdFromHeader(String header) {
+        return extractUserId(extractTokenFromHeader(header));
+    }
 
     @Override
     public String extractUsername(String token) {
