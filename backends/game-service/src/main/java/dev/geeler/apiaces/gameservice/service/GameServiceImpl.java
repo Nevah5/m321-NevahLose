@@ -8,6 +8,7 @@ import dev.geeler.apiaces.gameservice.repository.GameRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -60,6 +61,25 @@ public class GameServiceImpl implements GameService {
     }
 
     @Override
+    public void leaveGame(UUID gameId, UUID playerId) {
+        GamePlayer gamePlayer = gamePlayerRepository.findByPlayerIdAndGameId(playerId, gameId);
+        if (gamePlayer == null) throw new IllegalStateException("Player not found");
+        gamePlayer = gamePlayer.toBuilder()
+                .leave()
+                .build();
+        gamePlayerRepository.save(gamePlayer);
+
+        Game game = gameRepository.findById(gameId).orElseThrow(() -> new IllegalStateException("Game not found"));
+        if (game.getOwnerId().equals(playerId)) {
+            game = game.builder()
+                    .setStatus(GameStatus.OWNER_LEFT)
+                    .build();
+            gameRepository.save(game);
+            // TODO: broadcast deletion
+        }
+    }
+
+    @Override
     public void startGame(UUID gameId, UUID playerId) {
         final Game game = gameRepository.findById(gameId).orElse(null);
         if (game == null) {
@@ -73,5 +93,10 @@ public class GameServiceImpl implements GameService {
                 .setStartedAt()
                 .build();
         gameRepository.save(game);
+    }
+
+    @Override
+    public List<GamePlayer> getPlayers(UUID gameId) {
+        return gamePlayerRepository.findGamePlayersByGameId(gameId);
     }
 }
