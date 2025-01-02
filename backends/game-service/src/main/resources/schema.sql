@@ -20,6 +20,8 @@ DROP TABLE IF EXISTS `game_players`;
 CREATE TABLE `game_players` (
   `gameId` varchar(36) NOT NULL,
   `playerId` varchar(36) NOT NULL,
+  `joinedAt` long NOT NULL,
+  `leftAt` long,
   PRIMARY KEY (`gameId`, `playerId`)
 );
 
