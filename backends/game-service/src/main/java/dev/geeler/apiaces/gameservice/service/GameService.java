@@ -8,6 +8,7 @@ import java.util.UUID;
 
 public interface GameService {
     Game createGame(final UUID playerId);
+    Game getGame(final Long roomId);
     Game getGame(final UUID gameId);
     Game joinGame(final UUID gameId, final UUID playerId);
     void leaveGame(final UUID gameId, final UUID playerId);

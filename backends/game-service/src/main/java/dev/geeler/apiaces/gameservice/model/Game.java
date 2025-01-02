@@ -57,8 +57,8 @@ public class Game {
             Random random = new Random();
             this.game = new Game();
             this.game.id = UUID.randomUUID();
-            int randomNumber = random.nextInt(100000000);
-            this.game.roomId = String.format("%08d", randomNumber);
+            int randomNumber = random.nextInt(1000000);
+            this.game.roomId = String.format("%06d", randomNumber);
 
             this.game.status = GameStatus.INITIALIZING;
             this.game.createdAt = System.currentTimeMillis();

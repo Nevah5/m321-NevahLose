@@ -1,24 +1,29 @@
 package dev.geeler.apiaces.gameservice.service;
 
 import dev.geeler.apiaces.gameservice.exception.MaxGameSizeException;
+import dev.geeler.apiaces.gameservice.exception.NotFoundException;
 import dev.geeler.apiaces.gameservice.model.Game;
 import dev.geeler.apiaces.gameservice.model.GamePlayer;
 import dev.geeler.apiaces.gameservice.model.GameStatus;
 import dev.geeler.apiaces.gameservice.repository.GamePlayerRepository;
 import dev.geeler.apiaces.gameservice.repository.GameRepository;
-import jakarta.ws.rs.NotFoundException;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.UUID;
 
 @Service
+@RequiredArgsConstructor
 public class GameServiceImpl implements GameService {
-    @Autowired
-    private GameRepository gameRepository;
-    @Autowired
-    private GamePlayerRepository gamePlayerRepository;
+    private final GameRepository gameRepository;
+    private final GamePlayerRepository gamePlayerRepository;
+
+    @Override
+    public Game getGame(Long roomId) {
+        return gameRepository.findByRoomId(roomId.toString())
+                .orElseThrow(() -> new NotFoundException("No game was found"));
+    }
 
     @Override
     public Game createGame(UUID playerId) {

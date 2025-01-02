@@ -4,7 +4,7 @@ DROP TABLE IF EXISTS `games`;
 
 CREATE TABLE `games` (
   `id` varchar(36) NOT NULL,
-  `roomId` varchar(8) NOT NULL,
+  `roomId` varchar(6) NOT NULL,
   `ownerId` varchar(36) NOT NULL,
   `status` int NOT NULL,
   `maxPlayers` int NOT NULL,

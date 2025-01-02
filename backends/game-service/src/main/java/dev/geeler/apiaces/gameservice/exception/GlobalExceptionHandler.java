@@ -2,16 +2,14 @@ package dev.geeler.apiaces.gameservice.exception;
 
 import dev.geeler.apiaces.gameservice.model.ErrorResponse;
 import dev.geeler.apiaces.gameservice.model.ServerErrorResponse;
-import io.jsonwebtoken.security.SignatureException;
-import jakarta.ws.rs.NotFoundException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.MissingRequestHeaderException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
+import dev.geeler.apiaces.gameservice.exception.NotFoundException;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
@@ -21,6 +19,17 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(IllegalArgumentException.class)
     @ResponseBody
     public ResponseEntity<ErrorResponse> handleClientError(IllegalArgumentException e) {
+        final ErrorResponse errorResponse = new ErrorResponse(
+                HttpStatus.BAD_REQUEST,
+                e.getMessage()
+        );
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
+    }
+
+    // 400 - Bad Request
+    @ExceptionHandler(IllegalStateException.class)
+    @ResponseBody
+    public ResponseEntity<ErrorResponse> handleClientError(IllegalStateException e) {
         final ErrorResponse errorResponse = new ErrorResponse(
                 HttpStatus.BAD_REQUEST,
                 e.getMessage()
