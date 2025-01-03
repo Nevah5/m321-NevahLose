@@ -15,7 +15,7 @@ const gameId = ref<string>("");
 const isLoading = ref(true);
 
 onMounted(() => {
-  gameId.value = route.params.id;
+  gameId.value = route.params.id as string;
   isLoading.value = true;
 });
 </script>

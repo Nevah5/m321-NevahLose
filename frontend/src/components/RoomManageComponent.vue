@@ -59,7 +59,7 @@ import LoadingIcon from "@/components/icons/LoadingIcon.vue";
 import { onMounted, ref, useTemplateRef } from "vue";
 import { useRouter } from "vue-router";
 import { gameService } from "@/api";
-import { Game, type ApiError } from "@/api/types.ts";
+import { type Game, type ApiError } from "@/api/types.ts";
 
 const inputWrapper = useTemplateRef<HTMLInputElement>("inputs");
 const inputs = ref<NodeListOf<HTMLInputElement>>();
