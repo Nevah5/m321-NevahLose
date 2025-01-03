@@ -7,9 +7,11 @@ import dev.geeler.apiaces.gameservice.service.JwtService;
 import dev.geeler.apiaces.gameservice.service.KafkaProducerService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
+import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
 import java.util.UUID;
 
 @RestController
@@ -37,8 +39,8 @@ public class GameController {
     }
 
     @MessageMapping("/games/{gameId}/join")
-    public Game joinGame(@DestinationVariable Long gameId, @RequestHeader("Authorization") String authorizationHeader) {
-        UUID playerId = jwtService.extractUserIdFromHeader(authorizationHeader);
+    public Game joinGame(@DestinationVariable Long gameId, @Header("simpSessionAttributes") Map<String, Object> sessionAttributes) {
+        UUID playerId = (UUID) sessionAttributes.get("id");
         final Game game = gameService.joinGame(UUID.fromString(gameId.toString()), playerId);
         kafkaProducerService.sendMessage(game.getId(), playerId + " joined the game. (" + game.getId()+ ")");
         return game;

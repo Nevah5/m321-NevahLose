@@ -12,6 +12,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
         registry.addEndpoint("/ws") // TODO: wss (web socket secure)
+                .addInterceptors(new JwtHandshakeInterceptor())
                 .setAllowedOrigins("*")
                 .withSockJS();
     }

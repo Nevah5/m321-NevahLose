@@ -27,7 +27,8 @@ public class SecurityConfig {
 
     private static final String[] WHITE_LIST_URL = {
             "/actuator/health",
-            "/actuator/info"
+            "/actuator/info",
+            "/ws"
     };
 
     @Bean
