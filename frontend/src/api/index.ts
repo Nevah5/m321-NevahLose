@@ -1,11 +1,13 @@
 import type { AxiosInstance, AxiosResponse } from "axios";
 import type { Player, ApiError, TokenResponse, Card, Game } from "./types";
+import SockJS from "sockjs-client";
+import { Client } from "@stomp/stompjs";
 
 import axios from "axios";
 import { handleApiError } from "./errorHandler";
 
 class ApiService {
-  private readonly axiosInstance: AxiosInstance;
+  public readonly axiosInstance: AxiosInstance;
 
   constructor(baseURL: string) {
     this.axiosInstance = axios.create({
@@ -88,6 +90,26 @@ class GameService extends ApiService {
 
   async createGame(token: string): Promise<Game> {
     return this.post<Game>("/games/create", {}, token);
+  }
+
+  async connectWebsocket(token: string): Promise<Client> {
+    return new Promise<Client>((resolve, reject) => {
+      // const websocketUrl = this.axiosInstance.defaults.baseURL!;
+      const sockJS = new SockJS("http://localhost:8082/ws");
+      const stompClient = new Client({
+        webSocketFactory: () => sockJS,
+        connectHeaders: {
+          Authorization: `Bearer ${token}`,
+        },
+        onStompError: (frame) => {
+          throw new Error(frame.body);
+        },
+        debug: (str: string) => console.log(str),
+        onConnect: () => resolve(stompClient),
+      });
+
+      stompClient.activate();
+    });
   }
 }
 
