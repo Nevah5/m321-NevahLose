@@ -6,6 +6,7 @@
 </template>
 
 <script setup lang="ts">
+import { gameService } from "@/api";
 import LoadingOverlay from "@/components/LoadingOverlay.vue";
 import { onMounted, ref } from "vue";
 import { useRoute } from "vue-router";
@@ -17,6 +18,15 @@ const isLoading = ref(true);
 onMounted(() => {
   gameId.value = route.params.id as string;
   isLoading.value = true;
+  const token = localStorage.getItem("token");
+  gameService
+    .connectWebsocket(token!)
+    .then(() => {
+      isLoading.value = false;
+    })
+    .catch((error) => {
+      window.alert(error);
+    });
 });
 </script>
 
