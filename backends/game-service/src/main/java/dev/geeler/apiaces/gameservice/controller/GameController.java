@@ -1,17 +1,20 @@
 package dev.geeler.apiaces.gameservice.controller;
 
-import dev.geeler.apiaces.gameservice.model.Game;
-import dev.geeler.apiaces.gameservice.model.GameStatus;
+import dev.geeler.apiaces.gameservice.model.game.Game;
+import dev.geeler.apiaces.gameservice.model.game.GameStatus;
+import dev.geeler.apiaces.gameservice.model.game.dto.GameIdDto;
 import dev.geeler.apiaces.gameservice.service.GameService;
 import dev.geeler.apiaces.gameservice.service.JwtService;
 import dev.geeler.apiaces.gameservice.service.KafkaProducerService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.messaging.handler.annotation.DestinationVariable;
-import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.messaging.handler.annotation.MessageMapping;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.messaging.handler.annotation.Payload;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RestController;
 
-import java.util.Map;
 import java.util.UUID;
 
 @RestController
@@ -38,11 +41,18 @@ public class GameController {
         return gameService.createGame(playerId);
     }
 
-    @MessageMapping("/games/{gameId}/join")
-    public Game joinGame(@DestinationVariable Long gameId, @Header("simpSessionAttributes") Map<String, Object> sessionAttributes) {
-        UUID playerId = (UUID) sessionAttributes.get("id");
-        final Game game = gameService.joinGame(UUID.fromString(gameId.toString()), playerId);
-        kafkaProducerService.sendMessage(game.getId(), playerId + " joined the game. (" + game.getId()+ ")");
+    @MessageMapping("/games.joinGame")
+    public Game joinGame(@Payload GameIdDto joinGameDto) {
+        UUID playerId = jwtService.getUserIdFromSecurityContext();
+        final Game game = gameService.joinGame(joinGameDto.getGameId(), playerId);
+        kafkaProducerService.sendMessage(game.getId(), playerId + " joined the game. (" + game.getId() + ")");
         return game;
+    }
+
+    @MessageMapping("/games.leaveGame")
+    public void leaveGame(@Payload GameIdDto leaveGameDto) {
+        UUID playerId = jwtService.getUserIdFromSecurityContext();
+        gameService.leaveGame(leaveGameDto.getGameId(), playerId);
+        kafkaProducerService.sendMessage(leaveGameDto.getGameId(), playerId + " left the game. (" + leaveGameDto.getGameId() + ")");
     }
 }

@@ -16,4 +16,6 @@ public interface JwtService {
     String extractTokenFromHeader(String header);
 
     UUID extractUserIdFromHeader(String header);
+
+    UUID getUserIdFromSecurityContext();
 }

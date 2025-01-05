@@ -8,12 +8,12 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 import java.util.Collections;
+import java.util.UUID;
 
 @Component
 @RequiredArgsConstructor
@@ -29,9 +29,13 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             String token = authHeader.substring(7);
             if (jwtService.validateToken(token)) {
                 String userName = jwtService.extractUsername(token);
-                if (userName != null) {
+                UUID userId = jwtService.extractUserId(token);
+
+                if (userName != null && userId != null) {
+                    var customPrincipal = new CustomPrincipal(userId, userName);
+
                     var authToken = new UsernamePasswordAuthenticationToken(
-                            new User(userName, "", Collections.emptyList()),
+                            customPrincipal,
                             null,
                             Collections.emptyList()
                     );
@@ -40,5 +44,8 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             }
         }
         filterChain.doFilter(request, response);
+    }
+
+    public record CustomPrincipal(UUID id, String username) {
     }
 }
