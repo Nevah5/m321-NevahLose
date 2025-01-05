@@ -80,6 +80,8 @@ class PlayerService extends ApiService {
 }
 
 class GameService extends ApiService {
+  private stompClient: Client | null = null;
+
   constructor(gameServiceUrl: string) {
     super(`${gameServiceUrl}`);
   }
@@ -92,11 +94,11 @@ class GameService extends ApiService {
     return this.post<Game>("/games/create", {}, token);
   }
 
-  async connectWebsocket(token: string): Promise<Client> {
+  async joinGame(gameId: string, token: string): Promise<Client> {
     return new Promise<Client>((resolve, reject) => {
       // const websocketUrl = this.axiosInstance.defaults.baseURL!;
-      const sockJS = new SockJS(`http://localhost:8082/socket?token=${token}`);
-      const stompClient = new Client({
+      const sockJS = new SockJS(`http://localhost:8082/stomp?token=${token}`);
+      this.stompClient = new Client({
         webSocketFactory: () => sockJS,
         connectHeaders: {
           Authorization: `Bearer ${token}`,
@@ -112,11 +114,21 @@ class GameService extends ApiService {
           reject(new Error("WebSocket error"));
         },
         onWebSocketClose: (event) => console.log("WebSocket closed", event),
-        onConnect: () => resolve(stompClient),
+        onConnect: () => {
+          console.log("Websocket Connected");
+          resolve(this.stompClient!);
+        },
       });
 
-      stompClient.activate();
+      this.stompClient.activate();
     });
+  }
+
+  async leaveGame() {
+    if (this.stompClient) {
+      this.stompClient.deactivate();
+      this.stompClient = null;
+    }
   }
 }
 

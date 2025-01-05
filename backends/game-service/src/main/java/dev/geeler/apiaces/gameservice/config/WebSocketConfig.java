@@ -1,10 +1,12 @@
 package dev.geeler.apiaces.gameservice.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.converter.DefaultContentTypeResolver;
 import org.springframework.messaging.converter.MappingJackson2MessageConverter;
 import org.springframework.messaging.converter.MessageConverter;
+import org.springframework.messaging.simp.config.ChannelRegistration;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;
 import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBroker;
 import org.springframework.web.socket.config.annotation.StompEndpointRegistry;
@@ -16,10 +18,13 @@ import static org.springframework.util.MimeTypeUtils.APPLICATION_JSON;
 
 @Configuration
 @EnableWebSocketMessageBroker
+@AllArgsConstructor
 public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
+    private final AuthChannelInterceptorAdapter authChannelInterceptorAdapter;
+
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
-        registry.addEndpoint("/socket")
+        registry.addEndpoint("/stomp")
                 .setAllowedOriginPatterns("*")
                 .withSockJS();
     }
@@ -39,5 +44,10 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
         messageConverters.add(converter);
 
         return false;
+    }
+
+    @Override
+    public void configureClientInboundChannel(ChannelRegistration registration) {
+        registration.interceptors(authChannelInterceptorAdapter);
     }
 }

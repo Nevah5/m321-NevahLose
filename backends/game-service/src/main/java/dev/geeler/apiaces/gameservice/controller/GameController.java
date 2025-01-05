@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.security.Principal;
 import java.util.UUID;
 
 @RestController
@@ -42,16 +43,16 @@ public class GameController {
     }
 
     @MessageMapping("/games.joinGame")
-    public Game joinGame(@Payload GameIdDto joinGameDto) {
-        UUID playerId = jwtService.getUserIdFromSecurityContext();
-        final Game game = gameService.joinGame(joinGameDto.getGameId(), playerId);
+    public Game joinGame(@Payload GameIdDto joinGameDto, Principal principal) {
+        UUID playerId = jwtService.getUserIdFromPrincipal(principal);
+        final Game game = gameService.joinGame(joinGameDto.getGameId(), playerId); // TODO: check if inserted into db
         kafkaProducerService.sendMessage(game.getId(), playerId + " joined the game. (" + game.getId() + ")");
         return game;
     }
 
     @MessageMapping("/games.leaveGame")
-    public void leaveGame(@Payload GameIdDto leaveGameDto) {
-        UUID playerId = jwtService.getUserIdFromSecurityContext();
+    public void leaveGame(@Payload GameIdDto leaveGameDto, Principal principal) {
+        UUID playerId = jwtService.getUserIdFromPrincipal(principal);
         gameService.leaveGame(leaveGameDto.getGameId(), playerId);
         kafkaProducerService.sendMessage(leaveGameDto.getGameId(), playerId + " left the game. (" + leaveGameDto.getGameId() + ")");
     }
