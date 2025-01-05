@@ -5,6 +5,7 @@
 </template>
 
 <script setup lang="ts">
+import toastApi from "@/api/toastApi";
 import { CompatClient, Stomp } from "@stomp/stompjs";
 import SockJS from "sockjs-client";
 import { onMounted, ref } from "vue";
@@ -12,18 +13,17 @@ import { onMounted, ref } from "vue";
 const connection = ref<WebSocket>();
 
 onMounted(() => {
-  const socket = new SockJS("http://localhost:8082/ws");
-  const stompClient: CompatClient = Stomp.over(socket);
-  stompClient.connect({}, () => {
-    console.log("Connected to WebSocket");
+  toastApi.emit({
+    title: "Hello World!",
+    message: "👋🌍",
+    timeout: 5000,
   });
-  stompClient.onStompError = (frame) => {
-    console.log("Broker reported error: " + frame.headers["message"]);
-    console.log("Additional details: " + frame.body);
-  };
-  stompClient.debug = (msg) => {
-    console.log(msg);
-  };
-  stompClient.activate();
+  setTimeout(() => {
+    toastApi.emit({
+      title: "Hello World 2!",
+      message: "👋🌍",
+      timeout: 3000,
+    });
+  }, 3000);
 });
 </script>
