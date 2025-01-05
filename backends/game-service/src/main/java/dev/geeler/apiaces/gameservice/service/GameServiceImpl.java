@@ -31,12 +31,7 @@ public class GameServiceImpl implements GameService {
                 .setOwnerId(playerId)
                 .setCreatedAt()
                 .build();
-        GamePlayer player = new GamePlayer.Builder()
-                .setPlayerId(playerId)
-                .setGameId(game.getId())
-                .build();
         gameRepository.save(game);
-        gamePlayerRepository.save(player);
         return game;
     }
 

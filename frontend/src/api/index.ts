@@ -1,7 +1,7 @@
 import type { AxiosInstance, AxiosResponse } from "axios";
 import type { Player, ApiError, TokenResponse, Card, Game } from "./types";
 import SockJS from "sockjs-client";
-import { Client } from "@stomp/stompjs";
+import { Client, Stomp } from "@stomp/stompjs";
 
 import axios from "axios";
 import { handleApiError } from "./errorHandler";
@@ -95,19 +95,27 @@ class GameService extends ApiService {
   async connectWebsocket(token: string): Promise<Client> {
     return new Promise<Client>((resolve, reject) => {
       // const websocketUrl = this.axiosInstance.defaults.baseURL!;
-      const sockJS = new SockJS("http://localhost:8082/ws");
+      const sockJS = new SockJS(`http://localhost:8082/socket?token=${token}`);
       const stompClient = new Client({
         webSocketFactory: () => sockJS,
         connectHeaders: {
           Authorization: `Bearer ${token}`,
         },
         onStompError: (frame) => {
-          throw new Error(frame.body);
+          reject(new Error(frame.body));
         },
         debug: (str: string) => console.log(str),
         onConnect: () => resolve(stompClient),
       });
 
+      stompClient.onDisconnect = () => console.log("Disconnected");
+      stompClient.onWebSocketClose = (event) =>
+        console.error("WebSocket closed", event);
+      stompClient.onWebSocketError = (error) =>
+        console.error("WebSocket error", error);
+      stompClient.onStompError = (frame) => console.error("STOMP error", frame);
+
+      console.log("Activating STOMP client");
       stompClient.activate();
     });
   }
