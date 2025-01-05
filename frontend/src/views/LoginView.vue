@@ -86,12 +86,19 @@ const logout = () => {
 };
 
 onMounted(async () => {
-  usernamePlaceholder.value = await playerService.getRandomUsername();
-  isLoading.value = false;
+  try {
+    usernamePlaceholder.value = await playerService.getRandomUsername();
+    isLoading.value = false;
 
-  const name = localStorage.getItem("username");
-  if (name != "") {
-    currentUsername.value = name as string;
+    const name = localStorage.getItem("username");
+    if (name != "") {
+      currentUsername.value = name as string;
+    }
+  } catch (e: ApiError | any) {
+    toastApi.emit({
+      title: "Error fetching random username",
+      message: e.message,
+    });
   }
 });
 </script>
