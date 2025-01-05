@@ -102,20 +102,19 @@ class GameService extends ApiService {
           Authorization: `Bearer ${token}`,
         },
         onStompError: (frame) => {
+          window.alert(frame.body);
           reject(new Error(frame.body));
         },
         debug: (str: string) => console.log(str),
+        onDisconnect: () => console.log("Websocket Disconnected"),
+        onWebSocketError: (event) => {
+          window.alert("WebSocket error\n" + event);
+          reject(new Error("WebSocket error"));
+        },
+        onWebSocketClose: (event) => console.log("WebSocket closed", event),
         onConnect: () => resolve(stompClient),
       });
 
-      stompClient.onDisconnect = () => console.log("Disconnected");
-      stompClient.onWebSocketClose = (event) =>
-        console.error("WebSocket closed", event);
-      stompClient.onWebSocketError = (error) =>
-        console.error("WebSocket error", error);
-      stompClient.onStompError = (frame) => console.error("STOMP error", frame);
-
-      console.log("Activating STOMP client");
       stompClient.activate();
     });
   }
