@@ -1,10 +1,9 @@
-package dev.geeler.apiaces.gameservice.model;
+package dev.geeler.apiaces.gameservice.model.game;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.Getter;
-import lombok.Setter;
 
 import java.util.Random;
 import java.util.UUID;
@@ -23,7 +22,6 @@ public class Game {
     private UUID ownerId;
 
     @Getter
-    @Setter
     private GameStatus status;
 
     @Getter
@@ -33,7 +31,6 @@ public class Game {
     private long createdAt;
 
     @Getter
-    @Setter
     private Long startedAt;
 
     @Getter
@@ -57,10 +54,10 @@ public class Game {
             Random random = new Random();
             this.game = new Game();
             this.game.id = UUID.randomUUID();
-            int randomNumber = random.nextInt(100000000);
-            this.game.roomId = String.format("%08d", randomNumber);
+            int randomNumber = random.nextInt(1000000);
+            this.game.roomId = String.format("%06d", randomNumber);
 
-            this.game.status = GameStatus.WAITING_FOR_PLAYERS;
+            this.game.status = GameStatus.INITIALIZING;
             this.game.createdAt = System.currentTimeMillis();
         }
 
@@ -89,7 +86,7 @@ public class Game {
             return this;
         }
 
-        public Builder setStartedAt(){
+        public Builder setStartedAt() {
             this.game.startedAt = System.currentTimeMillis();
             return this;
         }

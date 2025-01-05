@@ -36,6 +36,7 @@ import { onMounted, ref } from "vue";
 import { playerService } from "@/api";
 import { useRouter } from "vue-router";
 import type { ApiError, TokenResponse } from "@/api/types";
+import toastApi from "@/api/toastApi";
 
 const isLoading = ref(true);
 const isConfirmed = ref(false);
@@ -48,7 +49,10 @@ const confirm = () => {
   if (username.value === "") {
     username.value = usernamePlaceholder.value;
   } else if (username.value.length < 4) {
-    alert(`Please enter a username with the minimum length of 4 characters.`);
+    toastApi.emit({
+      title: "Invalid username provided",
+      message: "Please enter a username with at least 4 characters.",
+    });
     return;
   }
   isConfirmed.value = true;
@@ -68,8 +72,10 @@ const login = async () => {
       router.push("/");
     }, Math.floor(Math.random() * 1000));
   } catch (e: ApiError | any) {
-    // TODO: emit toast error
-    alert(e.message);
+    toastApi.emit({
+      title: "Registration error",
+      message: e.message,
+    });
     isConfirmed.value = false;
   }
 };

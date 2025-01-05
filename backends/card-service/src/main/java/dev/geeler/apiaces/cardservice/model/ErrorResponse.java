@@ -1,4 +1,4 @@
-package dev.geeler.apiaces.gameservice.model;
+package dev.geeler.apiaces.cardservice.model;
 
 import org.springframework.http.HttpStatus;
 

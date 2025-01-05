@@ -1,15 +1,24 @@
 package dev.geeler.apiaces.gameservice.service;
 
+import dev.geeler.apiaces.gameservice.security.JwtAuthFilter;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.security.Key;
+import java.security.Principal;
+import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 public class JwtServiceImpl implements JwtService {
@@ -29,6 +38,7 @@ public class JwtServiceImpl implements JwtService {
                 .parseClaimsJws(token)
                 .getBody();
     }
+
     @Override
     public Boolean validateToken(String token) {
         try {
@@ -41,13 +51,50 @@ public class JwtServiceImpl implements JwtService {
     }
 
     @Override
-    public UUID extractUserId(String token) {
-        return UUID.fromString(extractClaims(token).getId());
+    public String extractTokenFromHeader(String header) {
+        return header.substring(7);
     }
 
+    @Override
+    public UUID extractUserId(String token) {
+        return UUID.fromString((String) extractClaims(token).get("id"));
+    }
+
+    @Override
+    public UUID extractUserIdFromHeader(String header) {
+        return extractUserId(extractTokenFromHeader(header));
+    }
 
     @Override
     public String extractUsername(String token) {
         return extractClaims(token).getSubject();
+    }
+
+    @Override
+    public List<GrantedAuthority> extractAuthorities(String token) {
+        return ((List<String>) extractClaims(token).get("roles", List.class))
+                .stream()
+                .map(SimpleGrantedAuthority::new)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public UUID getUserIdFromSecurityContext() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null) {
+            throw new IllegalStateException("No authentication in security context");
+        }
+        Object principal = authentication.getPrincipal();
+        if (!(principal instanceof JwtAuthFilter.CustomPrincipal)) {
+            throw new RuntimeException("Invalid principal type");
+        }
+        return ((JwtAuthFilter.CustomPrincipal) principal).id();
+    }
+
+    @Override
+    public UUID getUserIdFromPrincipal(Principal principal) {
+        var authToken = (UsernamePasswordAuthenticationToken) principal;
+        var userPrincipal = (JwtAuthFilter.CustomPrincipal) authToken.getPrincipal();
+        return userPrincipal.id();
     }
 }

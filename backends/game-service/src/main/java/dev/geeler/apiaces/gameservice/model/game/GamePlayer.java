@@ -1,11 +1,14 @@
-package dev.geeler.apiaces.gameservice.model;
+package dev.geeler.apiaces.gameservice.model.game;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.IdClass;
 import jakarta.persistence.Table;
+import jakarta.persistence.Temporal;
+import jakarta.persistence.TemporalType;
 import lombok.Getter;
 
+import java.util.Date;
 import java.util.UUID;
 
 @Entity(name = "game-player")
@@ -20,11 +23,28 @@ public class GamePlayer {
     @Getter
     private UUID playerId;
 
+    @Getter
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date joinedAt;
+
+    @Getter
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date leftAt;
+
+    public Builder toBuilder() {
+        return new Builder(this);
+    }
+
     public static class Builder {
         private final GamePlayer gamePlayer;
 
         public Builder() {
             this.gamePlayer = new GamePlayer();
+            this.gamePlayer.joinedAt = new Date();
+        }
+
+        public Builder(GamePlayer gamePlayer) {
+            this.gamePlayer = gamePlayer;
         }
 
         public Builder setGameId(final UUID gameId) {
@@ -34,6 +54,11 @@ public class GamePlayer {
 
         public Builder setPlayerId(final UUID playerId) {
             this.gamePlayer.playerId = playerId;
+            return this;
+        }
+
+        public Builder leave() {
+            this.gamePlayer.leftAt = new Date();
             return this;
         }
 

@@ -8,12 +8,11 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
-import java.util.Collections;
+import java.util.UUID;
 
 @Component
 @RequiredArgsConstructor
@@ -25,21 +24,30 @@ public class JwtAuthFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
         String authHeader = request.getHeader("Authorization");
-        System.out.println("authHeader: " + authHeader);
+        String token = request.getParameter("token");
+
         if (authHeader != null && authHeader.startsWith("Bearer ")) {
-            String token = authHeader.substring(7);
-            if (jwtService.validateToken(token)) {
-                String userName = jwtService.extractUsername(token);
-                if (userName != null) {
-                    var authToken = new UsernamePasswordAuthenticationToken(
-                            new User(userName, "", Collections.emptyList()),
-                            null,
-                            Collections.emptyList()
-                    );
-                    SecurityContextHolder.getContext().setAuthentication(authToken);
-                }
+            token = authHeader.substring(7);
+        }
+
+        if (token != null && jwtService.validateToken(token)) {
+            String username = jwtService.extractUsername(token);
+            UUID userId = jwtService.extractUserId(token);
+
+            if (username != null && userId != null) {
+                var userPrincipal = new JwtAuthFilter.CustomPrincipal(userId, username);
+
+                UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(
+                        userPrincipal,
+                        null,
+                        jwtService.extractAuthorities(token)
+                );
+                SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
             }
         }
         filterChain.doFilter(request, response);
+    }
+
+    public record CustomPrincipal(UUID id, String username) {
     }
 }

@@ -24,3 +24,15 @@ export interface Card {
   cardType: string;
   amountInDeck: number;
 }
+
+export interface Game {
+  id: string;
+  roomId: string;
+  ownerId: string;
+  gameStatus: string;
+  maxPlayers: number;
+  createdAt: number;
+  startedAt: number;
+  currentTurnId: string;
+  winnerId: string;
+}

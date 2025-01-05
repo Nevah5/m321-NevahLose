@@ -87,6 +87,7 @@
 <script lang="ts" setup>
 import CardComponent from "./CardComponent.vue";
 import { cardService } from "@/api";
+import toastApi from "@/api/toastApi";
 import type { Card } from "@/api/types";
 import { onMounted, ref } from "vue";
 
@@ -98,7 +99,10 @@ onMounted(async () => {
     cards.value = cardsList;
   } catch (error) {
     console.error(error);
-    // TODO: implement toast service error handling
+    toastApi.emit({
+      title: "Retrieving cards failed",
+      message: "Failed to retrieve cards from the server",
+    });
   }
 });
 </script>

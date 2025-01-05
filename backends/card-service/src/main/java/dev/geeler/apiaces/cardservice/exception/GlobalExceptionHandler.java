@@ -1,14 +1,14 @@
-package dev.geeler.apiaces.gameservice.exception;
+package dev.geeler.apiaces.cardservice.exception;
 
-import dev.geeler.apiaces.gameservice.model.http.ErrorResponse;
-import dev.geeler.apiaces.gameservice.model.http.ServerErrorResponse;
-import org.apache.logging.log4j.LogManager;
+import dev.geeler.apiaces.cardservice.model.ErrorResponse;
+import dev.geeler.apiaces.cardservice.model.ServerErrorResponse;
 import org.apache.logging.log4j.Logger;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.apache.logging.log4j.LogManager;
 import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 @ControllerAdvice
@@ -24,38 +24,6 @@ public class GlobalExceptionHandler {
                 e.getMessage()
         );
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
-    }
-
-    // 400 - Bad Request
-    @ExceptionHandler(IllegalStateException.class)
-    @ResponseBody
-    public ResponseEntity<ErrorResponse> handleClientError(IllegalStateException e) {
-        final ErrorResponse errorResponse = new ErrorResponse(
-                HttpStatus.BAD_REQUEST,
-                e.getMessage()
-        );
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
-    }
-
-    // 400 - Bad Request
-    @ExceptionHandler(MaxGameSizeException.class)
-    @ResponseBody
-    public ResponseEntity<ErrorResponse> handleClientError(MaxGameSizeException e) {
-        final ErrorResponse errorResponse = new ErrorResponse(
-                HttpStatus.BAD_REQUEST,
-                e.getMessage()
-        );
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
-    }
-
-    // 404 - Not Found
-    @ExceptionHandler(NotFoundException.class)
-    public ResponseEntity<ErrorResponse> handleNotFound(NotFoundException e) {
-        final ErrorResponse errorResponse = new ErrorResponse(
-                HttpStatus.NOT_FOUND,
-                e.getMessage()
-        );
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
     }
 
     // 404 - Not Found

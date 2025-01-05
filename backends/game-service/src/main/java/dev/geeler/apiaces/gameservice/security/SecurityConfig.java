@@ -1,6 +1,6 @@
 package dev.geeler.apiaces.gameservice.security;
 
-import dev.geeler.apiaces.gameservice.model.ErrorResponse;
+import dev.geeler.apiaces.gameservice.model.http.ErrorResponse;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.ws.rs.HttpMethod;
 import lombok.RequiredArgsConstructor;
@@ -23,12 +23,11 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @RequiredArgsConstructor
 public class SecurityConfig {
 
-    private final JwtAuthFilter jwtAuthFilter;
-
     private static final String[] WHITE_LIST_URL = {
             "/actuator/health",
             "/actuator/info"
     };
+    private final JwtAuthFilter jwtAuthFilter;
 
     @Bean
     SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
