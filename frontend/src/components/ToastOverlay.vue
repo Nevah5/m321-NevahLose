@@ -1,6 +1,7 @@
 <template>
   <div class="toasts">
     <div
+      v-motion-pop-visible
       class="toast"
       v-for="toast in activeToasts"
       :key="toast.id"

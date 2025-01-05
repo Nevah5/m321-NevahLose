@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "@stomp/stompjs": "^7.0.0",
+    "@vueuse/motion": "^2.2.6",
     "axios": "^1.7.9",
     "global": "^4.4.0",
     "sockjs-client": "^1.6.1",
