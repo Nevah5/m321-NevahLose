@@ -101,7 +101,7 @@ const removeToast = (toast: ToastTechnical) => {
       ". icon title ."
       ". icon message ."
       ". . . .";
-    grid-template-columns: 1fr 60px 275px 1fr;
+    grid-template-columns: 1fr 60px 300px 1fr;
     grid-template-rows: 1fr 20px 40px 1fr;
     position: relative;
     box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
