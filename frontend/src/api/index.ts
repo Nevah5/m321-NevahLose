@@ -97,8 +97,8 @@ class GameService extends ApiService {
 
   async joinGame(gameId: string, token: string): Promise<Client> {
     return new Promise<Client>((resolve, reject) => {
-      // const websocketUrl = this.axiosInstance.defaults.baseURL!;
-      const sockJS = new SockJS(`http://localhost:8082/stomp?token=${token}`);
+      const baseUrl = this.axiosInstance.defaults.baseURL!;
+      const sockJS = new SockJS(`${baseUrl}/stomp?token=${token}`);
       this.stompClient = new Client({
         webSocketFactory: () => sockJS,
         connectHeaders: {
@@ -125,6 +125,11 @@ class GameService extends ApiService {
         onWebSocketClose: (event) => console.log("WebSocket closed", event),
         onConnect: () => {
           console.log("Websocket Connected");
+          this.stompClient!.publish({
+            destination: `/app/games.joinGame`,
+            body: JSON.stringify({ gameId: gameId }),
+            headers: { Authorization: `Bearer ${token}` },
+          });
           resolve(this.stompClient!);
         },
       });
