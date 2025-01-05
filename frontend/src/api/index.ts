@@ -125,6 +125,11 @@ class GameService extends ApiService {
         onWebSocketClose: (event) => console.log("WebSocket closed", event),
         onConnect: () => {
           console.log("Websocket Connected");
+          this.stompClient!.publish({
+            destination: `/app/games.joinGame`,
+            body: JSON.stringify({ gameId: gameId }),
+            headers: { Authorization: `Bearer ${token}` },
+          });
           resolve(this.stompClient!);
         },
       });
