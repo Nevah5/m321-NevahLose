@@ -42,6 +42,9 @@ onUnmounted(() => {
 </script>
 
 <style scoped>
+main {
+  height: 100vh;
+}
 h1 {
   font-size: 2rem;
   margin: 0;

@@ -26,6 +26,10 @@ const router = createRouter({
       path: "/game/:id",
       name: "game",
       component: () => import("@/views/GameView.vue"),
+      meta: {
+        disableHeader: true,
+        disableFooter: true,
+      },
     },
     {
       path: "/debug",
