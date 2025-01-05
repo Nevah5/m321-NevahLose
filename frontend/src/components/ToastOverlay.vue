@@ -61,7 +61,6 @@ const renewToastTimeoutUpdater = (toast: ToastTechnical) => {
 };
 
 const stopTimeout = (toast: ToastTechnical) => {
-  clearTimeout(toast.timeoutRef);
   clearInterval(toast.timeoutUpdaterRef);
 
   const toastElement = document

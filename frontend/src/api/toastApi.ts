@@ -18,7 +18,7 @@ interface Toast {
 
 interface ToastTechnical extends Toast {
   id: string;
-  timeoutUpdaterRef?: number;
+  timeoutUpdaterRef?: NodeJS.Timeout;
   timeoutStarted?: number;
 }
 
