@@ -1,4 +1,4 @@
-package dev.geeler.apiaces.gameservice.model;
+package dev.geeler.apiaces.gameservice.model.game;
 
 import lombok.EqualsAndHashCode;
 
@@ -10,7 +10,8 @@ public class GamePlayerId implements Serializable {
     private UUID gameId;
     private UUID playerId;
 
-    public GamePlayerId() {}
+    public GamePlayerId() {
+    }
 
     public GamePlayerId(UUID gameId, UUID playerId) {
         this.gameId = gameId;

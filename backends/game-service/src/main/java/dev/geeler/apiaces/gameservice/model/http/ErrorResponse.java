@@ -1,4 +1,4 @@
-package dev.geeler.apiaces.gameservice.model;
+package dev.geeler.apiaces.gameservice.model.http;
 
 import org.springframework.http.HttpStatus;
 
@@ -8,6 +8,6 @@ public class ErrorResponse extends HttpResponse {
     }
 
     public String toJsonString() {
-        return "{\"code\": "+ this.code + ", \"message\": \"" + this.message + "\"}";
+        return "{\"code\": " + this.code + ", \"message\": \"" + this.message + "\"}";
     }
 }

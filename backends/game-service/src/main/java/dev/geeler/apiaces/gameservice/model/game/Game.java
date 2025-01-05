@@ -1,4 +1,4 @@
-package dev.geeler.apiaces.gameservice.model;
+package dev.geeler.apiaces.gameservice.model.game;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;

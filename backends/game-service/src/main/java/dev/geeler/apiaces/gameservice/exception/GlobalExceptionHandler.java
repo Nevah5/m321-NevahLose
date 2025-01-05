@@ -1,7 +1,7 @@
 package dev.geeler.apiaces.gameservice.exception;
 
-import dev.geeler.apiaces.gameservice.model.ErrorResponse;
-import dev.geeler.apiaces.gameservice.model.ServerErrorResponse;
+import dev.geeler.apiaces.gameservice.model.http.ErrorResponse;
+import dev.geeler.apiaces.gameservice.model.http.ServerErrorResponse;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.http.HttpStatus;
@@ -9,7 +9,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
-import dev.geeler.apiaces.gameservice.exception.NotFoundException;
 import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 @ControllerAdvice

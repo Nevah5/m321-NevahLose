@@ -2,9 +2,9 @@ package dev.geeler.apiaces.gameservice.service;
 
 import dev.geeler.apiaces.gameservice.exception.MaxGameSizeException;
 import dev.geeler.apiaces.gameservice.exception.NotFoundException;
-import dev.geeler.apiaces.gameservice.model.Game;
-import dev.geeler.apiaces.gameservice.model.GamePlayer;
-import dev.geeler.apiaces.gameservice.model.GameStatus;
+import dev.geeler.apiaces.gameservice.model.game.Game;
+import dev.geeler.apiaces.gameservice.model.game.GamePlayer;
+import dev.geeler.apiaces.gameservice.model.game.GameStatus;
 import dev.geeler.apiaces.gameservice.repository.GamePlayerRepository;
 import dev.geeler.apiaces.gameservice.repository.GameRepository;
 import lombok.RequiredArgsConstructor;
