@@ -5,6 +5,7 @@ import { Client, Stomp } from "@stomp/stompjs";
 
 import axios from "axios";
 import { handleApiError } from "./errorHandler";
+import toastApi from "./toastApi";
 
 class ApiService {
   public readonly axiosInstance: AxiosInstance;
@@ -104,13 +105,21 @@ class GameService extends ApiService {
           Authorization: `Bearer ${token}`,
         },
         onStompError: (frame) => {
-          window.alert(frame.body);
+          toastApi.emit({
+            title: "Websocket Error",
+            message: "An error occurred while connecting to the game",
+          });
+          console.error(frame.body);
           reject(new Error(frame.body));
         },
         debug: (str: string) => console.log(str),
         onDisconnect: () => console.log("Websocket Disconnected"),
         onWebSocketError: (event) => {
-          window.alert("WebSocket error\n" + event);
+          toastApi.emit({
+            title: "Websocket Error",
+            message: "An error occurred while connecting to the game",
+          });
+          console.error(event);
           reject(new Error("WebSocket error"));
         },
         onWebSocketClose: (event) => console.log("WebSocket closed", event),

@@ -60,6 +60,7 @@ import { onMounted, ref, useTemplateRef } from "vue";
 import { useRouter } from "vue-router";
 import { gameService } from "@/api";
 import { type Game, type ApiError } from "@/api/types.ts";
+import toastApi from "@/api/toastApi";
 
 const inputWrapper = useTemplateRef<HTMLInputElement>("inputs");
 const inputs = ref<NodeListOf<HTMLInputElement>>();
@@ -126,7 +127,10 @@ const joinGame = (roomId: string) => {
     })
     .catch((e: ApiError | any) => {
       isLoadingGame.value = false;
-      alert(e.message);
+      toastApi.emit({
+        title: "Websocket error",
+        message: e.message,
+      });
     });
 };
 
@@ -140,8 +144,10 @@ const createGame = async () => {
       router.push("/game/" + game.id);
     }, Math.floor(Math.random() * 1000));
   } catch (e: ApiError | any) {
-    // TODO: emit toast error
-    alert(e.message);
+    toastApi.emit({
+      title: "Game creation error",
+      message: e.message,
+    });
     isLoadingNewGame.value = false;
   }
 };

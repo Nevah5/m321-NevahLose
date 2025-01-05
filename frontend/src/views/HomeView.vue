@@ -13,6 +13,7 @@ import { playerService } from "@/api";
 import type { ApiError, Player } from "@/api/types";
 import { useRouter } from "vue-router";
 import RoomManageComponent from "@/components/RoomManageComponent.vue";
+import toastApi from "@/api/toastApi";
 
 const isLoading = ref(false);
 const username = ref("");
@@ -36,7 +37,10 @@ onMounted(async () => {
     localStorage.setItem("username", player.username);
     username.value = player.username;
   } catch (e: ApiError | any) {
-    // TODO: implement error Toast on App.vue where you emit "upwards"
+    toastApi.emit({
+      title: "Retrieving user information failed",
+      message: "Perhaps your session expired? Please try again.",
+    });
     isLoading.value = true;
     localStorage.clear();
     router.push("/login");
