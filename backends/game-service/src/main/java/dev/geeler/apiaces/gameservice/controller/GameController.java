@@ -45,7 +45,7 @@ public class GameController {
     @MessageMapping("/games.joinGame")
     public Game joinGame(@Payload GameIdDto joinGameDto, Principal principal) {
         UUID playerId = jwtService.getUserIdFromPrincipal(principal);
-        final Game game = gameService.joinGame(joinGameDto.getGameId(), playerId); // TODO: check if inserted into db
+        final Game game = gameService.joinGame(joinGameDto.getGameId(), playerId);
         kafkaProducerService.sendMessage(game.getId(), playerId + " joined the game. (" + game.getId() + ")");
         return game;
     }

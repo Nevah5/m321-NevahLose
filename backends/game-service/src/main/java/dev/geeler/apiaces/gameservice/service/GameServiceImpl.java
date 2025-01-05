@@ -52,14 +52,14 @@ public class GameServiceImpl implements GameService {
         final Game game = gameRepository.findById(gameId)
                 .orElseThrow(() -> new NotFoundException("The game was not found"));
         if (game.getStatus() != GameStatus.WAITING_FOR_PLAYERS) {
-            if (game.getOwnerId().equals(playerId)) {
+            if (game.getOwnerId().equals(playerId) && game.getStatus() == GameStatus.INITIALIZING) {
                 final Game updatedGame = game.builder()
                         .setStatus(GameStatus.WAITING_FOR_PLAYERS)
                         .build();
                 gameRepository.save(updatedGame); // TODO: create method in service to update game attributes
-                return updatedGame;
+            } else {
+                throw new IllegalStateException("Game is already running or complete.");
             }
-            throw new IllegalStateException("Game is already running or complete.");
         }
         GamePlayer gamePlayer = gamePlayerRepository.findByPlayerIdAndGameId(playerId, game.getId())
                 .orElse(null);
