@@ -33,6 +33,7 @@ services:
       - DATABASE_URL_STRING=jdbc:mariadb://database:3306/card-svc
       - DATABASE_USER=card-svc
       - DATABASE_PASSWORD=Module0-Cauterize9-Gothic8-Karaoke7
+      - JWT_SECRET_KEY=REPLACE_THIS_WITH_A_SECRET_KEY
       #- API_BASE_PATH=/api/card
     depends_on:
       - eureka-server
