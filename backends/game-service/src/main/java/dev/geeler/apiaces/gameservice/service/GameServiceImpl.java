@@ -22,7 +22,7 @@ public class GameServiceImpl implements GameService {
     @Override
     public Game getGame(Long roomId) {
         return gameRepository.findByRoomId(roomId.toString())
-                .orElseThrow(() -> new NotFoundException("No game was found"));
+                .orElseThrow(() -> new NotFoundException("No game was found with the provided id."));
     }
 
     @Override

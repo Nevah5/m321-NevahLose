@@ -128,7 +128,7 @@ const joinGame = (roomId: string) => {
     .catch((e: ApiError | any) => {
       isLoadingGame.value = false;
       toastApi.emit({
-        title: "Websocket error",
+        title: "Issue with joining the game",
         message: e.message,
       });
     });
