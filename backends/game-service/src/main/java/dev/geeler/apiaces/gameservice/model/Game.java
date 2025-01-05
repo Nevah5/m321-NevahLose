@@ -4,7 +4,6 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.Getter;
-import lombok.Setter;
 
 import java.util.Random;
 import java.util.UUID;
@@ -23,7 +22,6 @@ public class Game {
     private UUID ownerId;
 
     @Getter
-    @Setter
     private GameStatus status;
 
     @Getter
@@ -33,7 +31,6 @@ public class Game {
     private long createdAt;
 
     @Getter
-    @Setter
     private Long startedAt;
 
     @Getter
@@ -89,7 +86,7 @@ public class Game {
             return this;
         }
 
-        public Builder setStartedAt(){
+        public Builder setStartedAt() {
             this.game.startedAt = System.currentTimeMillis();
             return this;
         }
