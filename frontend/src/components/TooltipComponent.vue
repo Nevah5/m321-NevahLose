@@ -8,7 +8,7 @@
     <div
       v-if="isVisible"
       class="tooltip"
-      :class="position"
+      :class="[position, color]"
       ref="tooltip"
       v-motion-pop
       @mouseover="showTooltip"
@@ -22,9 +22,14 @@
 <script setup lang="ts">
 import { ref, defineProps } from "vue";
 
-const { text, position = "top" } = defineProps<{
+const {
+  text,
+  position = "top",
+  color = "green",
+} = defineProps<{
   text: string;
   position?: "top" | "right" | "bottom" | "left";
+  color?: "green" | "blue";
 }>();
 
 const isVisible = ref(false);
@@ -44,9 +49,11 @@ function hideTooltip() {
   display: inline-block;
 
   .tooltip {
+    --tooltip-color: var(--color-text);
+    --tooltip-text-color: var(--color-background);
     position: absolute;
-    background-color: var(--color-text);
-    color: var(--color-background);
+    background-color: var(--tooltip-color);
+    color: var(--tooltip-text-color);
     padding: 8px;
     border-radius: 4px;
     font-size: 12px;
@@ -62,6 +69,10 @@ function hideTooltip() {
       border-style: solid;
     }
 
+    &.green {
+      --tooltip-color: #73cd5c;
+    }
+
     &.top {
       bottom: 100%;
       left: 50%;
@@ -71,7 +82,7 @@ function hideTooltip() {
       &::after {
         border-left: 5px solid transparent;
         border-right: 5px solid transparent;
-        border-top: 5px solid var(--color-text);
+        border-top: 5px solid var(--tooltip-color);
         transform: translate(-50%, 100%);
         bottom: 0;
         left: 50%;
@@ -87,7 +98,7 @@ function hideTooltip() {
       &::after {
         border-top: 5px solid transparent;
         border-bottom: 5px solid transparent;
-        border-right: 5px solid var(--color-text);
+        border-right: 5px solid var(--tooltip-color);
         transform: translate(-100%, -50%);
         top: 50%;
         left: 0;
@@ -103,7 +114,7 @@ function hideTooltip() {
       &::after {
         border-left: 5px solid transparent;
         border-right: 5px solid transparent;
-        border-bottom: 5px solid var(--color-text);
+        border-bottom: 5px solid var(--tooltip-color);
         transform: translate(-50%, -100%);
         top: 0;
         left: 50%;
@@ -119,7 +130,7 @@ function hideTooltip() {
       &::after {
         border-top: 5px solid transparent;
         border-bottom: 5px solid transparent;
-        border-left: 5px solid var(--color-text);
+        border-left: 5px solid var(--tooltip-color);
         transform: translate(100%, -50%);
         top: 50%;
         right: 0;
