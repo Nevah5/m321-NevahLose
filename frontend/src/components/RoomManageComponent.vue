@@ -140,6 +140,7 @@ const createGame = async () => {
   try {
     const token = localStorage.getItem("token");
     const game: Game = await gameService.createGame(token!);
+    localStorage.setItem("game_roomId", game.roomId);
     setTimeout(() => {
       router.push("/game/" + game.id);
     }, Math.floor(Math.random() * 1000));
