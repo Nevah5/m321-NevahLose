@@ -9,15 +9,12 @@ import dev.geeler.apiaces.gameservice.service.KafkaProducerService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
 import java.util.UUID;
 
+@CrossOrigin(origins = "*") // TODO: restrict this to the frontend URL
 @RestController
 @RequiredArgsConstructor
 public class GameController {
