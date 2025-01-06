@@ -1,8 +1,10 @@
 <template>
   <div class="invite-code">
     <h3>Invite Code</h3>
-    <TooltipComponent text="Click to copy!">
-      <span>{{ code.substring(0, 3) }} {{ code.substring(3) }}</span>
+    <TooltipComponent :text="tooltipText" :color="tooltipColor">
+      <span @click="copyCode"
+        >{{ code.substring(0, 3) }} {{ code.substring(3) }}</span
+      >
     </TooltipComponent>
   </div>
 </template>
@@ -11,9 +13,22 @@
 import { ref, defineProps } from "vue";
 import TooltipComponent from "@/components/TooltipComponent.vue";
 
+const tooltipText = ref("Click to copy!");
+const tooltipColor = ref<"blue" | "green">("blue");
+
 const { code } = defineProps<{
   code: string;
 }>();
+
+const copyCode = () => {
+  navigator.clipboard.writeText(code);
+  tooltipText.value = "Copied!";
+  tooltipColor.value = "green";
+  setTimeout(() => {
+    tooltipText.value = "Click to copy!";
+    tooltipColor.value = "blue";
+  }, 2000);
+};
 </script>
 
 <style scoped lang="scss">
