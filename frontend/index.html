@@ -9,7 +9,94 @@
 </head>
 
 <body>
-  <div id="app"></div>
+  <div id="app">
+    <div class="loading-overlay" v-if="enabled">
+      <div class="center">
+        <h3>Welcome to</h3>
+        <img alt="API Aces Logo" class="logo" src="/logo.svg" width="300" />
+        <h2>API Aces</h2>
+        <div class="loading-bar"></div>
+      </div>
+    </div>
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap");
+
+      @keyframes loading {
+        0% {
+          transform: translateX(-100%);
+        }
+
+        100% {
+          transform: translateX(100%);
+        }
+      }
+
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+        margin: 0;
+      }
+
+      .loading-overlay {
+        --color-background: #ffffff;
+        --color-primary: #000343;
+        font-optical-sizing: auto;
+        font-style: normal;
+
+        font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+          Oxygen, Ubuntu, Cantarell, "Fira Sans", "Droid Sans", "Helvetica Neue",
+          sans-serif;
+
+        position: fixed;
+        top: 0;
+        left: 0;
+        height: 100vh;
+        width: 100vw;
+        background-color: var(--color-background);
+        z-index: 999;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+
+      }
+
+      .loading-overlay .center {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+      }
+
+      .loading-overlay .loading-bar {
+        width: 100%;
+        height: 7px;
+        border-radius: 0.5rem;
+        margin-top: 2.5rem;
+        overflow: hidden;
+        background-color: var(--color-primary);
+        position: relative;
+
+      }
+
+      .loading-overlay .loading-bar::after {
+        position: absolute;
+        top: 0;
+        content: "";
+        display: block;
+        height: 7px;
+        width: 100%;
+        animation: loading 1s 0s infinite ease-in-out;
+        background: linear-gradient(to right,
+            var(--color-primary) 0%,
+            var(--color-primary) 10%,
+            var(--color-background) 45%,
+            var(--color-background) 55%,
+            var(--color-primary) 90%,
+            var(--color-primary) 100%);
+      }
+    </style>
+  </div>
   <script type="module" src="/src/main.ts"></script>
 </body>
 
