@@ -2,6 +2,7 @@
   <main>
     <LoadingOverlay :enabled="isLoading" />
     <h1>Game id {{ gameId }}</h1>
+    <ChatComponent />
     <InviteCode :code="inviteCode" />
   </main>
 </template>
@@ -9,6 +10,7 @@
 <script setup lang="ts">
 import { gameService } from "@/api";
 import toastApi from "@/api/toastApi";
+import ChatComponent from "@/components/game/ChatComponent.vue";
 import InviteCode from "@/components/game/InviteCode.vue";
 import LoadingOverlay from "@/components/page/LoadingOverlay.vue";
 import type { Client } from "@stomp/stompjs";
@@ -65,8 +67,14 @@ h1 {
   margin: 0;
 }
 .invite-code {
-  bottom: 0;
+  bottom: 10px;
   right: 10px;
   position: absolute;
+}
+.chat-box {
+  position: absolute;
+  bottom: 10px;
+  left: 10px;
+  max-height: 30%;
 }
 </style>
