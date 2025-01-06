@@ -11,7 +11,7 @@
 
 <script setup lang="ts">
 import { ref, defineProps } from "vue";
-import TooltipComponent from "@/components/TooltipComponent.vue";
+import TooltipComponent from "@/components/page/TooltipComponent.vue";
 
 const tooltipText = ref("Click to copy!");
 const tooltipColor = ref<"blue" | "green">("blue");

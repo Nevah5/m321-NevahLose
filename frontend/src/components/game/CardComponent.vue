@@ -43,7 +43,7 @@
 </template>
 
 <script lang="ts" setup>
-import LogoIcon from "./icons/LogoIcon.vue";
+import LogoIcon from "@/components/icons/LogoIcon.vue";
 import { onMounted, ref, useTemplateRef, watch } from "vue";
 
 const card = useTemplateRef<HTMLDivElement>("card");
@@ -100,7 +100,7 @@ onMounted(async () => {
 const setupBackgroundImage = async () => {
   if (backgroundName === "") return;
   const backgroundImage = new URL(
-    `../assets/cards/${backgroundName}`,
+    `../../assets/cards/${backgroundName}`,
     import.meta.url
   ).href;
 
@@ -112,7 +112,7 @@ const setupBackgroundImage = async () => {
 const setupSubjectImage = async () => {
   if (subjectName === "") return;
   const subjectImage = new URL(
-    `../assets/cards/${subjectName}`,
+    `../../assets/cards/${subjectName}`,
     import.meta.url
   ).href;
   cardSubjectStyle.value = {

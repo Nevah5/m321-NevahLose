@@ -10,7 +10,7 @@
 </template>
 
 <script lang="ts" setup>
-import LogoIcon from "./icons/LogoIcon.vue";
+import LogoIcon from "@/components/icons/LogoIcon.vue";
 </script>
 
 <style lang="scss" scoped>

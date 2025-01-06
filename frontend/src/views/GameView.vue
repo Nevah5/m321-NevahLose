@@ -9,8 +9,8 @@
 <script setup lang="ts">
 import { gameService } from "@/api";
 import toastApi from "@/api/toastApi";
-import InviteCode from "@/components/InviteCode.vue";
-import LoadingOverlay from "@/components/LoadingOverlay.vue";
+import InviteCode from "@/components/game/InviteCode.vue";
+import LoadingOverlay from "@/components/page/LoadingOverlay.vue";
 import type { Client } from "@stomp/stompjs";
 import { onMounted, onUnmounted, ref } from "vue";
 import { useRoute, useRouter } from "vue-router";

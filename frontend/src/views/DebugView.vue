@@ -9,7 +9,7 @@
 
 <script setup lang="ts">
 import toastApi from "@/api/toastApi";
-import TooltipComponent from "@/components/TooltipComponent.vue";
+import TooltipComponent from "@/components/page/TooltipComponent.vue";
 import { onMounted, ref } from "vue";
 
 // const connection = ref<WebSocket>();

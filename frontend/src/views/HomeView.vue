@@ -8,11 +8,11 @@
 
 <script lang="ts" setup>
 import { onMounted, ref } from "vue";
-import LoadingOverlay from "@/components/LoadingOverlay.vue";
+import LoadingOverlay from "@/components/page/LoadingOverlay.vue";
 import { playerService } from "@/api";
 import type { ApiError, Player } from "@/api/types";
 import { useRouter } from "vue-router";
-import RoomManageComponent from "@/components/RoomManageComponent.vue";
+import RoomManageComponent from "@/components/game/RoomManageComponent.vue";
 import toastApi from "@/api/toastApi";
 
 const isLoading = ref(false);

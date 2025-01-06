@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import { RouterView, useRoute } from "vue-router";
 import { ref, watch } from "vue";
-import HeaderComponent from "./components/HeaderComponent.vue";
-import FooterComponent from "./components/FooterComponent.vue";
-import LoadingOverlay from "./components/LoadingOverlay.vue";
-import ToastOverlay from "./components/ToastOverlay.vue";
+import HeaderComponent from "@/components/page/HeaderComponent.vue";
+import FooterComponent from "@/components/page/FooterComponent.vue";
+import LoadingOverlay from "@/components/page/LoadingOverlay.vue";
+import ToastOverlay from "@/components/page/ToastOverlay.vue";
 
 const disableHeader = ref(false);
 const disableFooter = ref(false);
