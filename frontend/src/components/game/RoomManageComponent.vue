@@ -123,6 +123,7 @@ const joinGame = (roomId: string) => {
   gameService
     .getGameFromRoomId(roomId, token!)
     .then((game) => {
+      localStorage.setItem("game_roomId", game.roomId);
       router.push("/game/" + game.id);
     })
     .catch((e: ApiError | any) => {
