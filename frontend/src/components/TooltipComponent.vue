@@ -25,7 +25,7 @@ import { ref, defineProps } from "vue";
 const {
   text,
   position = "top",
-  color = "green",
+  color = "blue",
 } = defineProps<{
   text: string;
   position?: "top" | "right" | "bottom" | "left";
@@ -67,6 +67,7 @@ function hideTooltip() {
       width: 0;
       height: 0;
       border-style: solid;
+      border-color: transparent;
     }
 
     &.green {
