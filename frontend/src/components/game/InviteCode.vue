@@ -37,13 +37,15 @@ const copyCode = () => {
   justify-content: center;
   align-items: center;
   flex-direction: column;
-  cursor: pointer;
 
   h3 {
     font-size: 1.2rem;
     margin-bottom: -15px;
+    z-index: -1;
   }
   span {
+    z-index: 2;
+    cursor: pointer;
     font-weight: bold;
     font-size: 2.3rem;
   }
