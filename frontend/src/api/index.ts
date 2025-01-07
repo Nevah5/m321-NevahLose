@@ -125,6 +125,13 @@ class GameService extends ApiService {
         onWebSocketClose: (event) => console.log("WebSocket closed", event),
         onConnect: () => {
           console.log("Websocket Connected");
+          this.stompClient!.subscribe(`/user/queue/errors`, (message) => {
+            const error: ApiError = JSON.parse(message.body);
+            toastApi.emit({
+              title: "An error occurred",
+              message: error.message,
+            });
+          });
           this.stompClient!.publish({
             destination: `/app/games.joinGame`,
             body: JSON.stringify({ gameId: gameId }),
