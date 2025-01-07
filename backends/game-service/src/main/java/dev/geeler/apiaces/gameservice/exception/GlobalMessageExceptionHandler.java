@@ -25,7 +25,7 @@ public class GlobalMessageExceptionHandler {
     @MessageExceptionHandler(IllegalStateException.class)
     @SendToUser("/queue/errors")
     public String handleException(IllegalStateException exception) {
-        log.info("NotFoundException handled: {}", exception.getMessage());
+        log.info("IllegalStateException handled: {}", exception.getMessage());
         return new ErrorResponse(
                 HttpStatus.BAD_REQUEST,
                 exception.getMessage()
@@ -35,7 +35,17 @@ public class GlobalMessageExceptionHandler {
     @MessageExceptionHandler(MaxGameSizeException.class)
     @SendToUser("/queue/errors")
     public String handleException(MaxGameSizeException exception) {
-        log.info("NotFoundException handled: {}", exception.getMessage());
+        log.info("MaxGameSizeException handled: {}", exception.getMessage());
+        return new ErrorResponse(
+                HttpStatus.BAD_REQUEST,
+                exception.getMessage()
+        ).toJsonString();
+    }
+
+    @MessageExceptionHandler(IllegalArgumentException.class)
+    @SendToUser("/queue/errors")
+    public String handleException(IllegalArgumentException exception) {
+        log.info("IllegalArgumentException handled: {}", exception.getMessage());
         return new ErrorResponse(
                 HttpStatus.BAD_REQUEST,
                 exception.getMessage()
@@ -45,7 +55,7 @@ public class GlobalMessageExceptionHandler {
     @MessageExceptionHandler(MessagingException.class)
     @SendToUser("/queue/errors")
     public String handleException(MessagingException exception) {
-        log.info("NotFoundException handled: {}", exception.getMessage());
+        log.info("MessagingException handled: {}", exception.getMessage());
         return new ServerErrorResponse(
                 HttpStatus.BAD_REQUEST,
                 exception.getMessage()

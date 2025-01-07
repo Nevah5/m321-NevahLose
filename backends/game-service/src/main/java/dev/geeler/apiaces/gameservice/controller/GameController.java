@@ -50,8 +50,18 @@ public class GameController {
     @MessageMapping("/games.joinGame")
     public void joinGame(@Payload GameIdDto joinGameDto, Principal principal) {
         UUID playerId = jwtService.getUserIdFromPrincipal(principal);
+        String username = jwtService.getUsernameFromPrincipal(principal);
         gameService.joinGame(joinGameDto.getGameId(), playerId);
         kafkaProducerService.sendMessage(joinGameDto.getGameId(), playerId + " joined the game. (" + joinGameDto.getGameId() + ")"); // TODO: move to service
+        gameService.sendChatMessage(
+                ChatMessage.builder()
+                        .gameId(joinGameDto.getGameId())
+                        .isJoined(true)
+                        .type(ChatType.ACTIVITY)
+                        .senderId(playerId)
+                        .senderUsername(username)
+                        .build()
+        );
     }
 
     @MessageMapping("/games.leaveGame")
@@ -65,6 +75,9 @@ public class GameController {
     public void sendMessage(@Payload ChatMessageDto chatMessageDto, Principal principal) {
         UUID playerId = jwtService.getUserIdFromPrincipal(principal);
         String username = jwtService.getUsernameFromPrincipal(principal);
+        if (chatMessageDto.message().equals("")) {
+            throw new IllegalArgumentException("Message cannot be empty");
+        }
         gameService.sendChatMessage(ChatMessage.builder()
                 .message(chatMessageDto.message())
                 .senderId(playerId)
