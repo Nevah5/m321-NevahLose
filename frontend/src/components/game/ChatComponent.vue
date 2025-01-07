@@ -1,6 +1,6 @@
 <template>
   <div class="chat-box">
-    <div class="history">
+    <div class="history" ref="chatBoxHistory">
       <p
         v-for="m in history"
         :key="m.id"
@@ -33,7 +33,7 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref } from "vue";
+import { onMounted, ref, nextTick } from "vue";
 import PlaneIcon from "../icons/PlaneIcon.vue";
 import type { ChatMessage } from "@/api/types";
 import { gameService } from "@/api";
@@ -41,6 +41,7 @@ import toastApi from "@/api/toastApi";
 
 const message = ref("");
 const history = ref<ChatMessage[]>([]);
+const chatBoxHistory = ref<HTMLElement | null>(null);
 
 const sendMessage = async () => {
   try {
@@ -56,8 +57,12 @@ const sendMessage = async () => {
 };
 
 onMounted(() => {
-  gameService.subscribeChatEvents((message: ChatMessage) => {
+  gameService.subscribeChatEvents(async (message: ChatMessage) => {
     history.value.push(message);
+    await nextTick();
+    if (chatBoxHistory.value) {
+      chatBoxHistory.value.scrollTop = chatBoxHistory.value.scrollHeight;
+    }
   });
 });
 </script>
