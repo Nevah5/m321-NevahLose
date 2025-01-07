@@ -4,13 +4,13 @@
       <p
         v-for="m in history"
         :key="m.id"
-        :class="'message' + m.type == 'activity' ? ' activity-message' : ''"
+        :class="'message' + m.type == 'ACTIVITY' ? ' activity-message' : ''"
       >
-        <slot v-if="m.type == 'activity'"
-          ><b>{{ m.sender }}</b> joined.</slot
+        <slot v-if="m.type == 'ACTIVITY'"
+          ><b>{{ m.senderUsername }}</b> joined.</slot
         >
         <slot v-else>
-          <b>{{ m.sender }}</b
+          <b>{{ m.senderUsername }}</b
           >: {{ m.message }}
         </slot>
       </p>
@@ -32,29 +32,33 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from "vue";
+import { onMounted, ref } from "vue";
 import PlaneIcon from "../icons/PlaneIcon.vue";
-
-interface ChatMessage {
-  id: string;
-  sender: string;
-  type: "activity" | "message";
-  joined?: boolean;
-  message?: string;
-}
+import type { ChatMessage } from "@/api/types";
+import { gameService } from "@/api";
+import toastApi from "@/api/toastApi";
 
 const message = ref("");
 const history = ref<ChatMessage[]>([]);
 
-const sendMessage = () => {
-  history.value.push({
-    id: Math.random().toString(36).substring(2, 9),
-    sender: localStorage.getItem("username") || "Player",
-    type: "message",
-    message: message.value,
-  });
-  message.value = "";
+const sendMessage = async () => {
+  try {
+    const token = localStorage.getItem("token");
+    await gameService.sendChatMessage(message.value, token!);
+    message.value = "";
+  } catch (error) {
+    toastApi.emit({
+      title: "Error sending chat message",
+      message: error as string,
+    });
+  }
 };
+
+onMounted(() => {
+  gameService.subscribeChatEvents((message: ChatMessage) => {
+    history.value.push(message);
+  });
+});
 </script>
 
 <style scoped lang="scss">

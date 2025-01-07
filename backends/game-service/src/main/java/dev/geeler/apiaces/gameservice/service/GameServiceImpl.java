@@ -9,6 +9,9 @@ import dev.geeler.apiaces.gameservice.model.game.GameStatus;
 import dev.geeler.apiaces.gameservice.repository.GamePlayerRepository;
 import dev.geeler.apiaces.gameservice.repository.GameRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.messaging.MessageHeaders;
+import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
+import org.springframework.messaging.simp.SimpMessageType;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
@@ -56,7 +59,8 @@ public class GameServiceImpl implements GameService {
     }
 
     /**
-     * When the player's websocket connection is established, they will join the game.
+     * When the player's websocket connection is established, they will join the
+     * game.
      *
      * @param gameId   The UUID of the game to join
      * @param playerId The UUID of the player joining the game
@@ -141,13 +145,18 @@ public class GameServiceImpl implements GameService {
 
     @Override
     public void sendChatMessage(ChatMessage chatMessage) {
+        System.out.println("Sending chat message: " + chatMessage);
+        System.out.println(playerSessionIdMapping);
         this.getPlayers(chatMessage.getGameId()).forEach(player -> {
             if (playerSessionIdMapping.containsKey(player.getPlayerId())) {
                 String sessionId = playerSessionIdMapping.get(player.getPlayerId());
+                System.out.println("Session found for player in game " + chatMessage.getGameId().toString()
+                        + " with sessionId " + sessionId);
                 simpMessagingTemplate.convertAndSendToUser(
                         sessionId,
                         "/queue/chat",
-                        chatMessage
+                        chatMessage,
+                        createHeaders(sessionId)
                 );
             }
         });
@@ -162,5 +171,14 @@ public class GameServiceImpl implements GameService {
     @Override
     public void disconnectUser(UUID playerId) {
         playerSessionIdMapping.remove(playerId);
+    }
+
+    private MessageHeaders createHeaders(String sessionId) {
+        SimpMessageHeaderAccessor headerAccessor = SimpMessageHeaderAccessor
+                .create(SimpMessageType.MESSAGE);
+        headerAccessor.setSessionId(sessionId);
+        headerAccessor.setLeaveMutable(true);
+        return headerAccessor.getMessageHeaders();
+
     }
 }

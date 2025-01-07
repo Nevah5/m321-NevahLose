@@ -25,4 +25,6 @@ public interface JwtService {
     UUID getUserIdFromSecurityContext();
 
     UUID getUserIdFromPrincipal(Principal principal);
+
+    String getUsernameFromPrincipal(Principal principal);
 }

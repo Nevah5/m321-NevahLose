@@ -1,7 +1,14 @@
 import type { AxiosInstance, AxiosResponse } from "axios";
-import type { Player, ApiError, TokenResponse, Card, Game } from "./types";
+import type {
+  Player,
+  ApiError,
+  TokenResponse,
+  Card,
+  Game,
+  ChatMessage,
+} from "./types";
 import SockJS from "sockjs-client";
-import { Client, Stomp } from "@stomp/stompjs";
+import { Client, Stomp, type IMessage } from "@stomp/stompjs";
 
 import axios from "axios";
 import { handleApiError } from "./errorHandler";
@@ -150,6 +157,23 @@ class GameService extends ApiService {
       this.stompClient.deactivate();
       this.stompClient = null;
     }
+  }
+
+  subscribeChatEvents(callback: (message: ChatMessage) => void) {
+    this.stompClient!.subscribe(`/queue/chat`, (message: IMessage) => {
+      callback(JSON.parse(message.body) as ChatMessage);
+    });
+    this.stompClient!.subscribe(`/user/queue/chat`, (message: IMessage) => {
+      callback(JSON.parse(message.body) as ChatMessage);
+    });
+  }
+
+  async sendChatMessage(message: string, token: string) {
+    this.stompClient!.publish({
+      destination: `/app/games.sendMessage`,
+      body: JSON.stringify({ message }),
+      headers: { Authorization: `Bearer ${token}` },
+    });
   }
 }
 

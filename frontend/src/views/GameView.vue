@@ -2,7 +2,7 @@
   <main>
     <LoadingOverlay :enabled="isLoading" />
     <h1>Game id {{ gameId }}</h1>
-    <ChatComponent />
+    <ChatComponent v-if="!isLoading" />
     <InviteCode :code="inviteCode" />
   </main>
 </template>

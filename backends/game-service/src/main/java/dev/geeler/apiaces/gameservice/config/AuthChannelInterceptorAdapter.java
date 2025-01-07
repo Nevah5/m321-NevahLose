@@ -18,7 +18,6 @@ import java.util.UUID;
 @Component
 @AllArgsConstructor
 public class AuthChannelInterceptorAdapter implements ChannelInterceptor {
-    private static final String TOKEN_HEADER = "token";
     private final JwtService jwtService;
 
 
@@ -47,7 +46,6 @@ public class AuthChannelInterceptorAdapter implements ChannelInterceptor {
             );
             SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
 
-            accessor.setUser(usernamePasswordAuthenticationToken);
             accessor.setUser(usernamePasswordAuthenticationToken);
         }
 

@@ -36,3 +36,13 @@ export interface Game {
   currentTurnId: string;
   winnerId: string;
 }
+
+export interface ChatMessage {
+  id: string;
+  gameId: string;
+  senderId: string;
+  senderUsername: string;
+  type: "ACTIVITY" | "MESSAGE";
+  isJoined?: boolean;
+  message?: string;
+}

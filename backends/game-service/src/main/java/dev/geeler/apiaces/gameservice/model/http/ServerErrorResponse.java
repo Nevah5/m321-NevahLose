@@ -20,4 +20,8 @@ public class ServerErrorResponse extends HttpResponse {
                 ", message='" + message + '\'' +
                 '}';
     }
+
+    public String toJsonString() {
+        return "{\"code\": " + this.code + ", \"message\": \"" + this.message + "\", \"errorCode\": \"" + this.errorCode + "\"}";
+    }
 }

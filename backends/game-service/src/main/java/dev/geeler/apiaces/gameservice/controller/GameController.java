@@ -1,6 +1,7 @@
 package dev.geeler.apiaces.gameservice.controller;
 
 import dev.geeler.apiaces.gameservice.model.game.ChatMessage;
+import dev.geeler.apiaces.gameservice.model.game.ChatType;
 import dev.geeler.apiaces.gameservice.model.game.Game;
 import dev.geeler.apiaces.gameservice.model.game.GameStatus;
 import dev.geeler.apiaces.gameservice.model.game.dto.ChatMessageDto;
@@ -63,9 +64,12 @@ public class GameController {
     @MessageMapping("/games.sendMessage")
     public void sendMessage(@Payload ChatMessageDto chatMessageDto, Principal principal) {
         UUID playerId = jwtService.getUserIdFromPrincipal(principal);
+        String username = jwtService.getUsernameFromPrincipal(principal);
         gameService.sendChatMessage(ChatMessage.builder()
                 .message(chatMessageDto.message())
-                .playerId(playerId)
+                .senderId(playerId)
+                .senderUsername(username)
+                .type(ChatType.MESSAGE)
                 .gameId(gameService.getCurrentGameIdFromPlayer(playerId))
                 .build()
         );

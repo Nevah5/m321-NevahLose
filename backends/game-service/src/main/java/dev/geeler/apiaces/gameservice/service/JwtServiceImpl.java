@@ -97,4 +97,11 @@ public class JwtServiceImpl implements JwtService {
         var userPrincipal = (JwtAuthFilter.CustomPrincipal) authToken.getPrincipal();
         return userPrincipal.id();
     }
+
+    @Override
+    public String getUsernameFromPrincipal(Principal principal) {
+        var authToken = (UsernamePasswordAuthenticationToken) principal;
+        var userPrincipal = (JwtAuthFilter.CustomPrincipal) authToken.getPrincipal();
+        return userPrincipal.username();
+    }
 }
