@@ -3,6 +3,7 @@ package dev.geeler.apiaces.gameservice.service;
 import dev.geeler.apiaces.gameservice.exception.MaxGameSizeException;
 import dev.geeler.apiaces.gameservice.exception.NotFoundException;
 import dev.geeler.apiaces.gameservice.model.game.ChatMessage;
+import dev.geeler.apiaces.gameservice.model.game.ChatType;
 import dev.geeler.apiaces.gameservice.model.game.Game;
 import dev.geeler.apiaces.gameservice.model.game.GamePlayer;
 import dev.geeler.apiaces.gameservice.model.game.GameStatus;
@@ -82,7 +83,7 @@ public class GameServiceImpl implements GameService {
         }
         GamePlayer gamePlayer = gamePlayerRepository.findByPlayerIdAndGameId(playerId, game.getId())
                 .orElse(null);
-        if (gamePlayer != null)
+        if (gamePlayer != null && game.getStatus() != GameStatus.WAITING_FOR_PLAYERS)
             throw new IllegalStateException("Player already in game.");
         if (gamePlayerRepository.findGamePlayersByGameId(game.getId()).size() >= game.getMaxPlayers())
             throw new MaxGameSizeException("Max game size reached!");
@@ -100,7 +101,7 @@ public class GameServiceImpl implements GameService {
      * @param playerId The UUID of the player leaving the game
      */
     @Override
-    public void leaveGame(UUID gameId, UUID playerId) {
+    public void leaveGame(UUID gameId, UUID playerId, String username) {
         Game game = gameRepository.findById(gameId)
                 .orElseThrow(() -> new IllegalStateException("Game not found"));
         GamePlayer gamePlayer = gamePlayerRepository.findByPlayerIdAndGameId(playerId, gameId)
@@ -112,6 +113,25 @@ public class GameServiceImpl implements GameService {
                     .build();
             gamePlayerRepository.save(gamePlayer);
         }
+
+        this.getPlayers(gameId).forEach(player -> {
+            if (playerSessionIdMapping.containsKey(player.getPlayerId())) {
+                String sessionId = playerSessionIdMapping.get(player.getPlayerId());
+                simpMessagingTemplate.convertAndSendToUser(
+                        sessionId,
+                        "/queue/chat",
+                        ChatMessage.builder()
+                                .gameId(gameId)
+                                .senderUsername(username)
+                                .isJoined(false)
+                                .senderId(playerId)
+                                .type(ChatType.ACTIVITY)
+                                .build(),
+                        createHeaders(sessionId)
+                );
+            }
+        });
+        // TODO: broadcast to all springboot instances via kafka
 
         if (game.getOwnerId().equals(playerId)) {
             game = game.builder()
@@ -145,13 +165,9 @@ public class GameServiceImpl implements GameService {
 
     @Override
     public void sendChatMessage(ChatMessage chatMessage) {
-        System.out.println("Sending chat message: " + chatMessage);
-        System.out.println(playerSessionIdMapping);
         this.getPlayers(chatMessage.getGameId()).forEach(player -> {
             if (playerSessionIdMapping.containsKey(player.getPlayerId())) {
                 String sessionId = playerSessionIdMapping.get(player.getPlayerId());
-                System.out.println("Session found for player in game " + chatMessage.getGameId().toString()
-                        + " with sessionId " + sessionId);
                 simpMessagingTemplate.convertAndSendToUser(
                         sessionId,
                         "/queue/chat",
@@ -169,7 +185,13 @@ public class GameServiceImpl implements GameService {
     }
 
     @Override
-    public void disconnectUser(UUID playerId) {
+    public void disconnectUser(UUID playerId, String username) {
+        try {
+            UUID gameId = this.getCurrentGameIdFromPlayer(playerId);
+            this.leaveGame(gameId, playerId, username);
+        } catch (IllegalArgumentException e) {
+            // user not in any game
+        }
         playerSessionIdMapping.remove(playerId);
     }
 

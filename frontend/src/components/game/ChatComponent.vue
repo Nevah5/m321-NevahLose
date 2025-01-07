@@ -7,7 +7,8 @@
         :class="'message' + m.type == 'ACTIVITY' ? ' activity-message' : ''"
       >
         <slot v-if="m.type == 'ACTIVITY'"
-          ><b>{{ m.senderUsername }}</b> joined.</slot
+          ><b>{{ m.senderUsername }}</b
+          >{{ m.joined ? " joined" : " disconnected" }}.</slot
         >
         <slot v-else>
           <b>{{ m.senderUsername }}</b

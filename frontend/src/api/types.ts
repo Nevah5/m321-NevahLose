@@ -43,6 +43,6 @@ export interface ChatMessage {
   senderId: string;
   senderUsername: string;
   type: "ACTIVITY" | "MESSAGE";
-  isJoined?: boolean;
+  joined?: boolean;
   message?: string;
 }

@@ -67,7 +67,8 @@ public class GameController {
     @MessageMapping("/games.leaveGame")
     public void leaveGame(@Payload GameIdDto leaveGameDto, Principal principal) {
         UUID playerId = jwtService.getUserIdFromPrincipal(principal);
-        gameService.leaveGame(leaveGameDto.getGameId(), playerId);
+        String username = jwtService.getUsernameFromPrincipal(principal);
+        gameService.leaveGame(leaveGameDto.getGameId(), playerId, username);
         kafkaProducerService.sendMessage(leaveGameDto.getGameId(), playerId + " left the game. (" + leaveGameDto.getGameId() + ")"); // TODO: move to service
     }
 

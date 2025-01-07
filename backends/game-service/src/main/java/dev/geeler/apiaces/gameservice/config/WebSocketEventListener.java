@@ -21,9 +21,7 @@ public class WebSocketEventListener {
         UsernamePasswordAuthenticationToken token = (UsernamePasswordAuthenticationToken) event.getUser();
         JwtAuthFilter.CustomPrincipal principal = (JwtAuthFilter.CustomPrincipal) token.getPrincipal();
 
-        // TODO: send message to all users and handle leave
-
-        gameService.disconnectUser(principal.id());
+        gameService.disconnectUser(principal.id(), principal.username());
     }
 
     @EventListener
