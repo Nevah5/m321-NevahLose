@@ -9,7 +9,12 @@ import dev.geeler.apiaces.gameservice.service.KafkaProducerService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.security.Principal;
 import java.util.UUID;
@@ -40,11 +45,10 @@ public class GameController {
     }
 
     @MessageMapping("/games.joinGame")
-    public Game joinGame(@Payload GameIdDto joinGameDto, Principal principal) {
+    public void joinGame(@Payload GameIdDto joinGameDto, Principal principal) {
         UUID playerId = jwtService.getUserIdFromPrincipal(principal);
-        final Game game = gameService.joinGame(joinGameDto.getGameId(), playerId);
-        kafkaProducerService.sendMessage(game.getId(), playerId + " joined the game. (" + game.getId() + ")");
-        return game;
+        gameService.joinGame(joinGameDto.getGameId(), playerId);
+        kafkaProducerService.sendMessage(joinGameDto.getGameId(), playerId + " joined the game. (" + joinGameDto.getGameId() + ")");
     }
 
     @MessageMapping("/games.leaveGame")

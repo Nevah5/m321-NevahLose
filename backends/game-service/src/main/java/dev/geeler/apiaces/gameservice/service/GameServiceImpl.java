@@ -48,7 +48,7 @@ public class GameServiceImpl implements GameService {
      * @return The game object of the game that the player joined
      */
     @Override
-    public Game joinGame(UUID gameId, UUID playerId) {
+    public void joinGame(UUID gameId, UUID playerId) {
         final Game game = gameRepository.findById(gameId)
                 .orElseThrow(() -> new NotFoundException("The game was not found"));
         if (game.getStatus() != GameStatus.WAITING_FOR_PLAYERS) {
@@ -72,7 +72,6 @@ public class GameServiceImpl implements GameService {
                 .setPlayerId(playerId)
                 .build();
         gamePlayerRepository.save(gamePlayer);
-        return game;
     }
 
     /**

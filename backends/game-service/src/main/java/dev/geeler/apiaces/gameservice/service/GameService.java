@@ -13,7 +13,7 @@ public interface GameService {
 
     Game getGame(final UUID gameId);
 
-    Game joinGame(final UUID gameId, final UUID playerId);
+    void joinGame(final UUID gameId, final UUID playerId);
 
     void leaveGame(final UUID gameId, final UUID playerId);
 
