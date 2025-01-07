@@ -1,7 +1,9 @@
 package dev.geeler.apiaces.gameservice.controller;
 
+import dev.geeler.apiaces.gameservice.model.game.ChatMessage;
 import dev.geeler.apiaces.gameservice.model.game.Game;
 import dev.geeler.apiaces.gameservice.model.game.GameStatus;
+import dev.geeler.apiaces.gameservice.model.game.dto.ChatMessageDto;
 import dev.geeler.apiaces.gameservice.model.game.dto.GameIdDto;
 import dev.geeler.apiaces.gameservice.service.GameService;
 import dev.geeler.apiaces.gameservice.service.JwtService;
@@ -48,13 +50,24 @@ public class GameController {
     public void joinGame(@Payload GameIdDto joinGameDto, Principal principal) {
         UUID playerId = jwtService.getUserIdFromPrincipal(principal);
         gameService.joinGame(joinGameDto.getGameId(), playerId);
-        kafkaProducerService.sendMessage(joinGameDto.getGameId(), playerId + " joined the game. (" + joinGameDto.getGameId() + ")");
+        kafkaProducerService.sendMessage(joinGameDto.getGameId(), playerId + " joined the game. (" + joinGameDto.getGameId() + ")"); // TODO: move to service
     }
 
     @MessageMapping("/games.leaveGame")
     public void leaveGame(@Payload GameIdDto leaveGameDto, Principal principal) {
         UUID playerId = jwtService.getUserIdFromPrincipal(principal);
         gameService.leaveGame(leaveGameDto.getGameId(), playerId);
-        kafkaProducerService.sendMessage(leaveGameDto.getGameId(), playerId + " left the game. (" + leaveGameDto.getGameId() + ")");
+        kafkaProducerService.sendMessage(leaveGameDto.getGameId(), playerId + " left the game. (" + leaveGameDto.getGameId() + ")"); // TODO: move to service
+    }
+
+    @MessageMapping("/games.sendMessage")
+    public void sendMessage(@Payload ChatMessageDto chatMessageDto, Principal principal) {
+        UUID playerId = jwtService.getUserIdFromPrincipal(principal);
+        gameService.sendChatMessage(ChatMessage.builder()
+                .message(chatMessageDto.message())
+                .playerId(playerId)
+                .gameId(gameService.getCurrentGameIdFromPlayer(playerId))
+                .build()
+        );
     }
 }

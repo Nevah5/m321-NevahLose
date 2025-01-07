@@ -2,14 +2,17 @@ package dev.geeler.apiaces.gameservice.service;
 
 import dev.geeler.apiaces.gameservice.exception.MaxGameSizeException;
 import dev.geeler.apiaces.gameservice.exception.NotFoundException;
+import dev.geeler.apiaces.gameservice.model.game.ChatMessage;
 import dev.geeler.apiaces.gameservice.model.game.Game;
 import dev.geeler.apiaces.gameservice.model.game.GamePlayer;
 import dev.geeler.apiaces.gameservice.model.game.GameStatus;
 import dev.geeler.apiaces.gameservice.repository.GamePlayerRepository;
 import dev.geeler.apiaces.gameservice.repository.GameRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 
@@ -18,6 +21,18 @@ import java.util.UUID;
 public class GameServiceImpl implements GameService {
     private final GameRepository gameRepository;
     private final GamePlayerRepository gamePlayerRepository;
+    private final SimpMessagingTemplate simpMessagingTemplate;
+
+    private final HashMap<UUID, String> playerSessionIdMapping = new HashMap<>();
+
+    @Override
+    public UUID getCurrentGameIdFromPlayer(UUID playerId) {
+        GamePlayer player = gamePlayerRepository.findByPlayerIdAndLeftAtIsNull(playerId);
+        if (player == null) {
+            throw new IllegalStateException("Player not in game.");
+        }
+        return player.getGameId();
+    }
 
     @Override
     public Game getGame(Long roomId) {
@@ -122,5 +137,30 @@ public class GameServiceImpl implements GameService {
     @Override
     public List<GamePlayer> getPlayers(UUID gameId) {
         return gamePlayerRepository.findGamePlayersByGameId(gameId);
+    }
+
+    @Override
+    public void sendChatMessage(ChatMessage chatMessage) {
+        this.getPlayers(chatMessage.getGameId()).forEach(player -> {
+            if (playerSessionIdMapping.containsKey(player.getPlayerId())) {
+                String sessionId = playerSessionIdMapping.get(player.getPlayerId());
+                simpMessagingTemplate.convertAndSendToUser(
+                        sessionId,
+                        "/queue/chat",
+                        chatMessage
+                );
+            }
+        });
+        // TODO: send to kafka
+    }
+
+    @Override
+    public void connectUser(UUID playerId, String sessionId) {
+        playerSessionIdMapping.put(playerId, sessionId);
+    }
+
+    @Override
+    public void disconnectUser(UUID playerId) {
+        playerSessionIdMapping.remove(playerId);
     }
 }

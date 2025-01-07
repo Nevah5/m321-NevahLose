@@ -48,6 +48,7 @@ public class AuthChannelInterceptorAdapter implements ChannelInterceptor {
             SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
 
             accessor.setUser(usernamePasswordAuthenticationToken);
+            accessor.setUser(usernamePasswordAuthenticationToken);
         }
 
         return message;
