@@ -79,33 +79,33 @@ onMounted(() => {
     "input"
   ) as NodeListOf<HTMLInputElement>;
   inputs.value!.forEach((input) => {
-    input.addEventListener("keyup", handleInput);
+    input.addEventListener("keydown", handleInput);
     input.addEventListener("paste", handlePaste);
   });
 });
 
 const handleInput = (e: KeyboardEvent) => {
-  e.preventDefault();
   const target = e.target as HTMLInputElement;
   if (e.key === "Backspace") {
     const previous: HTMLInputElement | null =
       target.previousElementSibling as HTMLInputElement;
     if (previous == null) return;
-    previous.focus();
+    setTimeout(() => previous.focus(), 1);
   } else if (/\d/.test(e.key)) {
     const next: HTMLInputElement | null =
       target.nextElementSibling as HTMLInputElement;
-    const code = `${num1.value}${num2.value}${num3.value}${num4.value}${num5.value}${num6.value}`;
-    if (next == null && code.length === 6) {
-      joinGame(code);
-      return;
-    }
-    next.focus();
+    setTimeout(() => {
+      const code = `${num1.value}${num2.value}${num3.value}${num4.value}${num5.value}${num6.value}`;
+      if (next == null && code.length === 6) {
+        joinGame(code);
+        return;
+      }
+      next.focus();
+    }, 1);
   }
 };
 
 const handlePaste = (e: ClipboardEvent) => {
-  e.preventDefault();
   const paste = e.clipboardData?.getData("text");
   if (paste && paste.length <= 6) {
     const pasteArray = paste.split("");
