@@ -201,9 +201,12 @@ const revealCard = () => {
 }
 
 .card {
+  // fixed values
   $card-aspect-ratio-width: 3;
   $card-aspect-ratio-height: 4;
-  --corner-cut-radius: 20px;
+
+  // dynamic values
+  --corner-cut-radius: 10%;
   --card-width: 250px;
   $card-width: 250px;
   $card-height: calc(
@@ -211,6 +214,12 @@ const revealCard = () => {
   );
   --card-height: #{$card-height};
   --card-padding: 9.6px;
+
+  // calculated values
+  --image-width: calc(var(--card-width) - var(--card-padding) * 2);
+  --image-height: calc(var(--card-height) * 0.5);
+  --text-height: calc(var(--card-height) * 0.3);
+
   position: relative;
   aspect-ratio: calc($card-aspect-ratio-width / $card-aspect-ratio-height);
   width: var(--card-width);
@@ -243,33 +252,15 @@ const revealCard = () => {
         #0000000f
       );
 
-      --image-width: calc(var(--card-width) - var(--card-padding) * 2);
-      --image-height: calc(var(--card-height) * 0.5);
       clip-path: polygon(
-        0
-          calc(
-            1 / var(--image-height) *
-              (var(--image-height) - var(--corner-cut-radius)) * 100%
-          ),
-        0 calc(1 / var(--image-height) * var(--corner-cut-radius) * 100%),
-        calc(1 / var(--image-width) * var(--corner-cut-radius) * 100%) 0,
-        calc(
-            1 / var(--image-width) *
-              (var(--image-width) - var(--corner-cut-radius)) * 100%
-          )
-          0,
-        100% calc(1 / var(--image-height) * var(--corner-cut-radius) * 100%),
-        100%
-          calc(
-            1 / var(--image-height) *
-              (var(--image-height) - var(--corner-cut-radius)) * 100%
-          ),
-        calc(
-            1 / var(--image-width) *
-              (var(--image-width) - var(--corner-cut-radius)) * 100%
-          )
-          100%,
-        calc(1 / var(--image-width) * var(--corner-cut-radius) * 100%) 100%
+        10% 0,
+        90% 0,
+        100% 13.33%,
+        100% 86.67%,
+        90% 100%,
+        10% 100%,
+        0 86.67%,
+        0 13.33%
       );
     }
   }
@@ -301,28 +292,16 @@ const revealCard = () => {
 
       &.top {
         overflow: hidden;
-        --image-width: calc(var(--card-width) - var(--card-padding) * 2);
-        --image-height: calc(var(--card-height) * 0.5);
 
         clip-path: polygon(
-          0 0,
-          100% 0,
-          100%
-            calc(
-              1 / var(--image-height) *
-                (var(--image-height) - var(--corner-cut-radius)) * 100%
-            ),
-          calc(
-              1 / var(--image-width) *
-                (var(--image-width) - var(--corner-cut-radius)) * 100%
-            )
-            100%,
-          calc(1 / var(--image-width) * var(--corner-cut-radius) * 100%) 100%,
-          0
-            calc(
-              1 / var(--image-height) *
-                (var(--image-height) - var(--corner-cut-radius)) * 100%
-            )
+          10% 0,
+          90% 0,
+          100% 13.33%,
+          100% 86.67%,
+          90% 100%,
+          10% 100%,
+          0 86.67%,
+          0 13.33%
         );
 
         div.title {
@@ -360,35 +339,18 @@ const revealCard = () => {
           background-size: cover;
           background-repeat: no-repeat;
           clip-path: polygon(
-            0
-              calc(
-                1 / var(--image-height) *
-                  (var(--image-height) - var(--corner-cut-radius)) * 100%
-              ),
-            0 calc(1 / var(--image-height) * var(--corner-cut-radius) * 100%),
-            calc(1 / var(--image-width) * var(--corner-cut-radius) * 100%) 0,
-            calc(
-                1 / var(--image-width) *
-                  (var(--image-width) - var(--corner-cut-radius)) * 100%
-              )
-              0,
-            100% calc(1 / var(--image-height) * var(--corner-cut-radius) * 100%),
-            100%
-              calc(
-                1 / var(--image-height) *
-                  (var(--image-height) - var(--corner-cut-radius)) * 100%
-              ),
-            calc(
-                1 / var(--image-width) *
-                  (var(--image-width) - var(--corner-cut-radius)) * 100%
-              )
-              100%,
-            calc(1 / var(--image-width) * var(--corner-cut-radius) * 100%) 100%
+            10% 0,
+            90% 0,
+            100% 13.33%,
+            100% 86.67%,
+            90% 100%,
+            10% 100%,
+            0 86.67%,
+            0 13.33%
           );
         }
       }
       &.middle {
-        --text-height: calc(var(--card-height) * 0.3);
         height: var(--text-height);
         display: flex;
         justify-content: center;
@@ -398,22 +360,13 @@ const revealCard = () => {
         font-size: 1.5rem;
         font-weight: bold;
         position: relative;
-        --text-width: calc(var(--card-width) - var(--card-padding) * 2);
         clip-path: polygon(
           0 0,
-          calc(
-              1 / var(--text-width) *
-                (var(--text-width) - var(--corner-cut-radius)) * 100%
-            )
-            0,
-          100% calc(1 / var(--text-height) * var(--corner-cut-radius) * 100%),
+          90% 0,
+          100% 22.5%,
           100% 100%,
-          calc(1 / var(--text-width) * var(--corner-cut-radius) * 100%) 100%,
-          0
-            calc(
-              1 / var(--text-height) *
-                (var(--text-height) - var(--corner-cut-radius)) * 100%
-            )
+          10% 100%,
+          0 77.5%
         );
 
         p {
