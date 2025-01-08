@@ -1,14 +1,13 @@
 package dev.geeler.apiaces.gameservice.controller;
 
+import dev.geeler.apiaces.gameservice.exception.NotFoundException;
 import dev.geeler.apiaces.gameservice.model.game.ChatMessage;
 import dev.geeler.apiaces.gameservice.model.game.ChatType;
 import dev.geeler.apiaces.gameservice.model.game.Game;
 import dev.geeler.apiaces.gameservice.model.game.GameStatus;
-import dev.geeler.apiaces.gameservice.model.game.dto.ChatMessageDto;
-import dev.geeler.apiaces.gameservice.model.game.dto.GameIdDto;
-import dev.geeler.apiaces.gameservice.service.GameService;
-import dev.geeler.apiaces.gameservice.service.JwtService;
-import dev.geeler.apiaces.gameservice.service.KafkaProducerService;
+import dev.geeler.apiaces.gameservice.dto.ChatMessageDto;
+import dev.geeler.apiaces.gameservice.dto.GameIdDto;
+import dev.geeler.apiaces.gameservice.service.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
@@ -27,14 +26,17 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class GameController {
     private final GameService gameService;
+    private final ChatService chatService;
+    private final PlayerService playerService;
 
     private final JwtService jwtService;
 
-    private final KafkaProducerService kafkaProducerService;
+    private final KafkaService kafkaProducerService;
 
     @GetMapping("/games/rooms/{roomId}")
     public Game getGame(@PathVariable Long roomId) {
-        Game game = gameService.getGame(roomId);
+        Game game = gameService.getGame(roomId).orElseThrow(() ->
+                new NotFoundException("Game with roomId " + roomId + " not found"));
         if (game.getStatus() != GameStatus.WAITING_FOR_PLAYERS) {
             throw new IllegalStateException("Game is already started");
         }
@@ -52,15 +54,13 @@ public class GameController {
         UUID playerId = jwtService.getUserIdFromPrincipal(principal);
         String username = jwtService.getUsernameFromPrincipal(principal);
         gameService.joinGame(joinGameDto.getGameId(), playerId);
-        kafkaProducerService.sendMessage(joinGameDto.getGameId(), playerId + " joined the game. (" + joinGameDto.getGameId() + ")"); // TODO: move to service
-        gameService.sendChatMessage(
-                ChatMessage.builder()
-                        .gameId(joinGameDto.getGameId())
-                        .isJoined(true)
-                        .type(ChatType.ACTIVITY)
-                        .senderId(playerId)
-                        .senderUsername(username)
-                        .build()
+        chatService.sendChatMessage(ChatMessage.builder()
+                .gameId(joinGameDto.getGameId())
+                .isJoined(true)
+                .type(ChatType.ACTIVITY)
+                .senderId(playerId)
+                .senderUsername(username)
+                .build()
         );
     }
 
@@ -69,7 +69,7 @@ public class GameController {
         UUID playerId = jwtService.getUserIdFromPrincipal(principal);
         String username = jwtService.getUsernameFromPrincipal(principal);
         gameService.leaveGame(leaveGameDto.getGameId(), playerId, username);
-        kafkaProducerService.sendMessage(leaveGameDto.getGameId(), playerId + " left the game. (" + leaveGameDto.getGameId() + ")"); // TODO: move to service
+        // Chat message sent over websocket disconnect event
     }
 
     @MessageMapping("/games.sendMessage")
@@ -79,12 +79,13 @@ public class GameController {
         if (chatMessageDto.message().equals("")) {
             throw new IllegalArgumentException("Message cannot be empty");
         }
-        gameService.sendChatMessage(ChatMessage.builder()
+        chatService.sendChatMessage(ChatMessage.builder()
                 .message(chatMessageDto.message())
                 .senderId(playerId)
                 .senderUsername(username)
                 .type(ChatType.MESSAGE)
-                .gameId(gameService.getCurrentGameIdFromPlayer(playerId))
+                .gameId(playerService.getCurrentGameId(playerId).orElseThrow(() ->
+                        new NotFoundException("Player not in game")))
                 .build()
         );
     }

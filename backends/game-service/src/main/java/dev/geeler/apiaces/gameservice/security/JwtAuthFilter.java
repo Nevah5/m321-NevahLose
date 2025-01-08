@@ -1,5 +1,6 @@
 package dev.geeler.apiaces.gameservice.security;
 
+import dev.geeler.apiaces.gameservice.model.security.UserPrincipal;
 import dev.geeler.apiaces.gameservice.service.JwtService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -35,7 +36,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             UUID userId = jwtService.extractUserId(token);
 
             if (username != null && userId != null) {
-                var userPrincipal = new JwtAuthFilter.CustomPrincipal(userId, username);
+                var userPrincipal = new UserPrincipal(userId, username);
 
                 UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(
                         userPrincipal,
@@ -46,8 +47,5 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             }
         }
         filterChain.doFilter(request, response);
-    }
-
-    public record CustomPrincipal(UUID id, String username) {
     }
 }

@@ -1,7 +1,7 @@
 package dev.geeler.apiaces.gameservice.config;
 
-import dev.geeler.apiaces.gameservice.security.JwtAuthFilter;
-import dev.geeler.apiaces.gameservice.service.GameService;
+import dev.geeler.apiaces.gameservice.model.security.UserPrincipal;
+import dev.geeler.apiaces.gameservice.service.PlayerService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.event.EventListener;
 import org.springframework.messaging.simp.SimpAttributesContextHolder;
@@ -13,22 +13,22 @@ import org.springframework.web.socket.messaging.SessionDisconnectEvent;
 @Component
 @RequiredArgsConstructor
 public class WebSocketEventListener {
-    private final GameService gameService;
-
-    @EventListener
-    public void handleWebSocketDisconnectListener(SessionDisconnectEvent event) {
-        String sessionId = event.getSessionId();
-        UsernamePasswordAuthenticationToken token = (UsernamePasswordAuthenticationToken) event.getUser();
-        JwtAuthFilter.CustomPrincipal principal = (JwtAuthFilter.CustomPrincipal) token.getPrincipal();
-
-        gameService.disconnectUser(principal.id(), principal.username());
-    }
+    private final PlayerService playerService;
 
     @EventListener
     public void handleSessionConnect(SessionConnectEvent event) {
         String sessionId = SimpAttributesContextHolder.currentAttributes().getSessionId();
         UsernamePasswordAuthenticationToken token = (UsernamePasswordAuthenticationToken) event.getUser();
-        JwtAuthFilter.CustomPrincipal principal = (JwtAuthFilter.CustomPrincipal) token.getPrincipal();
-        gameService.connectUser(principal.id(), sessionId);
+        UserPrincipal principal = (UserPrincipal) token.getPrincipal();
+
+        playerService.connectPlayer(principal.getId(), sessionId);
+    }
+
+    @EventListener
+    public void handleWebSocketDisconnectListener(SessionDisconnectEvent event) {
+        UsernamePasswordAuthenticationToken token = (UsernamePasswordAuthenticationToken) event.getUser();
+        UserPrincipal principal = (UserPrincipal) token.getPrincipal();
+
+        playerService.disconnectPlayer(principal);
     }
 }

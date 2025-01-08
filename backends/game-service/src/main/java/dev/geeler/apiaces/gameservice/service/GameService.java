@@ -1,33 +1,26 @@
 package dev.geeler.apiaces.gameservice.service;
 
-import dev.geeler.apiaces.gameservice.model.game.ChatMessage;
 import dev.geeler.apiaces.gameservice.model.game.Game;
 import dev.geeler.apiaces.gameservice.model.game.GamePlayer;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
-// TODO: fix inconsistencies with final
 public interface GameService {
-    UUID getCurrentGameIdFromPlayer(final UUID playerId);
+    Optional<Game> getGame(Long roomId);
 
-    Game createGame(final UUID playerId);
+    Optional<Game> getGame(UUID gameId);
 
-    Game getGame(final Long roomId);
+    Game createGame(UUID playerId);
 
-    Game getGame(final UUID gameId);
+    void joinGame(UUID gameId, UUID playerId);
 
-    void joinGame(final UUID gameId, final UUID playerId);
+    void leaveGame(UUID gameId, UUID playerId, String username);
 
-    void leaveGame(final UUID gameId, final UUID playerId, String username);
+    void startGame(UUID gameId, UUID playerId);
 
-    void startGame(final UUID gameId, final UUID playerId);
+    List<GamePlayer> getConnectedPlayers(UUID gameId);
 
-    List<GamePlayer> getPlayers(final UUID gameId);
-
-    void sendChatMessage(ChatMessage chatMessage);
-
-    void connectUser(UUID playerId, String sessionId);
-
-    void disconnectUser(UUID playerId, String username);
+    int getCurrentGamePlayerCount(UUID gameId);
 }
