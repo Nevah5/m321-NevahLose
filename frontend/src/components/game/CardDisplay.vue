@@ -85,7 +85,7 @@
 </template>
 
 <script lang="ts" setup>
-import CardComponent from "./CardComponent.vue";
+import CardComponent from "@/components/game/CardComponent.vue";
 import { cardService } from "@/api";
 import toastApi from "@/api/toastApi";
 import type { Card } from "@/api/types";

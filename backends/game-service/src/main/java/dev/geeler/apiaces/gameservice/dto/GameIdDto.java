@@ -1,4 +1,4 @@
-package dev.geeler.apiaces.gameservice.model.game.dto;
+package dev.geeler.apiaces.gameservice.dto;
 
 import lombok.Data;
 

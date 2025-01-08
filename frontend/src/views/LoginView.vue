@@ -30,7 +30,7 @@
 </template>
 
 <script lang="ts" setup>
-import LoadingOverlay from "@/components/LoadingOverlay.vue";
+import LoadingOverlay from "@/components/page/LoadingOverlay.vue";
 import LoadingIcon from "@/components/icons/LoadingIcon.vue";
 import { onMounted, ref } from "vue";
 import { playerService } from "@/api";

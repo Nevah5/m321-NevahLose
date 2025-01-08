@@ -1,8 +1,6 @@
 import { createRouter, createWebHistory } from "vue-router";
 import HomeView from "@/views/HomeView.vue";
 import SignupView from "@/views/LoginView.vue";
-import RulesView from "@/views/RulesView.vue";
-import DebugView from "@/views/DebugView.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -15,7 +13,7 @@ const router = createRouter({
     {
       path: "/rules",
       name: "rules",
-      component: RulesView,
+      component: () => import("@/views/RulesView.vue"),
     },
     {
       path: "/login",
@@ -34,7 +32,15 @@ const router = createRouter({
     {
       path: "/debug",
       name: "debug",
-      component: DebugView,
+      component: () => import("@/views/DebugView.vue"),
+    },
+    {
+      path: "/:catchAll(.*)",
+      name: "notfound",
+      component: () => import("@/views/NotFoundView.vue"),
+      meta: {
+        titleName: "404 Not Found",
+      },
     },
   ],
 });

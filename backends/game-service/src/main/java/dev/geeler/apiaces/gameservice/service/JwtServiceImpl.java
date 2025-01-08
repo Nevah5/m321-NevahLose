@@ -1,5 +1,6 @@
 package dev.geeler.apiaces.gameservice.service;
 
+import dev.geeler.apiaces.gameservice.model.security.UserPrincipal;
 import dev.geeler.apiaces.gameservice.security.JwtAuthFilter;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -85,16 +86,23 @@ public class JwtServiceImpl implements JwtService {
             throw new IllegalStateException("No authentication in security context");
         }
         Object principal = authentication.getPrincipal();
-        if (!(principal instanceof JwtAuthFilter.CustomPrincipal)) {
+        if (!(principal instanceof UserPrincipal)) {
             throw new RuntimeException("Invalid principal type");
         }
-        return ((JwtAuthFilter.CustomPrincipal) principal).id();
+        return ((UserPrincipal) principal).getId();
     }
 
     @Override
     public UUID getUserIdFromPrincipal(Principal principal) {
         var authToken = (UsernamePasswordAuthenticationToken) principal;
-        var userPrincipal = (JwtAuthFilter.CustomPrincipal) authToken.getPrincipal();
-        return userPrincipal.id();
+        var userPrincipal = (UserPrincipal) authToken.getPrincipal();
+        return userPrincipal.getId();
+    }
+
+    @Override
+    public String getUsernameFromPrincipal(Principal principal) {
+        var authToken = (UsernamePasswordAuthenticationToken) principal;
+        var userPrincipal = (UserPrincipal) authToken.getPrincipal();
+        return userPrincipal.getUsername();
     }
 }

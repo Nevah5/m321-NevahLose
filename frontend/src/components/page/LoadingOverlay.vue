@@ -10,7 +10,7 @@
 </template>
 
 <script lang="ts" setup>
-import LogoIcon from "./icons/LogoIcon.vue";
+import LogoIcon from "@/components/icons/LogoIcon.vue";
 
 const { enabled = false } = defineProps<{
   enabled?: boolean;

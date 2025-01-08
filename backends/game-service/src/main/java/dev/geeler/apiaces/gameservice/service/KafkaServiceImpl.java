@@ -7,9 +7,14 @@ import org.springframework.stereotype.Service;
 import java.util.UUID;
 
 @Service
-public class KafkaProducerServiceImpl implements KafkaProducerService {
+public class KafkaServiceImpl implements KafkaService {
     @Autowired
     private KafkaTemplate<String, String> kafkaTemplate;
+
+    @Override
+    public void sendMessage(String topic, Object payload) {
+        kafkaTemplate.send(topic, payload.toString());
+    }
 
     @Override
     public void sendMessage(UUID gameId, String message) {

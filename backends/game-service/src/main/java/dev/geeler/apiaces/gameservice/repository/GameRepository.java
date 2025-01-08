@@ -9,7 +9,7 @@ import java.util.UUID;
 
 @Repository
 public interface GameRepository extends JpaRepository<Game, UUID> {
-    Optional<Game> findByRoomId(String roomId);
+    Game findByRoomId(String roomId);
 
     Game findByOwnerId(UUID ownerId);
 }

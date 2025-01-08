@@ -1,5 +1,6 @@
 package dev.geeler.apiaces.gameservice.config;
 
+import dev.geeler.apiaces.gameservice.model.security.UserPrincipal;
 import dev.geeler.apiaces.gameservice.security.JwtAuthFilter;
 import dev.geeler.apiaces.gameservice.service.JwtService;
 import lombok.AllArgsConstructor;
@@ -18,7 +19,6 @@ import java.util.UUID;
 @Component
 @AllArgsConstructor
 public class AuthChannelInterceptorAdapter implements ChannelInterceptor {
-    private static final String TOKEN_HEADER = "token";
     private final JwtService jwtService;
 
 
@@ -38,7 +38,7 @@ public class AuthChannelInterceptorAdapter implements ChannelInterceptor {
 
             String username = jwtService.extractUsername(token);
             UUID userId = jwtService.extractUserId(token);
-            var userPrincipal = new JwtAuthFilter.CustomPrincipal(userId, username);
+            var userPrincipal = new UserPrincipal(userId, username);
 
             UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(
                     userPrincipal,

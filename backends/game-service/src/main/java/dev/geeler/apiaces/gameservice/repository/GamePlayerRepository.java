@@ -15,4 +15,6 @@ public interface GamePlayerRepository extends JpaRepository<GamePlayer, UUID> {
     List<GamePlayer> findGamePlayersByGameId(UUID gameId);
 
     List<GamePlayer> findByGameId(UUID gameId);
+
+    GamePlayer findByPlayerIdAndLeftAtIsNull(UUID playerId);
 }

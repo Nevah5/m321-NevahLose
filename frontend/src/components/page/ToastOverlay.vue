@@ -22,7 +22,7 @@
 import toastApi from "@/api/toastApi";
 import type { Toast, ToastTechnical } from "@/api/toastApi";
 import { onMounted, ref } from "vue";
-import CloseButton from "@/components/icons/CloseButton.vue";
+import CloseButton from "@/components/buttons/CloseButton.vue";
 import warningIcon from "@/assets/warning.svg";
 
 const DEFAULT_TIMEOUT = 5000;

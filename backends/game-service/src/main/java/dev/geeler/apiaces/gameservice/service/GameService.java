@@ -4,20 +4,23 @@ import dev.geeler.apiaces.gameservice.model.game.Game;
 import dev.geeler.apiaces.gameservice.model.game.GamePlayer;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 public interface GameService {
-    Game createGame(final UUID playerId);
+    Optional<Game> getGame(Long roomId);
 
-    Game getGame(final Long roomId);
+    Optional<Game> getGame(UUID gameId);
 
-    Game getGame(final UUID gameId);
+    Game createGame(UUID playerId);
 
-    Game joinGame(final UUID gameId, final UUID playerId);
+    void joinGame(UUID gameId, UUID playerId);
 
-    void leaveGame(final UUID gameId, final UUID playerId);
+    void leaveGame(UUID gameId, UUID playerId, String username);
 
-    void startGame(final UUID gameId, final UUID playerId);
+    void startGame(UUID gameId, UUID playerId);
 
-    List<GamePlayer> getPlayers(final UUID gameId);
+    List<GamePlayer> getConnectedPlayers(UUID gameId);
+
+    int getCurrentGamePlayerCount(UUID gameId);
 }

@@ -43,7 +43,7 @@
 </template>
 
 <script lang="ts" setup>
-import CardDisplay from "@/components/CardDisplay.vue";
+import CardDisplay from "@/components/game/CardDisplay.vue";
 </script>
 
 <style lang="scss" scoped>
