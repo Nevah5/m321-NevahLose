@@ -64,14 +64,6 @@ public class GameController {
         );
     }
 
-    @MessageMapping("/games.leaveGame")
-    public void leaveGame(@Payload GameIdDto leaveGameDto, Principal principal) {
-        UUID playerId = jwtService.getUserIdFromPrincipal(principal);
-        String username = jwtService.getUsernameFromPrincipal(principal);
-        gameService.leaveGame(leaveGameDto.getGameId(), playerId, username);
-        // Chat message sent over websocket disconnect event
-    }
-
     @MessageMapping("/games.sendMessage")
     public void sendMessage(@Payload ChatMessageDto chatMessageDto, Principal principal) {
         UUID playerId = jwtService.getUserIdFromPrincipal(principal);
