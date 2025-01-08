@@ -76,6 +76,8 @@ onMounted(() => {
     height: 30%;
     overflow-y: auto;
     margin-bottom: 10px;
+    max-width: 290px;
+    word-wrap: break-word;
 
     .message.activity-message {
       display: flex;
