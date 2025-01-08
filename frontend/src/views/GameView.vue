@@ -1,7 +1,7 @@
 <template>
   <main>
     <LoadingOverlay :enabled="isLoading" />
-    <h1>Game id {{ gameId }}</h1>
+    <LeaveGameButton @confirm="leaveGame" />
     <ChatComponent v-if="!isLoading" />
     <InviteCode :code="inviteCode" />
   </main>
@@ -12,6 +12,7 @@ import { gameService } from "@/api";
 import toastApi from "@/api/toastApi";
 import ChatComponent from "@/components/game/ChatComponent.vue";
 import InviteCode from "@/components/game/InviteCode.vue";
+import LeaveGameButton from "@/components/game/LeaveGameButton.vue";
 import LoadingOverlay from "@/components/page/LoadingOverlay.vue";
 import type { Client } from "@stomp/stompjs";
 import { onMounted, onUnmounted, ref } from "vue";
@@ -56,6 +57,11 @@ onMounted(async () => {
 onUnmounted(() => {
   gameService.leaveGame();
 });
+
+const leaveGame = () => {
+  gameService.leaveGame();
+  router.push("/");
+};
 </script>
 
 <style scoped>
@@ -65,6 +71,11 @@ main {
 h1 {
   font-size: 2rem;
   margin: 0;
+}
+.leave-button {
+  left: 10px;
+  top: 10px;
+  position: absolute;
 }
 .invite-code {
   bottom: 10px;

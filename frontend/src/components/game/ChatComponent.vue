@@ -8,7 +8,7 @@
       >
         <slot v-if="m.type == 'ACTIVITY'"
           ><b>{{ m.senderUsername }}</b
-          >{{ m.joined ? " joined" : " disconnected" }}.</slot
+          >{{ m.joined ? " joined" : " left" }}.</slot
         >
         <slot v-else>
           <b>{{ m.senderUsername }}</b
