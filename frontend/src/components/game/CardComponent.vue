@@ -19,7 +19,8 @@
       ref="card-turn"
     >
       <div class="inner">
-        <LogoIcon :logoWidth="100" :disableLink="true" />
+        <LogoIcon v-if="!backSideText" :logoWidth="100" :disableLink="true" />
+        <p v-else>{{ backSideText }}</p>
       </div>
     </div>
     <div
@@ -68,6 +69,7 @@ const {
   isTurnedProp = false,
   isTurnable = false,
   size = "medium",
+  backSideText = null,
 } = defineProps<{
   type: string;
   name: string;
@@ -78,6 +80,7 @@ const {
   isTurnedProp?: boolean;
   isTurnable?: boolean;
   size?: "medium" | "small" | "large";
+  backSideText?: string;
 }>();
 
 watch(
