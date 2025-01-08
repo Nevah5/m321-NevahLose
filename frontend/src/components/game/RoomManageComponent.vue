@@ -3,43 +3,17 @@
     <form>
       <h2>Join Game</h2>
       <div class="room-id-input" ref="inputs">
-        <input
-          type="text"
-          maxlength="1"
-          v-model="num1"
-          :disabled="isLoadingGame"
-        />
-        <input
-          type="text"
-          maxlength="1"
-          v-model="num2"
-          :disabled="isLoadingGame"
-        />
+        <input type="text" maxlength="1" :disabled="isLoadingGame" />
+        <input type="text" maxlength="1" :disabled="isLoadingGame" />
         <input
           class="space"
           type="text"
           maxlength="1"
-          v-model="num3"
           :disabled="isLoadingGame"
         />
-        <input
-          type="text"
-          maxlength="1"
-          v-model="num4"
-          :disabled="isLoadingGame"
-        />
-        <input
-          type="text"
-          maxlength="1"
-          v-model="num5"
-          :disabled="isLoadingGame"
-        />
-        <input
-          type="text"
-          maxlength="1"
-          v-model="num6"
-          :disabled="isLoadingGame"
-        />
+        <input type="text" maxlength="1" :disabled="isLoadingGame" />
+        <input type="text" maxlength="1" :disabled="isLoadingGame" />
+        <input type="text" maxlength="1" :disabled="isLoadingGame" />
         <div id="loading-background" v-if="isLoadingGame"></div>
         <LoadingIcon v-if="isLoadingGame" :dark="true" />
       </div>
@@ -64,12 +38,6 @@ import toastApi from "@/api/toastApi";
 
 const inputWrapper = useTemplateRef<HTMLInputElement>("inputs");
 const inputs = ref<NodeListOf<HTMLInputElement>>();
-const num1 = ref("");
-const num2 = ref("");
-const num3 = ref("");
-const num4 = ref("");
-const num5 = ref("");
-const num6 = ref("");
 const isLoadingNewGame = ref(false);
 const isLoadingGame = ref(false);
 const router = useRouter();
@@ -85,17 +53,30 @@ onMounted(() => {
 });
 
 const handleInput = (e: KeyboardEvent) => {
-  const target = e.target as HTMLInputElement;
+  let target = e.target as HTMLInputElement;
   if (e.key === "Backspace") {
+    if (target.value === "") {
+      // if already empty, focus previous
+      const previous: HTMLInputElement | null =
+        target.previousElementSibling as HTMLInputElement;
+      if (previous == null) return;
+      target = previous;
+      previous.focus();
+    }
     const previous: HTMLInputElement | null =
       target.previousElementSibling as HTMLInputElement;
     if (previous == null) return;
     setTimeout(() => previous.focus(), 1);
   } else if (/\d/.test(e.key)) {
+    if (target.value !== "") {
+      // if already filled, replace
+      target.value = e.key;
+    }
     const next: HTMLInputElement | null =
       target.nextElementSibling as HTMLInputElement;
     setTimeout(() => {
-      const code = `${num1.value}${num2.value}${num3.value}${num4.value}${num5.value}${num6.value}`;
+      let code = "";
+      inputs.value!.forEach((input) => (code += input.value));
       if (next == null && code.length === 6) {
         joinGame(code);
         return;
