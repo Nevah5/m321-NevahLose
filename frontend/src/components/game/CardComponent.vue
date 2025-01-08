@@ -201,27 +201,23 @@ const revealCard = () => {
 }
 
 .card {
-  // fixed values
-  $card-aspect-ratio-width: 3;
-  $card-aspect-ratio-height: 4;
-
   // dynamic values
-  --corner-cut-radius: 10%;
   --card-width: 250px;
-  $card-width: 250px;
-  $card-height: calc(
-    $card-width / $card-aspect-ratio-width * $card-aspect-ratio-height
-  );
-  --card-height: #{$card-height};
+  --card-height: 333.33px; // width / 3 * 4
   --card-padding: 9.6px;
+  --title-font-size: 12px;
+  --middle-font-size: 12px;
+  --bottom-font-size: 10px;
+  --back-font-size: 1.5rem;
 
   // calculated values
   --image-width: calc(var(--card-width) - var(--card-padding) * 2);
   --image-height: calc(var(--card-height) * 0.5);
   --text-height: calc(var(--card-height) * 0.3);
+  --text-margin-top: calc(var(--card-height) * 0.3 * 0.382 - 12px);
 
   position: relative;
-  aspect-ratio: calc($card-aspect-ratio-width / $card-aspect-ratio-height);
+  aspect-ratio: 3 / 4;
   width: var(--card-width);
   border-radius: 15px;
   overflow: hidden;
@@ -230,6 +226,39 @@ const revealCard = () => {
   transition-timing-function: ease-out;
   transform: rotate3d(0);
 
+  &-small {
+    // dynamic values
+    --card-width: 200px;
+    --card-height: 266.66px; // width / 3 * 4
+    --card-padding: 9.6px;
+    --title-font-size: 10px;
+    --middle-font-size: 10px;
+    --bottom-font-size: 8px;
+    --back-font-size: 1.5rem;
+
+    // calculated values
+    --image-width: calc(var(--card-width) - var(--card-padding) * 2);
+    --image-height: calc(var(--card-height) * 0.5);
+    --text-height: calc(var(--card-height) * 0.3);
+    --text-margin-top: calc(var(--card-height) * 0.3 * 0.382 - 12px);
+  }
+
+  &-large {
+    // dynamic values
+    --card-width: 300px;
+    --card-height: 400px; // width / 3 * 4
+    --card-padding: 9.6px;
+    --title-font-size: 16px;
+    --middle-font-size: 16px;
+    --bottom-font-size: 12px;
+    --back-font-size: 1.5rem;
+
+    // calculated values
+    --image-width: calc(var(--card-width) - var(--card-padding) * 2);
+    --image-height: calc(var(--card-height) * 0.5);
+    --text-height: calc(var(--card-height) * 0.3);
+    --text-margin-top: calc(var(--card-height) * 0.3 * 0.382 - 12px);
+  }
   &-hover {
     &:hover {
       transition-duration: 150ms;
@@ -313,7 +342,7 @@ const revealCard = () => {
           justify-content: space-between;
           align-items: center;
           background-color: var(--color-background);
-          font-size: 12px;
+          font-size: var(--title-font-size);
           font-weight: bold;
           padding: 1px 10px;
           width: 80%;
@@ -357,7 +386,6 @@ const revealCard = () => {
         align-items: flex-start;
         background-color: var(--color-background);
         color: var(--color-text);
-        font-size: 1.5rem;
         font-weight: bold;
         position: relative;
         clip-path: polygon(
@@ -371,9 +399,9 @@ const revealCard = () => {
 
         p {
           text-align: center;
-          font-size: 12px;
+          font-size: var(--middle-font-size);
           width: 80%;
-          margin-top: calc(var(--text-height) * 0.382 - 12px);
+          margin-top: var(--text-margin-top);
         }
       }
       &.bottom {
@@ -385,7 +413,7 @@ const revealCard = () => {
         p {
           color: var(--color-background);
           font-weight: bold;
-          font-size: 10px;
+          font-size: var(--bottom-font-size);
         }
       }
     }
@@ -440,34 +468,18 @@ const revealCard = () => {
       height: var(--inner-height);
       background-color: var(--color-background);
       color: var(--color-text);
-      font-size: 1.5rem;
+      font-size: var(--back-font-size);
       font-weight: bold;
 
       clip-path: polygon(
-        0
-          calc(
-            1 / var(--inner-height) *
-              (var(--inner-height) - var(--corner-cut-radius)) * 100%
-          ),
-        0 calc(1 / var(--inner-height) * var(--corner-cut-radius) * 100%),
-        calc(1 / var(--inner-width) * var(--corner-cut-radius) * 100%) 0,
-        calc(
-            1 / var(--inner-width) *
-              (var(--inner-width) - var(--corner-cut-radius)) * 100%
-          )
-          0,
-        100% calc(1 / var(--inner-height) * var(--corner-cut-radius) * 100%),
-        100%
-          calc(
-            1 / var(--inner-height) *
-              (var(--inner-height) - var(--corner-cut-radius)) * 100%
-          ),
-        calc(
-            1 / var(--inner-width) *
-              (var(--inner-width) - var(--corner-cut-radius)) * 100%
-          )
-          100%,
-        calc(1 / var(--inner-width) * var(--corner-cut-radius) * 100%) 100%
+        13.33% 0,
+        86.67% 0,
+        100% 10%,
+        100% 90%,
+        86.67% 100%,
+        13.33% 100%,
+        0 90%,
+        0 10%
       );
     }
 
