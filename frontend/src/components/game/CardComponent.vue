@@ -1,6 +1,10 @@
 <template>
   <div
-    :class="'card' + (hoverEffect && !isTurned ? ' card-hover' : '')"
+    :class="[
+      'card',
+      hoverEffect && !isTurned ? ' card-hover' : '',
+      'card-' + size,
+    ]"
     ref="card"
   >
     <div class="card__back" v-if="isTurned && isTurnable">
@@ -63,6 +67,7 @@ const {
   hoverEffect = true,
   isTurnedProp = false,
   isTurnable = false,
+  size = "medium",
 } = defineProps<{
   type: string;
   name: string;
@@ -72,6 +77,7 @@ const {
   hoverEffect?: boolean;
   isTurnedProp?: boolean;
   isTurnable?: boolean;
+  size?: "medium" | "small" | "large";
 }>();
 
 watch(
@@ -197,15 +203,17 @@ const revealCard = () => {
 .card {
   $card-aspect-ratio-width: 3;
   $card-aspect-ratio-height: 4;
-  $corner-cut-radius: 20px;
+  --corner-cut-radius: 20px;
+  --card-width: 250px;
   $card-width: 250px;
   $card-height: calc(
     $card-width / $card-aspect-ratio-width * $card-aspect-ratio-height
   );
-  $card-padding: 9.6px;
+  --card-height: #{$card-height};
+  --card-padding: 9.6px;
   position: relative;
   aspect-ratio: calc($card-aspect-ratio-width / $card-aspect-ratio-height);
-  width: $card-width;
+  width: var(--card-width);
   border-radius: 15px;
   overflow: hidden;
   transition-duration: 300ms;
@@ -235,29 +243,33 @@ const revealCard = () => {
         #0000000f
       );
 
-      $image-width: calc($card-width - $card-padding * 2);
-      $image-height: calc($card-height * 0.5);
+      --image-width: calc(var(--card-width) - var(--card-padding) * 2);
+      --image-height: calc(var(--card-height) * 0.5);
       clip-path: polygon(
         0
-          math.percentage(
-            calc(1 / $image-height * ($image-height - $corner-cut-radius))
+          calc(
+            1 / var(--image-height) *
+              (var(--image-height) - var(--corner-cut-radius)) * 100%
           ),
-        0 math.percentage(calc(1 / $image-height * $corner-cut-radius)),
-        math.percentage(calc(1 / $image-width * $corner-cut-radius)) 0,
-        math.percentage(
-            calc(1 / $image-width * ($image-width - $corner-cut-radius))
+        0 calc(1 / var(--image-height) * var(--corner-cut-radius) * 100%),
+        calc(1 / var(--image-width) * var(--corner-cut-radius) * 100%) 0,
+        calc(
+            1 / var(--image-width) *
+              (var(--image-width) - var(--corner-cut-radius)) * 100%
           )
           0,
-        100% math.percentage(calc(1 / $image-height * $corner-cut-radius)),
+        100% calc(1 / var(--image-height) * var(--corner-cut-radius) * 100%),
         100%
-          math.percentage(
-            calc(1 / $image-height * ($image-height - $corner-cut-radius))
+          calc(
+            1 / var(--image-height) *
+              (var(--image-height) - var(--corner-cut-radius)) * 100%
           ),
-        math.percentage(
-            calc(1 / $image-width * ($image-width - $corner-cut-radius))
+        calc(
+            1 / var(--image-width) *
+              (var(--image-width) - var(--corner-cut-radius)) * 100%
           )
           100%,
-        math.percentage(calc(1 / $image-width * $corner-cut-radius)) 100%
+        calc(1 / var(--image-width) * var(--corner-cut-radius) * 100%) 100%
       );
     }
   }
@@ -268,7 +280,7 @@ const revealCard = () => {
     left: 0;
     height: 100%;
     width: 100%;
-    padding: $card-padding;
+    padding: var(--card-padding);
     display: flex;
     flex-direction: column;
     justify-content: space-between;
@@ -289,25 +301,27 @@ const revealCard = () => {
 
       &.top {
         overflow: hidden;
-        $image-width: calc($card-width - $card-padding * 2);
-        $image-height: calc($card-height * 0.5);
+        --image-width: calc(var(--card-width) - var(--card-padding) * 2);
+        --image-height: calc(var(--card-height) * 0.5);
 
-        // only cut bottom, because of subject image
         clip-path: polygon(
           0 0,
           100% 0,
           100%
-            math.percentage(
-              calc(1 / $image-height * ($image-height - $corner-cut-radius))
+            calc(
+              1 / var(--image-height) *
+                (var(--image-height) - var(--corner-cut-radius)) * 100%
             ),
-          math.percentage(
-              calc(1 / $image-width * ($image-width - $corner-cut-radius))
+          calc(
+              1 / var(--image-width) *
+                (var(--image-width) - var(--corner-cut-radius)) * 100%
             )
             100%,
-          math.percentage(calc(1 / $image-width * $corner-cut-radius)) 100%,
+          calc(1 / var(--image-width) * var(--corner-cut-radius) * 100%) 100%,
           0
-            math.percentage(
-              calc(1 / $image-height * ($image-height - $corner-cut-radius))
+            calc(
+              1 / var(--image-height) *
+                (var(--image-height) - var(--corner-cut-radius)) * 100%
             )
         );
 
@@ -340,38 +354,42 @@ const revealCard = () => {
           z-index: 20;
         }
         div.background {
-          height: $image-height;
+          height: var(--image-height);
           margin-top: 5%;
           background-position: top;
           background-size: cover;
           background-repeat: no-repeat;
           clip-path: polygon(
             0
-              math.percentage(
-                calc(1 / $image-height * ($image-height - $corner-cut-radius))
+              calc(
+                1 / var(--image-height) *
+                  (var(--image-height) - var(--corner-cut-radius)) * 100%
               ),
-            0 math.percentage(calc(1 / $image-height * $corner-cut-radius)),
-            math.percentage(calc(1 / $image-width * $corner-cut-radius)) 0,
-            math.percentage(
-                calc(1 / $image-width * ($image-width - $corner-cut-radius))
+            0 calc(1 / var(--image-height) * var(--corner-cut-radius) * 100%),
+            calc(1 / var(--image-width) * var(--corner-cut-radius) * 100%) 0,
+            calc(
+                1 / var(--image-width) *
+                  (var(--image-width) - var(--corner-cut-radius)) * 100%
               )
               0,
-            100% math.percentage(calc(1 / $image-height * $corner-cut-radius)),
+            100% calc(1 / var(--image-height) * var(--corner-cut-radius) * 100%),
             100%
-              math.percentage(
-                calc(1 / $image-height * ($image-height - $corner-cut-radius))
+              calc(
+                1 / var(--image-height) *
+                  (var(--image-height) - var(--corner-cut-radius)) * 100%
               ),
-            math.percentage(
-                calc(1 / $image-width * ($image-width - $corner-cut-radius))
+            calc(
+                1 / var(--image-width) *
+                  (var(--image-width) - var(--corner-cut-radius)) * 100%
               )
               100%,
-            math.percentage(calc(1 / $image-width * $corner-cut-radius)) 100%
+            calc(1 / var(--image-width) * var(--corner-cut-radius) * 100%) 100%
           );
         }
       }
       &.middle {
-        $text-height: calc($card-height * 0.3);
-        height: $text-height;
+        --text-height: calc(var(--card-height) * 0.3);
+        height: var(--text-height);
         display: flex;
         justify-content: center;
         align-items: flex-start;
@@ -380,19 +398,21 @@ const revealCard = () => {
         font-size: 1.5rem;
         font-weight: bold;
         position: relative;
-        $text-width: $card-width - $card-padding * 2;
+        --text-width: calc(var(--card-width) - var(--card-padding) * 2);
         clip-path: polygon(
           0 0,
-          math.percentage(
-              calc(1 / $text-width * ($text-width - $corner-cut-radius))
+          calc(
+              1 / var(--text-width) *
+                (var(--text-width) - var(--corner-cut-radius)) * 100%
             )
             0,
-          100% math.percentage(calc(1 / $text-height * $corner-cut-radius)),
+          100% calc(1 / var(--text-height) * var(--corner-cut-radius) * 100%),
           100% 100%,
-          math.percentage(calc(1 / $text-width * $corner-cut-radius)) 100%,
+          calc(1 / var(--text-width) * var(--corner-cut-radius) * 100%) 100%,
           0
-            math.percentage(
-              calc(1 / $text-height * ($text-height - $corner-cut-radius))
+            calc(
+              1 / var(--text-height) *
+                (var(--text-height) - var(--corner-cut-radius)) * 100%
             )
         );
 
@@ -400,7 +420,7 @@ const revealCard = () => {
           text-align: center;
           font-size: 12px;
           width: 80%;
-          margin-top: calc($text-height * 0.382 - 12px);
+          margin-top: calc(var(--text-height) * 0.382 - 12px);
         }
       }
       &.bottom {
@@ -456,14 +476,15 @@ const revealCard = () => {
     align-items: center;
 
     .inner {
-      $corner-cut-radius: 35px;
-      $inner-width: calc($card-width - 24px);
-      $inner-height: calc($card-height - 24px);
+      --corner-cut-radius: 35px;
+      --inner-width: calc(var(--card-width) - 24px);
+      --inner-height: calc(var(--card-height) - 24px);
+
       display: flex;
       justify-content: center;
       align-items: center;
-      width: $inner-width;
-      height: $inner-height;
+      width: var(--inner-width);
+      height: var(--inner-height);
       background-color: var(--color-background);
       color: var(--color-text);
       font-size: 1.5rem;
@@ -471,25 +492,29 @@ const revealCard = () => {
 
       clip-path: polygon(
         0
-          math.percentage(
-            calc(1 / $inner-height * ($inner-height - $corner-cut-radius))
+          calc(
+            1 / var(--inner-height) *
+              (var(--inner-height) - var(--corner-cut-radius)) * 100%
           ),
-        0 math.percentage(calc(1 / $inner-height * $corner-cut-radius)),
-        math.percentage(calc(1 / $inner-width * $corner-cut-radius)) 0,
-        math.percentage(
-            calc(1 / $inner-width * ($inner-width - $corner-cut-radius))
+        0 calc(1 / var(--inner-height) * var(--corner-cut-radius) * 100%),
+        calc(1 / var(--inner-width) * var(--corner-cut-radius) * 100%) 0,
+        calc(
+            1 / var(--inner-width) *
+              (var(--inner-width) - var(--corner-cut-radius)) * 100%
           )
           0,
-        100% math.percentage(calc(1 / $inner-height * $corner-cut-radius)),
+        100% calc(1 / var(--inner-height) * var(--corner-cut-radius) * 100%),
         100%
-          math.percentage(
-            calc(1 / $inner-height * ($inner-height - $corner-cut-radius))
+          calc(
+            1 / var(--inner-height) *
+              (var(--inner-height) - var(--corner-cut-radius)) * 100%
           ),
-        math.percentage(
-            calc(1 / $inner-width * ($inner-width - $corner-cut-radius))
+        calc(
+            1 / var(--inner-width) *
+              (var(--inner-width) - var(--corner-cut-radius)) * 100%
           )
           100%,
-        math.percentage(calc(1 / $inner-width * $corner-cut-radius)) 100%
+        calc(1 / var(--inner-width) * var(--corner-cut-radius) * 100%) 100%
       );
     }
 
