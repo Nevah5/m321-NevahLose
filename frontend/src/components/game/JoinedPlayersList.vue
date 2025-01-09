@@ -3,12 +3,12 @@
     <LoadingIcon v-if="isLoading" height="50" :dark="true" />
     <CardComponent
       v-else
-      v-for="player in players"
+      v-for="(player, i) in players"
       :key="player.id"
       type=""
       :name="player.name || 'Player'"
-      background-name="TheWatcher.webp"
-      subject-name="TheThief_subject.webp"
+      :background-name="cards[i]?.backgroundFilename"
+      :subject-name="cards[i]?.subjectFilename"
       :description="player.isHost ? 'Host' : 'Player'"
       size="small"
       back-side-text="<empty />"
@@ -22,8 +22,8 @@
 <script setup lang="ts">
 import { ref, defineProps, onMounted } from "vue";
 import CardComponent from "./CardComponent.vue";
-import { gameService } from "@/api";
-import type { ChatMessage } from "@/api/types";
+import { cardService, gameService } from "@/api";
+import type { ApiError, Card, ChatMessage } from "@/api/types";
 import toastApi from "@/api/toastApi";
 import { useRouter } from "vue-router";
 import LoadingIcon from "../icons/LoadingIcon.vue";
@@ -62,6 +62,8 @@ const removePlayer = (activity: ChatMessage) => {
   }
 };
 
+const cards = ref<Card[]>([]);
+
 const players = ref<Player[]>([
   { joined: false },
   { joined: false },
@@ -69,7 +71,23 @@ const players = ref<Player[]>([
   { joined: false },
 ]);
 
-onMounted(() => {
+onMounted(async () => {
+  try {
+    for (let i = 0; i < 4; i++) {
+      let card = await cardService.getRandom();
+      while (cards.value.map((card) => card.id).includes(card.id)) {
+        card = await cardService.getRandom();
+      }
+      cards.value.push(card);
+    }
+  } catch (error: ApiError | any) {
+    toastApi.emit({
+      title: "An error occurred",
+      message: error.message,
+    });
+    router.push("/");
+  }
+
   setTimeout(async () => {
     const playerId = localStorage.getItem("playerId");
     const token = localStorage.getItem("token");

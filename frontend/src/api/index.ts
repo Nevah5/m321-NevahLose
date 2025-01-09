@@ -68,6 +68,10 @@ class CardService extends ApiService {
   async getCards(): Promise<Card[]> {
     return this.get<Card[]>("/cards");
   }
+
+  async getRandom(): Promise<Card> {
+    return this.get<Card>("/cards/random");
+  }
 }
 
 class PlayerService extends ApiService {
