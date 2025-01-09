@@ -2,6 +2,7 @@
   <main>
     <LoadingOverlay :enabled="isLoading" />
     <LeaveGameButton @confirm="leaveGame" />
+    <StartGameButton v-if="isHost" />
     <JoinedPlayersList v-if="!isLoading" :game-id="gameId" />
     <ChatComponent v-if="!isLoading" />
     <InviteCode :code="inviteCode" />
@@ -11,11 +12,11 @@
 <script setup lang="ts">
 import { gameService } from "@/api";
 import toastApi from "@/api/toastApi";
-import type { GamePlayer } from "@/api/types";
 import ChatComponent from "@/components/game/ChatComponent.vue";
 import InviteCode from "@/components/game/InviteCode.vue";
 import JoinedPlayersList from "@/components/game/JoinedPlayersList.vue";
 import LeaveGameButton from "@/components/game/LeaveGameButton.vue";
+import StartGameButton from "@/components/game/StartGameButton.vue";
 import LoadingOverlay from "@/components/page/LoadingOverlay.vue";
 import type { Client } from "@stomp/stompjs";
 import { onMounted, onUnmounted, ref } from "vue";
@@ -27,7 +28,7 @@ const inviteCode = ref("");
 const isLoading = ref(true);
 const router = useRouter();
 const client = ref<Client | null>(null);
-const initialPlayers = ref<GamePlayer[]>([]);
+const isHost = ref(false);
 
 onMounted(async () => {
   isLoading.value = true;
@@ -56,7 +57,7 @@ onMounted(async () => {
     });
     router.push("/");
   }
-
+  isHost.value = localStorage.getItem("isHost") === "true";
   isLoading.value = false;
 });
 
@@ -93,6 +94,11 @@ h1 {
   bottom: 10px;
   left: 10px;
   max-height: 30%;
+}
+.start-button {
+  position: absolute;
+  top: 10px;
+  right: 10px;
 }
 .players {
   position: absolute;
