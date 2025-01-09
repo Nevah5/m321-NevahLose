@@ -7,9 +7,10 @@
     ]"
     ref="card"
   >
-    <div class="card__back" v-if="isTurned && isTurnable">
+    <div class="card__back" v-if="isTurned && !isTurnable" ref="card-turn">
       <div class="inner">
-        <LogoIcon :logoWidth="100" :disableLink="true" />
+        <LogoIcon v-if="!backSideText" :logoWidth="100" :disableLink="true" />
+        <p v-else>{{ backSideText }}</p>
       </div>
     </div>
     <div
@@ -49,7 +50,7 @@
 
 <script lang="ts" setup>
 import LogoIcon from "@/components/icons/LogoIcon.vue";
-import { onMounted, ref, useTemplateRef, watch } from "vue";
+import { nextTick, onMounted, ref, useTemplateRef, watch } from "vue";
 
 const card = useTemplateRef<HTMLDivElement>("card");
 const cardGlow = useTemplateRef<HTMLDivElement>("card-glow");
@@ -67,7 +68,7 @@ const {
   description = "",
   hoverEffect = true,
   isTurnedProp = false,
-  isTurnable = false,
+  isTurnable = true,
   size = "medium",
   backSideText = null,
 } = defineProps<{
@@ -95,6 +96,16 @@ watch(
   async (newValue) => {
     if (subjectName === "") return;
     setupSubjectImage();
+  }
+);
+watch(
+  () => isTurnedProp,
+  async (newValue) => {
+    if (isTurnedProp) {
+      hideCard();
+    } else {
+      revealCard();
+    }
   }
 );
 
@@ -182,11 +193,28 @@ const rotateToMouse = (e: MouseEvent) => {
 
 const revealCard = () => {
   cardTurn.value!.classList.add("card-open");
+  cardTurn.value!.classList.remove("card-close");
   cardContent.value!.classList.add("card-turned-open");
+  cardContent.value!.classList.remove("card-turned-close");
 
   setTimeout(() => {
     isTurned.value = false;
     setupHoverEffect();
+  }, 300);
+};
+
+const hideCard = async () => {
+  isTurned.value = true;
+  await nextTick();
+
+  cardTurn.value!.classList.remove("card-open");
+  cardTurn.value!.classList.add("card-close");
+  cardContent.value!.classList.remove("card-turned-open");
+  cardContent.value!.classList.add("card-turned-close");
+
+  setTimeout(() => {
+    cardTurn.value!.classList.remove("card-close");
+    cardContent.value!.classList.remove("card-turned-close");
   }, 300);
 };
 </script>
@@ -316,6 +344,9 @@ const revealCard = () => {
 
       &-open {
         animation: card-flip 100ms 100ms reverse forwards;
+      }
+      &-close {
+        animation: card-flip 100ms forwards !important;
       }
     }
     section {
@@ -491,6 +522,10 @@ const revealCard = () => {
     }
     &.card-open {
       animation: card-flip 100ms forwards;
+    }
+    &.card-close {
+      transform: rotateY(90deg);
+      animation: card-flip 100ms 100ms forwards reverse;
     }
   }
 }
