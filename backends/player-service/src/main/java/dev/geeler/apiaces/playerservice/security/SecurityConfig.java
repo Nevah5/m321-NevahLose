@@ -25,15 +25,14 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @RequiredArgsConstructor
 public class SecurityConfig {
 
-    private final JwtAuthFilter jwtAuthFilter;
-    private final PlayerService userService;
-
     private static final String[] WHITE_LIST_URL = {
             "/auth/register",
             "/actuator/health",
             "/actuator/info",
             "/usernames/random"
     };
+    private final JwtAuthFilter jwtAuthFilter;
+    private final PlayerService userService;
 
     @Bean
     SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -41,22 +40,23 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .cors(Customizer.withDefaults())
                 .authorizeHttpRequests(auth -> auth
+                        .requestMatchers(HttpMethod.OPTIONS).permitAll()
                         .requestMatchers(WHITE_LIST_URL).permitAll()
                         .anyRequest().authenticated())
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
                 .exceptionHandling(handler -> handler
-                    .accessDeniedHandler((request, response, accessDeniedException) -> {
-                        response.setStatus(HttpServletResponse.SC_FORBIDDEN);
-                        response.setContentType("application/json");
-                        response.getWriter().write(new ErrorResponse(HttpStatus.UNAUTHORIZED, "You are not allowed to access this resource.").toJsonString());
-                    })
-                    .authenticationEntryPoint((request, response, authException) -> {
-                        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-                        response.setContentType("application/json");
-                        response.getWriter().write(new ErrorResponse(HttpStatus.UNAUTHORIZED, "Invalid authentication").toJsonString());
-                    }))
+                        .accessDeniedHandler((request, response, accessDeniedException) -> {
+                            response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+                            response.setContentType("application/json");
+                            response.getWriter().write(new ErrorResponse(HttpStatus.UNAUTHORIZED, "You are not allowed to access this resource.").toJsonString());
+                        })
+                        .authenticationEntryPoint((request, response, authException) -> {
+                            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                            response.setContentType("application/json");
+                            response.getWriter().write(new ErrorResponse(HttpStatus.UNAUTHORIZED, "Invalid authentication").toJsonString());
+                        }))
                 .build();
     }
 
