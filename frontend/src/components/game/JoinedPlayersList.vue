@@ -18,10 +18,14 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from "vue";
+import { ref, defineProps, onMounted } from "vue";
 import CardComponent from "./CardComponent.vue";
 import { gameService } from "@/api";
-import type { ChatMessage } from "@/api/types";
+import type { ChatMessage, GamePlayer } from "@/api/types";
+
+const { initialPlayers } = defineProps<{
+  initialPlayers: GamePlayer[];
+}>();
 
 interface Player {
   id?: string;
@@ -66,6 +70,15 @@ const players = ref<Player[]>([
   { joined: false },
   { joined: false },
 ]);
+
+onMounted(() => {
+  for (let i = 0; i < initialPlayers.length; i++) {
+    players.value[i].id = initialPlayers[i].playerId;
+    players.value[i].name = initialPlayers[i].username;
+    players.value[i].isHost = false;
+    players.value[i].joined = true;
+  }
+});
 </script>
 
 <style scoped lang="scss">

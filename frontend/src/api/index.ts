@@ -6,9 +6,10 @@ import type {
   Card,
   Game,
   ChatMessage,
+  GamePlayer,
 } from "./types";
 import SockJS from "sockjs-client";
-import { Client, Stomp, type IMessage } from "@stomp/stompjs";
+import { Client, type IMessage } from "@stomp/stompjs";
 
 import axios from "axios";
 import { handleApiError } from "./errorHandler";
@@ -171,6 +172,10 @@ class GameService extends ApiService {
       body: JSON.stringify({ message }),
       headers: { Authorization: `Bearer ${token}` },
     });
+  }
+
+  async getPlayers(gameId: string, token: string): Promise<GamePlayer[]> {
+    return this.get<GamePlayer[]>(`/games/${gameId}/players`, token);
   }
 }
 

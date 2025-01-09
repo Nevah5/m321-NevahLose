@@ -24,6 +24,9 @@ public class GamePlayer {
     private UUID playerId;
 
     @Getter
+    private String username;
+
+    @Getter
     @Temporal(TemporalType.TIMESTAMP)
     private Date joinedAt;
 
@@ -49,6 +52,11 @@ public class GamePlayer {
 
         public Builder setGameId(final UUID gameId) {
             this.gamePlayer.gameId = gameId;
+            return this;
+        }
+
+        public Builder setUsername(final String username) {
+            this.gamePlayer.username = username;
             return this;
         }
 

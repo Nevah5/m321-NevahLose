@@ -10,6 +10,14 @@ export interface TokenResponse {
   expires_in: number;
 }
 
+export interface GamePlayer {
+  gameId: string;
+  playerId: string;
+  username: string;
+  joinedAt: number;
+  leftAt: number | null;
+}
+
 export interface Player {
   id: string;
   username: string;

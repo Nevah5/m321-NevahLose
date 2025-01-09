@@ -2,7 +2,7 @@
   <main>
     <LoadingOverlay :enabled="isLoading" />
     <LeaveGameButton @confirm="leaveGame" />
-    <JoinedPlayersList v-if="!isLoading" />
+    <JoinedPlayersList v-if="!isLoading" :initial-players="initialPlayers" />
     <ChatComponent v-if="!isLoading" />
     <InviteCode :code="inviteCode" />
   </main>
@@ -11,6 +11,7 @@
 <script setup lang="ts">
 import { gameService } from "@/api";
 import toastApi from "@/api/toastApi";
+import type { GamePlayer } from "@/api/types";
 import ChatComponent from "@/components/game/ChatComponent.vue";
 import InviteCode from "@/components/game/InviteCode.vue";
 import JoinedPlayersList from "@/components/game/JoinedPlayersList.vue";
@@ -26,6 +27,7 @@ const inviteCode = ref("");
 const isLoading = ref(true);
 const router = useRouter();
 const client = ref<Client | null>(null);
+const initialPlayers = ref<GamePlayer[]>([]);
 
 onMounted(async () => {
   isLoading.value = true;
@@ -38,6 +40,7 @@ onMounted(async () => {
       title: "Error retrieving invite code",
       message: "Invite code from localStorage was not set properly",
     });
+    router.push("/");
     return;
   }
   inviteCode.value = codeStored;
@@ -46,7 +49,6 @@ onMounted(async () => {
   const token = localStorage.getItem("token");
   try {
     client.value = await gameService.joinGame(gameId.value, token!);
-    isLoading.value = false;
   } catch (error) {
     toastApi.emit({
       title: "An error occurred",
@@ -54,6 +56,17 @@ onMounted(async () => {
     });
     router.push("/");
   }
+
+  try {
+    initialPlayers.value = await gameService.getPlayers(gameId.value, token!);
+  } catch (error) {
+    toastApi.emit({
+      title: "An error occurred",
+      message: error as string,
+    });
+    router.push("/");
+  }
+  isLoading.value = false;
 });
 
 onUnmounted(() => {

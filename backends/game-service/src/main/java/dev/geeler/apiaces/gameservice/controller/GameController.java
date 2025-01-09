@@ -1,13 +1,18 @@
 package dev.geeler.apiaces.gameservice.controller;
 
+import dev.geeler.apiaces.gameservice.dto.ChatMessageDto;
+import dev.geeler.apiaces.gameservice.dto.GameIdDto;
 import dev.geeler.apiaces.gameservice.exception.NotFoundException;
 import dev.geeler.apiaces.gameservice.model.game.ChatMessage;
 import dev.geeler.apiaces.gameservice.model.game.ChatType;
 import dev.geeler.apiaces.gameservice.model.game.Game;
+import dev.geeler.apiaces.gameservice.model.game.GamePlayer;
 import dev.geeler.apiaces.gameservice.model.game.GameStatus;
-import dev.geeler.apiaces.gameservice.dto.ChatMessageDto;
-import dev.geeler.apiaces.gameservice.dto.GameIdDto;
-import dev.geeler.apiaces.gameservice.service.*;
+import dev.geeler.apiaces.gameservice.service.ChatService;
+import dev.geeler.apiaces.gameservice.service.GameService;
+import dev.geeler.apiaces.gameservice.service.JwtService;
+import dev.geeler.apiaces.gameservice.service.KafkaService;
+import dev.geeler.apiaces.gameservice.service.PlayerService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
@@ -19,6 +24,7 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.security.Principal;
+import java.util.List;
 import java.util.UUID;
 
 @CrossOrigin(origins = "*") // TODO: restrict this to the frontend URL
@@ -43,6 +49,11 @@ public class GameController {
         return game;
     }
 
+    @GetMapping("/games/{gameId}/players")
+    public List<GamePlayer> getPlayers(@PathVariable UUID gameId) {
+        return gameService.getConnectedPlayers(gameId);
+    }
+
     @PostMapping("/games/create")
     public Game createGame(@RequestHeader("Authorization") String authorizationHeader) {
         UUID playerId = jwtService.extractUserIdFromHeader(authorizationHeader);
@@ -53,7 +64,7 @@ public class GameController {
     public void joinGame(@Payload GameIdDto joinGameDto, Principal principal) {
         UUID playerId = jwtService.getUserIdFromPrincipal(principal);
         String username = jwtService.getUsernameFromPrincipal(principal);
-        gameService.joinGame(joinGameDto.getGameId(), playerId);
+        gameService.joinGame(joinGameDto.getGameId(), principal);
         chatService.sendChatMessage(ChatMessage.builder()
                 .gameId(joinGameDto.getGameId())
                 .isJoined(true)
