@@ -261,7 +261,7 @@ const hideCard = async () => {
     // dynamic values
     --card-width: 200px;
     --card-height: 266.66px; // width / 3 * 4
-    --card-padding: 9.6px;
+    --card-padding: 7px;
     --title-font-size: 10px;
     --middle-font-size: 10px;
     --bottom-font-size: 8px;
@@ -278,7 +278,7 @@ const hideCard = async () => {
     // dynamic values
     --card-width: 300px;
     --card-height: 400px; // width / 3 * 4
-    --card-padding: 9.6px;
+    --card-padding: 11px;
     --title-font-size: 16px;
     --middle-font-size: 16px;
     --bottom-font-size: 12px;
@@ -492,8 +492,8 @@ const hideCard = async () => {
 
     .inner {
       --corner-cut-radius: 35px;
-      --inner-width: calc(var(--card-width) - 24px);
-      --inner-height: calc(var(--card-height) - 24px);
+      --inner-width: calc(var(--card-width) - 2.5 * var(--card-padding));
+      --inner-height: calc(var(--card-height) - 2.5 * var(--card-padding));
 
       display: flex;
       justify-content: center;
