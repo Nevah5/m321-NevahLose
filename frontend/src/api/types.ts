@@ -16,6 +16,7 @@ export interface GamePlayer {
   username: string;
   joinedAt: number;
   leftAt: number | null;
+  host: boolean;
 }
 
 export interface Player {
@@ -53,4 +54,5 @@ export interface ChatMessage {
   type: "ACTIVITY" | "MESSAGE";
   joined?: boolean;
   message?: string;
+  host: boolean;
 }

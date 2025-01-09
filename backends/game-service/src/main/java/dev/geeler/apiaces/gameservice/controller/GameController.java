@@ -2,11 +2,11 @@ package dev.geeler.apiaces.gameservice.controller;
 
 import dev.geeler.apiaces.gameservice.dto.ChatMessageDto;
 import dev.geeler.apiaces.gameservice.dto.GameIdDto;
+import dev.geeler.apiaces.gameservice.dto.GamePlayerDto;
 import dev.geeler.apiaces.gameservice.exception.NotFoundException;
 import dev.geeler.apiaces.gameservice.model.game.ChatMessage;
 import dev.geeler.apiaces.gameservice.model.game.ChatType;
 import dev.geeler.apiaces.gameservice.model.game.Game;
-import dev.geeler.apiaces.gameservice.model.game.GamePlayer;
 import dev.geeler.apiaces.gameservice.model.game.GameStatus;
 import dev.geeler.apiaces.gameservice.service.ChatService;
 import dev.geeler.apiaces.gameservice.service.GameService;
@@ -50,10 +50,12 @@ public class GameController {
     }
 
     @GetMapping("/games/{gameId}/players")
-    public List<GamePlayer> getPlayers(@PathVariable UUID gameId) {
+    public List<GamePlayerDto> getPlayers(@PathVariable UUID gameId) {
         return gameService.getConnectedPlayers(gameId)
                 .stream()
                 .filter(player -> player.getLeftAt() == null)
+                .map(GamePlayerDto::new)
+                .peek(player -> player.setHost(playerService.isOwnerOfGame(player.getPlayerId(), gameId)))
                 .toList();
     }
 
@@ -72,6 +74,7 @@ public class GameController {
                 .gameId(joinGameDto.getGameId())
                 .isJoined(true)
                 .type(ChatType.ACTIVITY)
+                .isHost(playerService.isOwnerOfGame(playerId, joinGameDto.getGameId()))
                 .senderId(playerId)
                 .senderUsername(username)
                 .build()
@@ -85,13 +88,15 @@ public class GameController {
         if (chatMessageDto.message().equals("")) {
             throw new IllegalArgumentException("Message cannot be empty");
         }
+        UUID gameId = playerService.getCurrentGameId(playerId).orElseThrow(() ->
+                new NotFoundException("Player not in game"));
         chatService.sendChatMessage(ChatMessage.builder()
                 .message(chatMessageDto.message())
                 .senderId(playerId)
                 .senderUsername(username)
+                .isHost(playerService.isOwnerOfGame(playerId, gameId))
                 .type(ChatType.MESSAGE)
-                .gameId(playerService.getCurrentGameId(playerId).orElseThrow(() ->
-                        new NotFoundException("Player not in game")))
+                .gameId(gameId)
                 .build()
         );
     }

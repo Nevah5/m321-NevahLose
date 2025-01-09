@@ -46,7 +46,7 @@ const addPlayer = (activity: ChatMessage) => {
     if (!player.joined) {
       player.id = activity.senderId;
       player.name = activity.senderUsername;
-      player.isHost = false;
+      player.isHost = activity.host;
       player.joined = true;
       break;
     }
@@ -85,7 +85,7 @@ onMounted(() => {
       for (let i = 0; i < initialPlayers.length; i++) {
         players.value[i].id = initialPlayers[i].playerId;
         players.value[i].name = initialPlayers[i].username;
-        players.value[i].isHost = false;
+        players.value[i].isHost = initialPlayers[i].host;
         players.value[i].joined = true;
       }
     } catch (error) {

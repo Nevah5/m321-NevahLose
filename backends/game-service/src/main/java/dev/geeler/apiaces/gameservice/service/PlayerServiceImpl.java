@@ -4,15 +4,20 @@ import dev.geeler.apiaces.gameservice.model.game.Game;
 import dev.geeler.apiaces.gameservice.model.game.GamePlayer;
 import dev.geeler.apiaces.gameservice.model.security.UserPrincipal;
 import dev.geeler.apiaces.gameservice.repository.GamePlayerRepository;
+import dev.geeler.apiaces.gameservice.repository.GameRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
+import java.util.UUID;
 
 @Service
 @AllArgsConstructor
 public class PlayerServiceImpl implements PlayerService {
     private final GamePlayerRepository gamePlayerRepository;
+    private final GameRepository gameRepository;
     private final GameService gameService;
 
     private final HashMap<UUID, String> playerSessionIdMapping = new HashMap<>();
@@ -76,5 +81,14 @@ public class PlayerServiceImpl implements PlayerService {
     @Override
     public Optional<String> getSessionId(UUID playerId) {
         return Optional.ofNullable(playerSessionIdMapping.get(playerId));
+    }
+
+    @Override
+    public boolean isOwnerOfGame(UUID playerId, UUID gameId) {
+        Game game = gameRepository.findById(gameId).orElse(null);
+        if (game == null) {
+            return false;
+        }
+        return game.getOwnerId().equals(playerId);
     }
 }

@@ -36,4 +36,8 @@ public class ChatMessage {
     @Setter
     @Getter
     private String message;
+
+    @Getter
+    @Setter
+    private boolean isHost;
 }

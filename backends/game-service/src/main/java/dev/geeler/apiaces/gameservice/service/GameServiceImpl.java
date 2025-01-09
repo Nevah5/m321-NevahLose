@@ -10,7 +10,7 @@ import dev.geeler.apiaces.gameservice.model.game.GameStatus;
 import dev.geeler.apiaces.gameservice.model.security.UserPrincipal;
 import dev.geeler.apiaces.gameservice.repository.GamePlayerRepository;
 import dev.geeler.apiaces.gameservice.repository.GameRepository;
-import lombok.RequiredArgsConstructor;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.stereotype.Service;
 
@@ -20,11 +20,18 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Service
-@RequiredArgsConstructor
 public class GameServiceImpl implements GameService {
     private final GameRepository gameRepository;
     private final GamePlayerRepository gamePlayerRepository;
     private final ChatService chatService;
+    private final PlayerService playerService;
+
+    public GameServiceImpl(GameRepository gameRepository, GamePlayerRepository gamePlayerRepository, ChatService chatService, @Lazy PlayerService playerService) {
+        this.gameRepository = gameRepository;
+        this.gamePlayerRepository = gamePlayerRepository;
+        this.chatService = chatService;
+        this.playerService = playerService;
+    }
 
     @Override
     public Optional<Game> getGame(Long roomId) {
@@ -98,6 +105,7 @@ public class GameServiceImpl implements GameService {
                 .gameId(gameId)
                 .senderId(playerId)
                 .senderUsername(username)
+                .isHost(playerService.isOwnerOfGame(playerId, gameId))
                 .isJoined(false)
                 .type(ChatType.ACTIVITY)
                 .build());
