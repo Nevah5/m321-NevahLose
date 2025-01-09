@@ -1,6 +1,8 @@
-package dev.geeler.apiaces.gameservice.service;
+package dev.geeler.apiaces.gameservice.service.impl;
 
 import dev.geeler.apiaces.gameservice.model.http.HttpResponse;
+import dev.geeler.apiaces.gameservice.service.PlayerService;
+import dev.geeler.apiaces.gameservice.service.WebsocketService;
 import dev.geeler.apiaces.gameservice.util.MessageHeadersUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.messaging.simp.SimpMessagingTemplate;

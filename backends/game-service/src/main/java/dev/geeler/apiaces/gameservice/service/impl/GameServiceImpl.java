@@ -1,4 +1,4 @@
-package dev.geeler.apiaces.gameservice.service;
+package dev.geeler.apiaces.gameservice.service.impl;
 
 import dev.geeler.apiaces.gameservice.exception.MaxGameSizeException;
 import dev.geeler.apiaces.gameservice.exception.NotFoundException;
@@ -10,6 +10,9 @@ import dev.geeler.apiaces.gameservice.model.game.GameStatus;
 import dev.geeler.apiaces.gameservice.model.security.UserPrincipal;
 import dev.geeler.apiaces.gameservice.repository.GamePlayerRepository;
 import dev.geeler.apiaces.gameservice.repository.GameRepository;
+import dev.geeler.apiaces.gameservice.service.ChatService;
+import dev.geeler.apiaces.gameservice.service.GameService;
+import dev.geeler.apiaces.gameservice.service.PlayerService;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.stereotype.Service;

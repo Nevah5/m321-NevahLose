@@ -1,6 +1,10 @@
-package dev.geeler.apiaces.gameservice.service;
+package dev.geeler.apiaces.gameservice.service.impl;
 
 import dev.geeler.apiaces.gameservice.model.game.ChatMessage;
+import dev.geeler.apiaces.gameservice.service.ChatService;
+import dev.geeler.apiaces.gameservice.service.GameService;
+import dev.geeler.apiaces.gameservice.service.KafkaService;
+import dev.geeler.apiaces.gameservice.service.WebsocketService;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.kafka.annotation.KafkaListener;
@@ -13,7 +17,7 @@ public class ChatServiceImpl implements ChatService {
     private final KafkaService kafkaService;
 
 
-    public ChatServiceImpl(@Lazy GameService gameService,  @Lazy WebsocketService websocketService, KafkaService kafkaService) {
+    public ChatServiceImpl(@Lazy GameService gameService, @Lazy WebsocketService websocketService, KafkaService kafkaService) {
         this.gameService = gameService;
         this.websocketService = websocketService;
         this.kafkaService = kafkaService;

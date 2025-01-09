@@ -1,5 +1,6 @@
-package dev.geeler.apiaces.gameservice.service;
+package dev.geeler.apiaces.gameservice.service.impl;
 
+import dev.geeler.apiaces.gameservice.service.KafkaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;

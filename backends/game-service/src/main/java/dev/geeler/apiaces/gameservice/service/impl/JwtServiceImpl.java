@@ -1,7 +1,7 @@
-package dev.geeler.apiaces.gameservice.service;
+package dev.geeler.apiaces.gameservice.service.impl;
 
 import dev.geeler.apiaces.gameservice.model.security.UserPrincipal;
-import dev.geeler.apiaces.gameservice.security.JwtAuthFilter;
+import dev.geeler.apiaces.gameservice.service.JwtService;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
