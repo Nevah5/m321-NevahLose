@@ -76,7 +76,9 @@ const handleInput = (e: KeyboardEvent) => {
       target.nextElementSibling as HTMLInputElement;
     setTimeout(() => {
       let code = "";
-      inputs.value!.forEach((input) => (code += input.value));
+      document
+        .querySelectorAll("input")
+        .forEach((input) => (code += input.value));
       if (next == null && code.length === 6) {
         joinGame(code);
         return;
