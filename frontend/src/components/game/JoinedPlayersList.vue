@@ -71,9 +71,17 @@ const players = ref<Player[]>([
 
 onMounted(() => {
   setTimeout(async () => {
+    const playerId = localStorage.getItem("playerId");
     const token = localStorage.getItem("token");
     try {
       const initialPlayers = await gameService.getPlayers(gameId, token!);
+      if (
+        initialPlayers.length == 4 &&
+        !initialPlayers.map((player) => player.playerId).includes(playerId!)
+      ) {
+        // error message comes from /user/queue/errors
+        router.push("/");
+      }
       for (let i = 0; i < initialPlayers.length; i++) {
         players.value[i].id = initialPlayers[i].playerId;
         players.value[i].name = initialPlayers[i].username;
