@@ -92,10 +92,11 @@ const handlePaste = (e: ClipboardEvent) => {
   const paste = e.clipboardData?.getData("text");
   if (paste && paste.length <= 6) {
     const pasteArray = paste.split("");
-    inputs.value!.forEach((input, index) => {
+    const inputs = document.querySelectorAll("input");
+    inputs.forEach((input, index) => {
       input.value = pasteArray[index];
     });
-    inputs.value![pasteArray.length - 1].focus();
+    inputs[pasteArray.length - 1].focus();
     joinGame(paste);
   }
 };

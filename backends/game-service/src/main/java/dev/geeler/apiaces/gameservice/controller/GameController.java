@@ -41,10 +41,10 @@ public class GameController {
 
     @GetMapping("/games/rooms/{roomId}")
     public Game getGame(@PathVariable Long roomId) {
-        Game game = gameService.getGame(roomId).orElseThrow(() ->
-                new NotFoundException("Game with roomId " + roomId + " not found"));
+        Game game = gameService.getGame(roomId)
+                .orElseThrow(() -> new NotFoundException("Game with roomId " + roomId + " not found"));
         if (game.getStatus() != GameStatus.WAITING_FOR_PLAYERS) {
-            throw new IllegalStateException("Game is already started");
+            throw new IllegalStateException("Game is not accessible at the moment");
         }
         return game;
     }
@@ -77,8 +77,7 @@ public class GameController {
                 .isHost(playerService.isOwnerOfGame(playerId, joinGameDto.getGameId()))
                 .senderId(playerId)
                 .senderUsername(username)
-                .build()
-        );
+                .build());
     }
 
     @MessageMapping("/games.sendMessage")
@@ -88,8 +87,8 @@ public class GameController {
         if (chatMessageDto.message().equals("")) {
             throw new IllegalArgumentException("Message cannot be empty");
         }
-        UUID gameId = playerService.getCurrentGameId(playerId).orElseThrow(() ->
-                new NotFoundException("Player not in game"));
+        UUID gameId = playerService.getCurrentGameId(playerId)
+                .orElseThrow(() -> new NotFoundException("Player not in game"));
         chatService.sendChatMessage(ChatMessage.builder()
                 .message(chatMessageDto.message())
                 .senderId(playerId)
@@ -97,7 +96,6 @@ public class GameController {
                 .isHost(playerService.isOwnerOfGame(playerId, gameId))
                 .type(ChatType.MESSAGE)
                 .gameId(gameId)
-                .build()
-        );
+                .build());
     }
 }
