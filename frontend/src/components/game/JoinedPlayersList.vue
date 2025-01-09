@@ -73,13 +73,7 @@ const players = ref<Player[]>([
 
 onMounted(async () => {
   try {
-    for (let i = 0; i < 4; i++) {
-      let card = await cardService.getRandom();
-      while (cards.value.map((card) => card.id).includes(card.id)) {
-        card = await cardService.getRandom();
-      }
-      cards.value.push(card);
-    }
+    cards.value = await cardService.getRandom(4);
   } catch (error: ApiError | any) {
     toastApi.emit({
       title: "An error occurred",

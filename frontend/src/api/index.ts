@@ -69,8 +69,8 @@ class CardService extends ApiService {
     return this.get<Card[]>("/cards");
   }
 
-  async getRandom(): Promise<Card> {
-    return this.get<Card>("/cards/random");
+  async getRandom(amount: number): Promise<Card[]> {
+    return this.get<Card[]>("/cards/random?amount=" + amount);
   }
 }
 
