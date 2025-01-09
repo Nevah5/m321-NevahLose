@@ -9,6 +9,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 public class PlayerServiceImpl implements PlayerService {
@@ -32,7 +33,11 @@ public class PlayerServiceImpl implements PlayerService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        return Optional.of(playerRepository.findByUsername(username))
-                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+        return null;
+    }
+
+    @Override
+    public Optional<Player> loadById(UUID playerId) {
+        return playerRepository.findById(playerId);
     }
 }
