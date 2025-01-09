@@ -9,7 +9,10 @@
       :name="player.name || 'Player'"
       :background-name="cards[i]?.backgroundFilename"
       :subject-name="cards[i]?.subjectFilename"
-      :description="player.isHost ? 'Host' : 'Player'"
+      :description="
+        (player.isHost ? 'Host' : 'Player') +
+        (playerId == player.id ? ' (You)' : '')
+      "
       size="small"
       back-side-text="<empty />"
       :is-turned-prop="!player.joined"
@@ -33,6 +36,14 @@ const { gameId } = defineProps<{
 }>();
 const isLoading = ref(true);
 const router = useRouter();
+const playerId = ref("");
+const cards = ref<Card[]>([]);
+const players = ref<Player[]>([
+  { joined: false },
+  { joined: false },
+  { joined: false },
+  { joined: false },
+]);
 
 interface Player {
   id?: string;
@@ -62,16 +73,10 @@ const removePlayer = (activity: ChatMessage) => {
   }
 };
 
-const cards = ref<Card[]>([]);
-
-const players = ref<Player[]>([
-  { joined: false },
-  { joined: false },
-  { joined: false },
-  { joined: false },
-]);
-
 onMounted(async () => {
+  playerId.value = window.localStorage.getItem("playerId")!;
+  console.log(playerId.value);
+
   try {
     cards.value = await cardService.getRandom(4);
   } catch (error: ApiError | any) {

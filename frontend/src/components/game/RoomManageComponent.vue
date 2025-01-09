@@ -101,6 +101,7 @@ const handlePaste = (e: ClipboardEvent) => {
 };
 
 const joinGame = (roomId: string) => {
+  localStorage.setItem("isHost", "false");
   isLoadingGame.value = true;
   const token = localStorage.getItem("token");
   gameService
