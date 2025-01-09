@@ -160,9 +160,6 @@ class GameService extends ApiService {
   }
 
   subscribeChatEvents(callback: (message: ChatMessage) => void) {
-    this.stompClient!.subscribe(`/queue/chat`, (message: IMessage) => {
-      callback(JSON.parse(message.body) as ChatMessage);
-    });
     this.stompClient!.subscribe(`/user/queue/chat`, (message: IMessage) => {
       callback(JSON.parse(message.body) as ChatMessage);
     });

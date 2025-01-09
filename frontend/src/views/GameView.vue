@@ -2,6 +2,7 @@
   <main>
     <LoadingOverlay :enabled="isLoading" />
     <LeaveGameButton @confirm="leaveGame" />
+    <JoinedPlayersList v-if="!isLoading" />
     <ChatComponent v-if="!isLoading" />
     <InviteCode :code="inviteCode" />
   </main>
@@ -12,6 +13,7 @@ import { gameService } from "@/api";
 import toastApi from "@/api/toastApi";
 import ChatComponent from "@/components/game/ChatComponent.vue";
 import InviteCode from "@/components/game/InviteCode.vue";
+import JoinedPlayersList from "@/components/game/JoinedPlayersList.vue";
 import LeaveGameButton from "@/components/game/LeaveGameButton.vue";
 import LoadingOverlay from "@/components/page/LoadingOverlay.vue";
 import type { Client } from "@stomp/stompjs";
@@ -87,5 +89,12 @@ h1 {
   bottom: 10px;
   left: 10px;
   max-height: 30%;
+}
+.players {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 80%;
 }
 </style>
