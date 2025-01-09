@@ -51,7 +51,10 @@ public class GameController {
 
     @GetMapping("/games/{gameId}/players")
     public List<GamePlayer> getPlayers(@PathVariable UUID gameId) {
-        return gameService.getConnectedPlayers(gameId);
+        return gameService.getConnectedPlayers(gameId)
+                .stream()
+                .filter(player -> player.getLeftAt() == null)
+                .toList();
     }
 
     @PostMapping("/games/create")

@@ -2,7 +2,7 @@
   <main>
     <LoadingOverlay :enabled="isLoading" />
     <LeaveGameButton @confirm="leaveGame" />
-    <JoinedPlayersList v-if="!isLoading" :initial-players="initialPlayers" />
+    <JoinedPlayersList v-if="!isLoading" :game-id="gameId" />
     <ChatComponent v-if="!isLoading" />
     <InviteCode :code="inviteCode" />
   </main>
@@ -57,15 +57,6 @@ onMounted(async () => {
     router.push("/");
   }
 
-  try {
-    initialPlayers.value = await gameService.getPlayers(gameId.value, token!);
-  } catch (error) {
-    toastApi.emit({
-      title: "An error occurred",
-      message: error as string,
-    });
-    router.push("/");
-  }
   isLoading.value = false;
 });
 
