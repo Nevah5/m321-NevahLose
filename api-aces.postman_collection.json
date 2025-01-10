@@ -1,0 +1,301 @@
+{
+	"info": {
+		"_postman_id": "3d1ecb39-3629-4d9e-b273-80ec86192d64",
+		"name": "API Aces",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "20343049"
+	},
+	"item": [
+		{
+			"name": "cards",
+			"item": [
+				{
+					"name": "/cards",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{CARD_SERVICE_URL}}/cards",
+							"host": [
+								"{{CARD_SERVICE_URL}}"
+							],
+							"path": [
+								"cards"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/cards/shuffled",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{CARD_SERVICE_URL}}/cards/shuffled",
+							"host": [
+								"{{CARD_SERVICE_URL}}"
+							],
+							"path": [
+								"cards",
+								"shuffled"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/cards/{id}",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{CARD_SERVICE_URL}}/cards/{id}",
+							"host": [
+								"{{CARD_SERVICE_URL}}"
+							],
+							"path": [
+								"cards",
+								"{id}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/cards/random",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{CARD_SERVICE_URL}}/cards/random?amount=1",
+							"host": [
+								"{{CARD_SERVICE_URL}}"
+							],
+							"path": [
+								"cards",
+								"random"
+							],
+							"query": [
+								{
+									"key": "amount",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "player",
+			"item": [
+				{
+					"name": "/self",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{PLAYER_SERVICE_URL}}/self",
+							"host": [
+								"{{PLAYER_SERVICE_URL}}"
+							],
+							"path": [
+								"self"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/auth/register",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"username\": \"\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{PLAYER_SERVICE_URL}}/auth/register",
+							"host": [
+								"{{PLAYER_SERVICE_URL}}"
+							],
+							"path": [
+								"auth",
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/usernames/random",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{PLAYER_SERVICE_URL}}/usernames/random",
+							"host": [
+								"{{PLAYER_SERVICE_URL}}"
+							],
+							"path": [
+								"usernames",
+								"random"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"auth": {
+				"type": "bearer",
+				"bearer": [
+					{
+						"key": "token",
+						"value": "{{JWT_TOKEN}}",
+						"type": "string"
+					}
+				]
+			},
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"packages": {},
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"packages": {},
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		},
+		{
+			"name": "game",
+			"item": [
+				{
+					"name": "/stomp",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{GAME_SERVICE_URL}}/stomp",
+							"host": [
+								"{{GAME_SERVICE_URL}}"
+							],
+							"path": [
+								"stomp"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/games/rooms/{id}",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{GAME_SERVICE_URL}}/games/rooms/353132",
+							"host": [
+								"{{GAME_SERVICE_URL}}"
+							],
+							"path": [
+								"games",
+								"rooms",
+								"353132"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/games/{id}/players",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{GAME_SERVICE_URL}}/games/{id}/players",
+							"host": [
+								"{{GAME_SERVICE_URL}}"
+							],
+							"path": [
+								"games",
+								"{id}",
+								"players"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/games/create",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{GAME_SERVICE_URL}}/games/create",
+							"host": [
+								"{{GAME_SERVICE_URL}}"
+							],
+							"path": [
+								"games",
+								"create"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"auth": {
+				"type": "bearer",
+				"bearer": [
+					{
+						"key": "token",
+						"value": "{{JWT_TOKEN}}",
+						"type": "string"
+					}
+				]
+			},
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"packages": {},
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"packages": {},
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		}
+	]
+}
