@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.UUID;
 
-@CrossOrigin(origins = "*") // TODO: restrict this to the frontend URL
 @RestController
 public class PlayerController {
     @Autowired

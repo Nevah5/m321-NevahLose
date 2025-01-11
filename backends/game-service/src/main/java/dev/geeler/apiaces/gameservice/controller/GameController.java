@@ -27,7 +27,6 @@ import java.security.Principal;
 import java.util.List;
 import java.util.UUID;
 
-@CrossOrigin(origins = "*") // TODO: restrict this to the frontend URL
 @RestController
 @RequiredArgsConstructor
 public class GameController {
