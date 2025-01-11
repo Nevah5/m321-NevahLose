@@ -18,6 +18,7 @@ services:
       - DATABASE_PASSWORD=Five0-Deepen7-Trowel4-Uncaring7
       - JWT_SECRET_KEY=353ea8909ec05ba8e47abb6a4980b714cee544652bea4f416ba60e444b476500d3ca5b51e4e1668230f04bfc098b1253025388f229c43e8e6d3c8f6c500c53db
       #- API_BASE_PATH=/api/player
+      - CORS_ALLOWED_ORIGINS=http://localhost:8568
     depends_on:
       - eureka-server
       - database
@@ -35,6 +36,7 @@ services:
       - DATABASE_PASSWORD=Module0-Cauterize9-Gothic8-Karaoke7
       - JWT_SECRET_KEY=353ea8909ec05ba8e47abb6a4980b714cee544652bea4f416ba60e444b476500d3ca5b51e4e1668230f04bfc098b1253025388f229c43e8e6d3c8f6c500c53db
       #- API_BASE_PATH=/api/card
+      - CORS_ALLOWED_ORIGINS=http://localhost:8568
     depends_on:
       - eureka-server
       - database
@@ -52,6 +54,7 @@ services:
       - DATABASE_PASSWORD=Rockslide0-Stress0-Agnostic7-Although0
       - JWT_SECRET_KEY=353ea8909ec05ba8e47abb6a4980b714cee544652bea4f416ba60e444b476500d3ca5b51e4e1668230f04bfc098b1253025388f229c43e8e6d3c8f6c500c53db
       #- API_BASE_PATH=/api/game
+      - CORS_ALLOWED_ORIGINS=http://localhost:8568
     depends_on:
       - eureka-server
       - database
