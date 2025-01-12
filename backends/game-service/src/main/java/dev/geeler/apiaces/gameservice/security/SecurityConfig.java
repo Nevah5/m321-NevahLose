@@ -32,8 +32,11 @@ public class SecurityConfig {
     private String[] allowedOrigins;
 
     private static final String[] WHITE_LIST_URL = {
+            "/actuator",
             "/actuator/health",
-            "/actuator/info"
+            "/actuator/info",
+            "/actuator/circuitbreakerevents",
+            "/actuator/circuitbreakers"
     };
     private final JwtAuthFilter jwtAuthFilter;
 
