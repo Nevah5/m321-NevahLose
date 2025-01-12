@@ -22,9 +22,6 @@ public class PlayerController {
     @GetMapping("/self")
     public PlayerDto getSelf(@RequestHeader("Authorization") String authHeader) {
         final String token = authHeader.substring(7);
-        System.out.println(token);
-        System.out.println(jwtService.extractUsername(token));
-        System.out.println(jwtService.extractClaims(token));
         final UUID playerId = jwtService.extractUserId(token);
         return new PlayerDto(
                 playerService.loadById(playerId)

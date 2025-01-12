@@ -6,6 +6,7 @@ import dev.geeler.apiaces.gameservice.model.card.Card;
 import dev.geeler.apiaces.gameservice.service.CardService;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -14,6 +15,7 @@ import java.util.List;
 
 @Service
 @AllArgsConstructor
+@Slf4j
 public class CardServiceImpl implements CardService {
     private static final String FALLBACK_CARD_DATA_URL = "https://raw.githubusercontent.com/Nevah5/m321-api-aces/refs/heads/develop/resources/circuit_breaker/cards.json";
 
@@ -28,13 +30,13 @@ public class CardServiceImpl implements CardService {
 
     public List<Card> fallbackGetCards(Throwable throwable) {
         try {
-            System.out.println("Fallback triggered: " + throwable.getMessage());
+            log.warn("Fallback triggered: " + throwable.getMessage());
             String jsonResponse = restTemplate.getForObject(FALLBACK_CARD_DATA_URL, String.class);
 
             ObjectMapper objectMapper = new ObjectMapper();
             return Arrays.asList(objectMapper.readValue(jsonResponse, Card[].class));
         } catch (Exception e) {
-            System.err.println("Error in fallbackGetCards: " + e.getMessage());
+            log.error("Error in fallbackGetCards: " + e.getMessage());
             throw new RuntimeException("Fallback failed", e);
         }
     }
