@@ -60,6 +60,16 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
     }
 
+    // 404 - Not Found
+    @ExceptionHandler(NotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleNotFound(NotFoundException e) {
+        final ErrorResponse errorResponse = new ErrorResponse(
+                HttpStatus.NOT_FOUND,
+                e.getMessage()
+        );
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
+    }
+
     // 500 - Internal Server Error
     @ExceptionHandler(Exception.class)
     @ResponseBody
