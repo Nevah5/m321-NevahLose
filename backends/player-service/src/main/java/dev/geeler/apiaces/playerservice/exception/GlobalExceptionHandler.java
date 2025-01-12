@@ -9,11 +9,24 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.apache.logging.log4j.LogManager;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
     private static final Logger LOGGER = LogManager.getLogger(GlobalExceptionHandler.class);
+
+    // 400 - Bad Request
+    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+    @ResponseBody
+    public ResponseEntity<ErrorResponse> handleClientError(MethodArgumentTypeMismatchException e) {
+        final ErrorResponse errorResponse = new ErrorResponse(
+                HttpStatus.BAD_REQUEST,
+                "Invalid Data type passed for " + e.getName()
+        );
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
+    }
+
 
     // 400 - Bad Request
     @ExceptionHandler(IllegalArgumentException.class)
