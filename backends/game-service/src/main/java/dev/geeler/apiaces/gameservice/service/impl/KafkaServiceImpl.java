@@ -1,5 +1,7 @@
 package dev.geeler.apiaces.gameservice.service.impl;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import dev.geeler.apiaces.gameservice.service.KafkaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.core.KafkaTemplate;
@@ -12,9 +14,17 @@ public class KafkaServiceImpl implements KafkaService {
     @Autowired
     private KafkaTemplate<String, String> kafkaTemplate;
 
+    @Autowired
+    private ObjectMapper objectMapper;
+
     @Override
     public void sendMessage(String topic, Object payload) {
-        kafkaTemplate.send(topic, payload.toString());
+        try {
+            String jsonPayload = objectMapper.writeValueAsString(payload);
+            kafkaTemplate.send(topic, jsonPayload);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException("Failed to serialize payload to JSON", e);
+        }
     }
 
     @Override

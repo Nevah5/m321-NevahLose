@@ -1,17 +1,23 @@
 package dev.geeler.apiaces.gameservice.model.game;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
 import java.util.UUID;
 
-@Builder
 @ToString
+@Builder
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
 public class ChatMessage {
     @Getter
-    private final UUID id = UUID.randomUUID();
+    private UUID id = UUID.randomUUID();
 
     @Getter
     @Setter
@@ -40,4 +46,5 @@ public class ChatMessage {
     @Getter
     @Setter
     private boolean isHost;
+
 }
