@@ -68,4 +68,5 @@ export interface GameActivity {
   cardId?: string;
   playerId?: string;
   gameId: string;
+  turnOrder?: GamePlayer[];
 }

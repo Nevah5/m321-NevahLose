@@ -1,5 +1,6 @@
 package dev.geeler.apiaces.gameservice.service.impl;
 
+import dev.geeler.apiaces.gameservice.dto.GamePlayerDto;
 import dev.geeler.apiaces.gameservice.exception.MaxGameSizeException;
 import dev.geeler.apiaces.gameservice.exception.NotFoundException;
 import dev.geeler.apiaces.gameservice.model.game.ChatMessage;
@@ -24,6 +25,8 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.stereotype.Service;
 
 import java.security.Principal;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -169,8 +172,20 @@ public class GameServiceImpl implements GameService {
                 GameActivity.builder()
                         .gameId(gameId)
                         .type(GameActivityType.GAME_START)
+                        .turnOrder(prepareGameTurnOrder(gameId))
                         .build()
         );
+    }
+
+    private List<GamePlayerDto> prepareGameTurnOrder(UUID gameId) {
+        List<GamePlayer> players = new ArrayList<>(getConnectedPlayers(gameId).stream()
+                .filter(player -> player.getLeftAt() == null)
+                .toList());
+        Collections.shuffle(players);
+        // TODO: update database with turn order
+        return players.stream()
+                .map(GamePlayerDto::new)
+                .toList();
     }
 
     @Override
@@ -188,6 +203,4 @@ public class GameServiceImpl implements GameService {
                 .setStatus(status)
                 .build());
     }
-
-
 }

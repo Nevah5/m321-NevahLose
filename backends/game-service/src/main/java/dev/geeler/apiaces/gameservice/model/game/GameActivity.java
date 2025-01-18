@@ -1,9 +1,11 @@
 package dev.geeler.apiaces.gameservice.model.game;
 
+import dev.geeler.apiaces.gameservice.dto.GamePlayerDto;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.List;
 import java.util.UUID;
 
 @Getter
@@ -19,4 +21,6 @@ public class GameActivity {
     private UUID gameId;
 
     private String message;
+    
+    private List<GamePlayerDto> turnOrder;
 }

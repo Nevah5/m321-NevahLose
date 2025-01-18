@@ -8,17 +8,24 @@
       <ChatComponent v-if="!isLoading" />
       <InviteCode :code="inviteCode" />
     </div>
+    <div class="wrapper" v-if="phase === 1">
+      <TurnOrderReveal :players="turnOrder" />
+      <CountdownComponent :seconds="10" />
+    </div>
   </main>
 </template>
 
 <script setup lang="ts">
 import { gameService } from "@/api";
 import toastApi from "@/api/toastApi";
+import type { GamePlayer } from "@/api/types";
 import ChatComponent from "@/components/game/ChatComponent.vue";
+import CountdownComponent from "@/components/game/CountdownComponent.vue";
 import InviteCode from "@/components/game/InviteCode.vue";
 import JoinedPlayersList from "@/components/game/JoinedPlayersList.vue";
 import LeaveGameButton from "@/components/game/LeaveGameButton.vue";
 import StartGameButton from "@/components/game/StartGameButton.vue";
+import TurnOrderReveal from "@/components/game/TurnOrderReveal.vue";
 import LoadingOverlay from "@/components/page/LoadingOverlay.vue";
 import type { Client } from "@stomp/stompjs";
 import { onMounted, onUnmounted, ref } from "vue";
@@ -32,6 +39,7 @@ const router = useRouter();
 const client = ref<Client | null>(null);
 const isHost = ref(false);
 const phase = ref(0);
+const turnOrder = ref<GamePlayer[]>([]);
 
 onMounted(async () => {
   isLoading.value = true;
@@ -75,6 +83,10 @@ onMounted(async () => {
         break;
       case "GAME_START":
         phase.value = 1;
+        turnOrder.value = message.turnOrder!;
+        setTimeout(() => {
+          phase.value = 2;
+        }, 10000);
         break;
     }
   });
@@ -129,5 +141,17 @@ h1 {
   left: 50%;
   transform: translate(-50%, -50%);
   width: 80%;
+}
+.turn-order-reveal {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+.countdown {
+  position: fixed;
+  bottom: 15px;
+  right: 15px;
+  font-size: 3rem;
 }
 </style>
