@@ -40,6 +40,10 @@ const { cards } = defineProps<{
   transition: height 0.3s ease-in-out;
   margin-bottom: 10px;
 
+  .card {
+    cursor: pointer;
+  }
+
   &:hover {
     height: 600px;
   }
