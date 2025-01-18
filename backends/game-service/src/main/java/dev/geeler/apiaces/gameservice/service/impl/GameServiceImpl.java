@@ -10,15 +10,18 @@ import dev.geeler.apiaces.gameservice.model.game.GameActivity;
 import dev.geeler.apiaces.gameservice.model.game.GameActivityType;
 import dev.geeler.apiaces.gameservice.model.game.GamePlayer;
 import dev.geeler.apiaces.gameservice.model.game.GameStatus;
+import dev.geeler.apiaces.gameservice.model.game.GameTurn;
 import dev.geeler.apiaces.gameservice.model.http.ErrorResponse;
 import dev.geeler.apiaces.gameservice.model.security.UserPrincipal;
 import dev.geeler.apiaces.gameservice.repository.GamePlayerRepository;
 import dev.geeler.apiaces.gameservice.repository.GameRepository;
+import dev.geeler.apiaces.gameservice.repository.GameTurnRepository;
 import dev.geeler.apiaces.gameservice.service.ChatService;
 import dev.geeler.apiaces.gameservice.service.GameService;
 import dev.geeler.apiaces.gameservice.service.KafkaService;
 import dev.geeler.apiaces.gameservice.service.PlayerService;
 import dev.geeler.apiaces.gameservice.service.WebsocketService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -32,9 +35,11 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Service
+@Slf4j
 public class GameServiceImpl implements GameService {
     private final GameRepository gameRepository;
     private final GamePlayerRepository gamePlayerRepository;
+    private final GameTurnRepository gameTurnRepository;
     private final ChatService chatService;
     private final PlayerService playerService;
     private final KafkaService kafkaService;
@@ -46,13 +51,15 @@ public class GameServiceImpl implements GameService {
             ChatService chatService,
             @Lazy PlayerService playerService,
             KafkaService kafkaService,
-            @Lazy WebsocketService websocketService) {
+            @Lazy WebsocketService websocketService,
+            GameTurnRepository gameTurnRepository) {
         this.gameRepository = gameRepository;
         this.gamePlayerRepository = gamePlayerRepository;
         this.chatService = chatService;
         this.playerService = playerService;
         this.kafkaService = kafkaService;
         this.websocketService = websocketService;
+        this.gameTurnRepository = gameTurnRepository;
     }
 
     @Override
@@ -182,7 +189,17 @@ public class GameServiceImpl implements GameService {
                 .filter(player -> player.getLeftAt() == null)
                 .toList());
         Collections.shuffle(players);
-        // TODO: update database with turn order
+        List<UUID> turnUUIDs = new ArrayList<>();
+        players.forEach(p -> turnUUIDs.add(UUID.randomUUID()));
+        for (int i = 0; i < players.size(); i++) {
+            GamePlayer player = players.get(i);
+            gameTurnRepository.save(new GameTurn.Builder()
+                    .setId(turnUUIDs.get(i))
+                    .setPlayerId(player.getPlayerId())
+                    .setGameId(gameId)
+                    .setNextTurnId(i < players.size() - 1 ? turnUUIDs.get(i + 1) : null)
+                    .build());
+        }
         return players.stream()
                 .map(GamePlayerDto::new)
                 .toList();
