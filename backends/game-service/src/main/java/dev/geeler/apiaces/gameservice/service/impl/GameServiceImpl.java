@@ -12,7 +12,9 @@ import dev.geeler.apiaces.gameservice.repository.GamePlayerRepository;
 import dev.geeler.apiaces.gameservice.repository.GameRepository;
 import dev.geeler.apiaces.gameservice.service.ChatService;
 import dev.geeler.apiaces.gameservice.service.GameService;
+import dev.geeler.apiaces.gameservice.service.KafkaService;
 import dev.geeler.apiaces.gameservice.service.PlayerService;
+import dev.geeler.apiaces.gameservice.service.WebsocketService;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.stereotype.Service;
@@ -28,12 +30,22 @@ public class GameServiceImpl implements GameService {
     private final GamePlayerRepository gamePlayerRepository;
     private final ChatService chatService;
     private final PlayerService playerService;
+    private final KafkaService kafkaService;
+    private final WebsocketService websocketService;
 
-    public GameServiceImpl(GameRepository gameRepository, GamePlayerRepository gamePlayerRepository, ChatService chatService, @Lazy PlayerService playerService) {
+    public GameServiceImpl(
+            GameRepository gameRepository,
+            GamePlayerRepository gamePlayerRepository,
+            ChatService chatService,
+            @Lazy PlayerService playerService,
+            KafkaService kafkaService,
+            @Lazy WebsocketService websocketService) {
         this.gameRepository = gameRepository;
         this.gamePlayerRepository = gamePlayerRepository;
         this.chatService = chatService;
         this.playerService = playerService;
+        this.kafkaService = kafkaService;
+        this.websocketService = websocketService;
     }
 
     @Override
@@ -114,9 +126,12 @@ public class GameServiceImpl implements GameService {
                 .build());
 
 
-        if (game.getOwnerId().equals(playerId)) {
+        if (game.getOwnerId().equals(playerId) && game.getStatus() != GameStatus.FINISHED) {
             updateGameStatus(game, GameStatus.OWNER_LEFT);
-            // TODO: broadcast deletion & force leave players
+            kafkaService.sendMessage(
+                    "games.terminate",
+                    gameId
+            );
         }
     }
 
@@ -151,4 +166,6 @@ public class GameServiceImpl implements GameService {
                 .setStatus(status)
                 .build());
     }
+
+
 }

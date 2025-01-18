@@ -59,6 +59,14 @@ onMounted(async () => {
   }
   isHost.value = localStorage.getItem("isHost") === "true";
   isLoading.value = false;
+
+  gameService.terminateGameListener((message) => {
+    toastApi.emit({
+      title: "Game terminated",
+      message,
+    });
+    leaveGame();
+  });
 });
 
 onUnmounted(() => {

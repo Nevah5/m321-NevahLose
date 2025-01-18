@@ -181,6 +181,12 @@ class GameService extends ApiService {
   async getPlayers(gameId: string, token: string): Promise<GamePlayer[]> {
     return this.get<GamePlayer[]>(`/games/${gameId}/players`, token);
   }
+
+  async terminateGameListener(callback: (message: string) => void) {
+    this.stompClient!.subscribe(`/user/queue/game/terminate`, (message) => {
+      callback(message.body);
+    });
+  }
 }
 
 const playerService = new PlayerService(
