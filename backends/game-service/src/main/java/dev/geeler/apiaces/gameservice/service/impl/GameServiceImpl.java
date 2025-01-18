@@ -164,7 +164,13 @@ public class GameServiceImpl implements GameService {
                 .setStartedAt()
                 .build();
         gameRepository.save(game);
-        // TODO: send start command to all clients
+        kafkaService.sendMessage(
+                "games.activity",
+                GameActivity.builder()
+                        .gameId(gameId)
+                        .type(GameActivityType.GAME_START)
+                        .build()
+        );
     }
 
     @Override
