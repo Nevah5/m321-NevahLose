@@ -12,19 +12,29 @@
       <TurnOrderReveal :players="turnOrder" />
       <CountdownComponent :seconds="10" />
     </div>
+    <div class="wrapper" v-if="phase === 2">
+      <LeaveGameButton @confirm="leaveGame" />
+      <TurnOrderComponent
+        :turn-order="turnOrder"
+        :current-player-id="currentTurnPlayerId"
+      />
+      <PlayerCardsInventory :cards="playerCards" />
+    </div>
   </main>
 </template>
 
 <script setup lang="ts">
-import { gameService } from "@/api";
+import { cardService, gameService } from "@/api";
 import toastApi from "@/api/toastApi";
-import type { GamePlayer } from "@/api/types";
+import { type Card, type GamePlayer } from "@/api/types";
 import ChatComponent from "@/components/game/ChatComponent.vue";
 import CountdownComponent from "@/components/game/CountdownComponent.vue";
 import InviteCode from "@/components/game/InviteCode.vue";
 import JoinedPlayersList from "@/components/game/JoinedPlayersList.vue";
 import LeaveGameButton from "@/components/game/LeaveGameButton.vue";
+import PlayerCardsInventory from "@/components/game/PlayerCardsInventory.vue";
 import StartGameButton from "@/components/game/StartGameButton.vue";
+import TurnOrderComponent from "@/components/game/TurnOrderComponent.vue";
 import TurnOrderReveal from "@/components/game/TurnOrderReveal.vue";
 import LoadingOverlay from "@/components/page/LoadingOverlay.vue";
 import type { Client } from "@stomp/stompjs";
@@ -40,6 +50,9 @@ const client = ref<Client | null>(null);
 const isHost = ref(false);
 const phase = ref(0);
 const turnOrder = ref<GamePlayer[]>([]);
+const currentTurnPlayerId = ref("");
+const cards = ref<Card[]>([]);
+const playerCards = ref<Card[]>([]);
 
 onMounted(async () => {
   isLoading.value = true;
@@ -69,6 +82,9 @@ onMounted(async () => {
     router.push("/");
   }
   isHost.value = localStorage.getItem("isHost") === "true";
+
+  // load cards
+  cards.value = await cardService.getCards();
   isLoading.value = false;
 
   gameService.gameActivityListener((message) => {
@@ -84,9 +100,15 @@ onMounted(async () => {
       case "GAME_START":
         phase.value = 1;
         turnOrder.value = message.turnOrder!;
+        currentTurnPlayerId.value = message.turnOrder![0].playerId;
         setTimeout(() => {
           phase.value = 2;
         }, 10000);
+        break;
+      case "CURRENT_CARDS":
+        playerCards.value = message.cards!.map(
+          (cardId) => cards.value.find((card) => card.id === cardId)!
+        );
         break;
     }
   });
@@ -153,5 +175,15 @@ h1 {
   bottom: 15px;
   right: 15px;
   font-size: 3rem;
+}
+.turn-order {
+  position: absolute;
+  left: 15px;
+  top: 80px;
+}
+.inventory {
+  position: absolute;
+  right: 15px;
+  bottom: 80px;
 }
 </style>

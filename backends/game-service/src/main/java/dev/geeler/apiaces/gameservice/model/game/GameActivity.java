@@ -21,6 +21,7 @@ public class GameActivity {
     private UUID gameId;
 
     private String message;
-    
+
     private List<GamePlayerDto> turnOrder;
+    private List<UUID> cards;
 }

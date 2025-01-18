@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import dev.geeler.apiaces.gameservice.model.game.ChatMessage;
 import dev.geeler.apiaces.gameservice.model.game.GameActivity;
+import dev.geeler.apiaces.gameservice.model.game.GameActivityType;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.annotation.KafkaListener;
@@ -21,6 +22,18 @@ public class KafkaListenerService {
     public void listenToGameTerminateTopics(String msg) {
         try {
             GameActivity activity = objectMapper.readValue(msg, GameActivity.class);
+            if (activity.getType() == GameActivityType.CURRENT_CARDS) {
+                gameService.getConnectedPlayers(activity.getGameId())
+                        .stream()
+                        .filter(player -> player.getPlayerId().equals(activity.getPlayerId()))
+                        .findFirst()
+                        .ifPresent(player -> websocketService.sendToUserIfConnected(
+                                player.getPlayerId(),
+                                "/queue/game",
+                                activity
+                        ));
+                return;
+            }
             gameService.getConnectedPlayers(activity.getGameId()).forEach(player -> websocketService.sendToUserIfConnected(
                     player.getPlayerId(),
                     "/queue/game",

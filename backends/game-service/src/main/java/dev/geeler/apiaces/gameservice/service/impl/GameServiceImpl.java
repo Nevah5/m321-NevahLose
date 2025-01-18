@@ -16,6 +16,7 @@ import dev.geeler.apiaces.gameservice.model.security.UserPrincipal;
 import dev.geeler.apiaces.gameservice.repository.GamePlayerRepository;
 import dev.geeler.apiaces.gameservice.repository.GameRepository;
 import dev.geeler.apiaces.gameservice.repository.GameTurnRepository;
+import dev.geeler.apiaces.gameservice.service.CardService;
 import dev.geeler.apiaces.gameservice.service.ChatService;
 import dev.geeler.apiaces.gameservice.service.GameService;
 import dev.geeler.apiaces.gameservice.service.KafkaService;
@@ -30,7 +31,9 @@ import org.springframework.stereotype.Service;
 import java.security.Principal;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -44,6 +47,7 @@ public class GameServiceImpl implements GameService {
     private final PlayerService playerService;
     private final KafkaService kafkaService;
     private final WebsocketService websocketService;
+    private final CardService cardService;
 
     public GameServiceImpl(
             GameRepository gameRepository,
@@ -52,7 +56,8 @@ public class GameServiceImpl implements GameService {
             @Lazy PlayerService playerService,
             KafkaService kafkaService,
             @Lazy WebsocketService websocketService,
-            GameTurnRepository gameTurnRepository) {
+            GameTurnRepository gameTurnRepository,
+            CardService cardService) {
         this.gameRepository = gameRepository;
         this.gamePlayerRepository = gamePlayerRepository;
         this.chatService = chatService;
@@ -60,6 +65,7 @@ public class GameServiceImpl implements GameService {
         this.kafkaService = kafkaService;
         this.websocketService = websocketService;
         this.gameTurnRepository = gameTurnRepository;
+        this.cardService = cardService;
     }
 
     @Override
@@ -182,6 +188,32 @@ public class GameServiceImpl implements GameService {
                         .turnOrder(prepareGameTurnOrder(gameId))
                         .build()
         );
+
+        try {
+            Thread.sleep(10000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        List<UUID> deck = cardService.getShuffledDeck();
+        List<GamePlayer> players = getConnectedPlayers(gameId).stream().filter(player -> player.getLeftAt() == null).toList();
+        log.info("DECK SIZE: " + deck.size());
+        Map<UUID, List<UUID>> playerDecks = new HashMap<>();
+        for (GamePlayer player : players) {
+            playerDecks.putIfAbsent(player.getPlayerId(), new ArrayList<>());
+            for (int i = 0; i < 5; i++) {
+                playerDecks.get(player.getPlayerId()).add(deck.remove(0));
+            }
+            kafkaService.sendMessage(
+                    "games.activity",
+                    GameActivity.builder()
+                            .gameId(gameId)
+                            .playerId(player.getPlayerId())
+                            .type(GameActivityType.CURRENT_CARDS)
+                            .cards(playerDecks.get(player.getPlayerId()))
+                            .build()
+            );
+        }
     }
 
     private List<GamePlayerDto> prepareGameTurnOrder(UUID gameId) {

@@ -12,6 +12,7 @@ import org.springframework.web.client.RestTemplate;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.UUID;
 
 @Service
 @AllArgsConstructor
@@ -39,5 +40,10 @@ public class CardServiceImpl implements CardService {
             log.error("Error in fallbackGetCards: " + e.getMessage());
             throw new RuntimeException("Fallback failed", e);
         }
+    }
+
+    @Override
+    public List<UUID> getShuffledDeck() {
+        return cardServiceClient.getShuffledDeck();
     }
 }
