@@ -1,11 +1,13 @@
 <template>
   <main>
     <LoadingOverlay :enabled="isLoading" />
-    <LeaveGameButton @confirm="leaveGame" />
-    <StartGameButton v-if="isHost" :game-id="gameId" />
-    <JoinedPlayersList v-if="!isLoading" :game-id="gameId" />
-    <ChatComponent v-if="!isLoading" />
-    <InviteCode :code="inviteCode" />
+    <div class="wrapper" v-if="phase === 0">
+      <LeaveGameButton @confirm="leaveGame" />
+      <StartGameButton v-if="isHost" :game-id="gameId" />
+      <JoinedPlayersList v-if="!isLoading" :game-id="gameId" />
+      <ChatComponent v-if="!isLoading" />
+      <InviteCode :code="inviteCode" />
+    </div>
   </main>
 </template>
 
@@ -29,6 +31,7 @@ const isLoading = ref(true);
 const router = useRouter();
 const client = ref<Client | null>(null);
 const isHost = ref(false);
+const phase = ref(0);
 
 onMounted(async () => {
   isLoading.value = true;
@@ -60,12 +63,20 @@ onMounted(async () => {
   isHost.value = localStorage.getItem("isHost") === "true";
   isLoading.value = false;
 
-  gameService.terminateGameListener((message) => {
-    toastApi.emit({
-      title: "Game terminated",
-      message,
-    });
-    leaveGame();
+  gameService.gameActivityListener((message) => {
+    switch (message.type) {
+      case "GAME_TERMINATE":
+        toastApi.emit({
+          title: "Game terminated",
+          message: message.message || "The game has been terminated",
+          type: "info",
+        });
+        leaveGame();
+        break;
+      case "GAME_START":
+        phase.value = 1;
+        break;
+    }
   });
 });
 
@@ -80,6 +91,10 @@ const leaveGame = () => {
 </script>
 
 <style scoped>
+.wrapper {
+  width: 100%;
+  height: 100%;
+}
 main {
   height: 100vh;
 }

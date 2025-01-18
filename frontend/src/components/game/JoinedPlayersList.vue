@@ -75,7 +75,6 @@ const removePlayer = (activity: ChatMessage) => {
 
 onMounted(async () => {
   playerId.value = window.localStorage.getItem("playerId")!;
-  console.log(playerId.value);
 
   try {
     cards.value = await cardService.getRandom(4);

@@ -5,6 +5,8 @@ import dev.geeler.apiaces.gameservice.exception.NotFoundException;
 import dev.geeler.apiaces.gameservice.model.game.ChatMessage;
 import dev.geeler.apiaces.gameservice.model.game.ChatType;
 import dev.geeler.apiaces.gameservice.model.game.Game;
+import dev.geeler.apiaces.gameservice.model.game.GameActivity;
+import dev.geeler.apiaces.gameservice.model.game.GameActivityType;
 import dev.geeler.apiaces.gameservice.model.game.GamePlayer;
 import dev.geeler.apiaces.gameservice.model.game.GameStatus;
 import dev.geeler.apiaces.gameservice.model.http.ErrorResponse;
@@ -131,8 +133,13 @@ public class GameServiceImpl implements GameService {
         if (game.getOwnerId().equals(playerId) && game.getStatus() != GameStatus.FINISHED) {
             updateGameStatus(game, GameStatus.OWNER_LEFT);
             kafkaService.sendMessage(
-                    "games.terminate",
-                    gameId
+                    "games.activity",
+                    GameActivity.builder()
+                            .gameId(gameId)
+                            .playerId(playerId)
+                            .type(GameActivityType.GAME_TERMINATE)
+                            .message("Game terminated because the owner left")
+                            .build()
             );
         }
     }

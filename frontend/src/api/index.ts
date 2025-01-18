@@ -7,6 +7,7 @@ import type {
   Game,
   ChatMessage,
   GamePlayer,
+  GameActivity,
 } from "./types";
 import SockJS from "sockjs-client";
 import { Client, type IMessage } from "@stomp/stompjs";
@@ -190,9 +191,9 @@ class GameService extends ApiService {
     return this.get<GamePlayer[]>(`/games/${gameId}/players`, token);
   }
 
-  async terminateGameListener(callback: (message: string) => void) {
-    this.stompClient!.subscribe(`/user/queue/game/terminate`, (message) => {
-      callback(message.body);
+  async gameActivityListener(callback: (activity: GameActivity) => void) {
+    this.stompClient!.subscribe(`/user/queue/game`, (message) => {
+      callback(JSON.parse(message.body) as GameActivity);
     });
   }
 }
