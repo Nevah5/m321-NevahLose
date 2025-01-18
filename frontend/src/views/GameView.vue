@@ -2,7 +2,7 @@
   <main>
     <LoadingOverlay :enabled="isLoading" />
     <LeaveGameButton @confirm="leaveGame" />
-    <StartGameButton v-if="isHost" />
+    <StartGameButton v-if="isHost" :game-id="gameId" />
     <JoinedPlayersList v-if="!isLoading" :game-id="gameId" />
     <ChatComponent v-if="!isLoading" />
     <InviteCode :code="inviteCode" />

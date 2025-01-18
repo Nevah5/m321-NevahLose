@@ -7,6 +7,7 @@ import dev.geeler.apiaces.gameservice.model.game.ChatType;
 import dev.geeler.apiaces.gameservice.model.game.Game;
 import dev.geeler.apiaces.gameservice.model.game.GamePlayer;
 import dev.geeler.apiaces.gameservice.model.game.GameStatus;
+import dev.geeler.apiaces.gameservice.model.http.ErrorResponse;
 import dev.geeler.apiaces.gameservice.model.security.UserPrincipal;
 import dev.geeler.apiaces.gameservice.repository.GamePlayerRepository;
 import dev.geeler.apiaces.gameservice.repository.GameRepository;
@@ -16,6 +17,7 @@ import dev.geeler.apiaces.gameservice.service.KafkaService;
 import dev.geeler.apiaces.gameservice.service.PlayerService;
 import dev.geeler.apiaces.gameservice.service.WebsocketService;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.stereotype.Service;
 
@@ -139,9 +141,15 @@ public class GameServiceImpl implements GameService {
     public void startGame(UUID gameId, UUID playerId) {
         final Game game = gameRepository.findById(gameId).orElse(null);
         if (game == null) {
+            websocketService.sendError(playerId, new ErrorResponse(HttpStatus.BAD_REQUEST, "Game provided not found"));
             return;
         }
         if (!game.getOwnerId().equals(playerId)) {
+            websocketService.sendError(playerId, new ErrorResponse(HttpStatus.FORBIDDEN, "You are not allowed to start the game"));
+            return;
+        }
+        if (this.getConnectedPlayers(gameId).size() < 2) {
+            websocketService.sendError(playerId, new ErrorResponse(HttpStatus.BAD_REQUEST, "Not enough players to start the game"));
             return;
         }
         game.builder()
@@ -149,6 +157,7 @@ public class GameServiceImpl implements GameService {
                 .setStartedAt()
                 .build();
         gameRepository.save(game);
+        // TODO: send start command to all clients
     }
 
     @Override

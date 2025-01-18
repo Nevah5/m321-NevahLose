@@ -3,14 +3,16 @@
 </template>
 
 <script setup lang="ts">
+import { gameService } from "@/api";
 import toastApi from "@/api/toastApi";
+
+const { gameId } = defineProps<{
+  gameId: string;
+}>();
 
 const click = () => {
   localStorage.removeItem("isHost"); // run when switching view
-  toastApi.emit({
-    title: "Game started",
-    message: "Good luck!",
-  });
+  gameService.startGame(gameId, localStorage.getItem("token")!);
 };
 </script>
 

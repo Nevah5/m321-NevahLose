@@ -178,6 +178,14 @@ class GameService extends ApiService {
     });
   }
 
+  async startGame(gameId: string, token: string) {
+    this.stompClient!.publish({
+      destination: `/app/games.startGame`,
+      body: JSON.stringify({ gameId }),
+      headers: { Authorization: `Bearer ${token}` },
+    });
+  }
+
   async getPlayers(gameId: string, token: string): Promise<GamePlayer[]> {
     return this.get<GamePlayer[]>(`/games/${gameId}/players`, token);
   }

@@ -16,7 +16,6 @@ import dev.geeler.apiaces.gameservice.service.PlayerService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -96,5 +95,11 @@ public class GameController {
                 .type(ChatType.MESSAGE)
                 .gameId(gameId)
                 .build());
+    }
+
+    @MessageMapping("/games.startGame")
+    public void startGame(@Payload GameIdDto gameIdDto, Principal principal) {
+        UUID playerId = jwtService.getUserIdFromPrincipal(principal);
+        gameService.startGame(gameIdDto.getGameId(), playerId);
     }
 }
