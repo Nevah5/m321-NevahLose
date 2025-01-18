@@ -57,7 +57,7 @@ public class GlobalMessageExceptionHandler {
     public String handleException(MessagingException exception) {
         log.info("MessagingException handled: {}", exception.getMessage());
         return new ServerErrorResponse(
-                HttpStatus.BAD_REQUEST,
+                HttpStatus.INTERNAL_SERVER_ERROR,
                 exception.getMessage()
         ).toJsonString();
     }

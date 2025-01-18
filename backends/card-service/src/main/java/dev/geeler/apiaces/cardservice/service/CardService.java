@@ -7,6 +7,10 @@ import java.util.UUID;
 
 public interface CardService {
     Card getCard(UUID cardId);
+
     List<Card> getCards();
+
     List<UUID> getShuffledDeck();
+
+    Card getRandom();
 }

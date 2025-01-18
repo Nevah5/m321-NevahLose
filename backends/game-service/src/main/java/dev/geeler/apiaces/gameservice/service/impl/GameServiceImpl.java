@@ -1,23 +1,52 @@
-package dev.geeler.apiaces.gameservice.service;
+package dev.geeler.apiaces.gameservice.service.impl;
 
 import dev.geeler.apiaces.gameservice.exception.MaxGameSizeException;
 import dev.geeler.apiaces.gameservice.exception.NotFoundException;
-import dev.geeler.apiaces.gameservice.model.game.*;
+import dev.geeler.apiaces.gameservice.model.game.ChatMessage;
+import dev.geeler.apiaces.gameservice.model.game.ChatType;
+import dev.geeler.apiaces.gameservice.model.game.Game;
+import dev.geeler.apiaces.gameservice.model.game.GamePlayer;
+import dev.geeler.apiaces.gameservice.model.game.GameStatus;
+import dev.geeler.apiaces.gameservice.model.security.UserPrincipal;
 import dev.geeler.apiaces.gameservice.repository.GamePlayerRepository;
 import dev.geeler.apiaces.gameservice.repository.GameRepository;
-import lombok.RequiredArgsConstructor;
+import dev.geeler.apiaces.gameservice.service.ChatService;
+import dev.geeler.apiaces.gameservice.service.GameService;
+import dev.geeler.apiaces.gameservice.service.KafkaService;
+import dev.geeler.apiaces.gameservice.service.PlayerService;
+import dev.geeler.apiaces.gameservice.service.WebsocketService;
+import org.springframework.context.annotation.Lazy;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.stereotype.Service;
 
+import java.security.Principal;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
 @Service
-@RequiredArgsConstructor
 public class GameServiceImpl implements GameService {
     private final GameRepository gameRepository;
     private final GamePlayerRepository gamePlayerRepository;
     private final ChatService chatService;
+    private final PlayerService playerService;
+    private final KafkaService kafkaService;
+    private final WebsocketService websocketService;
+
+    public GameServiceImpl(
+            GameRepository gameRepository,
+            GamePlayerRepository gamePlayerRepository,
+            ChatService chatService,
+            @Lazy PlayerService playerService,
+            KafkaService kafkaService,
+            @Lazy WebsocketService websocketService) {
+        this.gameRepository = gameRepository;
+        this.gamePlayerRepository = gamePlayerRepository;
+        this.chatService = chatService;
+        this.playerService = playerService;
+        this.kafkaService = kafkaService;
+        this.websocketService = websocketService;
+    }
 
     @Override
     public Optional<Game> getGame(Long roomId) {
@@ -44,18 +73,20 @@ public class GameServiceImpl implements GameService {
     }
 
     @Override
-    public void joinGame(UUID gameId, UUID playerId) {
+    public void joinGame(UUID gameId, Principal principal) {
+        final UsernamePasswordAuthenticationToken token = (UsernamePasswordAuthenticationToken) principal;
+        final UserPrincipal userPrincipal = (UserPrincipal) token.getPrincipal();
         final Game game = this.getGame(gameId).orElseThrow(() -> new NotFoundException("The game was not found"));
 
         if (game.getStatus() != GameStatus.WAITING_FOR_PLAYERS) {
-            if (game.getOwnerId().equals(playerId) && game.getStatus() == GameStatus.INITIALIZING) {
+            if (game.getOwnerId().equals(userPrincipal.getId()) && game.getStatus() == GameStatus.INITIALIZING) {
                 this.updateGameStatus(game, GameStatus.WAITING_FOR_PLAYERS);
             } else {
                 throw new IllegalStateException("This game is possibly not accessible anymore.");
             }
         }
 
-        gamePlayerRepository.findByPlayerIdAndGameId(playerId, game.getId())
+        gamePlayerRepository.findByPlayerIdAndGameId(userPrincipal.getId(), game.getId())
                 .ifPresent(gamePlayer -> {
                     if (game.getStatus() != GameStatus.WAITING_FOR_PLAYERS)
                         throw new IllegalStateException("Player already in game.");
@@ -67,7 +98,8 @@ public class GameServiceImpl implements GameService {
 
         gamePlayerRepository.save(new GamePlayer.Builder()
                 .setGameId(game.getId())
-                .setPlayerId(playerId)
+                .setPlayerId(userPrincipal.getId())
+                .setUsername(userPrincipal.getUsername())
                 .build());
     }
 
@@ -88,14 +120,18 @@ public class GameServiceImpl implements GameService {
                 .gameId(gameId)
                 .senderId(playerId)
                 .senderUsername(username)
+                .isHost(playerService.isOwnerOfGame(playerId, gameId))
                 .isJoined(false)
                 .type(ChatType.ACTIVITY)
                 .build());
 
 
-        if (game.getOwnerId().equals(playerId)) {
+        if (game.getOwnerId().equals(playerId) && game.getStatus() != GameStatus.FINISHED) {
             updateGameStatus(game, GameStatus.OWNER_LEFT);
-            // TODO: broadcast deletion & force leave players
+            kafkaService.sendMessage(
+                    "games.terminate",
+                    gameId
+            );
         }
     }
 
@@ -130,4 +166,6 @@ public class GameServiceImpl implements GameService {
                 .setStatus(status)
                 .build());
     }
+
+
 }

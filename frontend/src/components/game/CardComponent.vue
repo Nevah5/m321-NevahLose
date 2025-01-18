@@ -1,11 +1,16 @@
 <template>
   <div
-    :class="'card' + (hoverEffect && !isTurned ? ' card-hover' : '')"
+    :class="[
+      'card',
+      hoverEffect && !isTurned ? ' card-hover' : '',
+      'card-' + size,
+    ]"
     ref="card"
   >
-    <div class="card__back" v-if="isTurned && isTurnable">
+    <div class="card__back" v-if="isTurned && !isTurnable" ref="card-turn">
       <div class="inner">
-        <LogoIcon :logoWidth="100" :disableLink="true" />
+        <LogoIcon v-if="!backSideText" :logoWidth="100" :disableLink="true" />
+        <p v-else>{{ backSideText }}</p>
       </div>
     </div>
     <div
@@ -15,7 +20,8 @@
       ref="card-turn"
     >
       <div class="inner">
-        <LogoIcon :logoWidth="100" :disableLink="true" />
+        <LogoIcon v-if="!backSideText" :logoWidth="100" :disableLink="true" />
+        <p v-else>{{ backSideText }}</p>
       </div>
     </div>
     <div
@@ -44,7 +50,7 @@
 
 <script lang="ts" setup>
 import LogoIcon from "@/components/icons/LogoIcon.vue";
-import { onMounted, ref, useTemplateRef, watch } from "vue";
+import { nextTick, onMounted, ref, useTemplateRef, watch } from "vue";
 
 const card = useTemplateRef<HTMLDivElement>("card");
 const cardGlow = useTemplateRef<HTMLDivElement>("card-glow");
@@ -62,7 +68,9 @@ const {
   description = "",
   hoverEffect = true,
   isTurnedProp = false,
-  isTurnable = false,
+  isTurnable = true,
+  size = "medium",
+  backSideText = null,
 } = defineProps<{
   type: string;
   name: string;
@@ -72,6 +80,8 @@ const {
   hoverEffect?: boolean;
   isTurnedProp?: boolean;
   isTurnable?: boolean;
+  size?: "medium" | "small" | "large";
+  backSideText?: string;
 }>();
 
 watch(
@@ -86,6 +96,16 @@ watch(
   async (newValue) => {
     if (subjectName === "") return;
     setupSubjectImage();
+  }
+);
+watch(
+  () => isTurnedProp,
+  async (newValue) => {
+    if (isTurnedProp) {
+      hideCard();
+    } else {
+      revealCard();
+    }
   }
 );
 
@@ -173,11 +193,28 @@ const rotateToMouse = (e: MouseEvent) => {
 
 const revealCard = () => {
   cardTurn.value!.classList.add("card-open");
+  cardTurn.value!.classList.remove("card-close");
   cardContent.value!.classList.add("card-turned-open");
+  cardContent.value!.classList.remove("card-turned-close");
 
   setTimeout(() => {
     isTurned.value = false;
     setupHoverEffect();
+  }, 300);
+};
+
+const hideCard = async () => {
+  isTurned.value = true;
+  await nextTick();
+
+  cardTurn.value!.classList.remove("card-open");
+  cardTurn.value!.classList.add("card-close");
+  cardContent.value!.classList.remove("card-turned-open");
+  cardContent.value!.classList.add("card-turned-close");
+
+  setTimeout(() => {
+    cardTurn.value!.classList.remove("card-close");
+    cardContent.value!.classList.remove("card-turned-close");
   }, 300);
 };
 </script>
@@ -195,17 +232,24 @@ const revealCard = () => {
 }
 
 .card {
-  $card-aspect-ratio-width: 3;
-  $card-aspect-ratio-height: 4;
-  $corner-cut-radius: 20px;
-  $card-width: 250px;
-  $card-height: calc(
-    $card-width / $card-aspect-ratio-width * $card-aspect-ratio-height
-  );
-  $card-padding: 9.6px;
+  // dynamic values
+  --card-width: 250px;
+  --card-height: 333.33px; // width / 3 * 4
+  --card-padding: 9.6px;
+  --title-font-size: 12px;
+  --middle-font-size: 12px;
+  --bottom-font-size: 10px;
+  --back-font-size: 1.5rem;
+
+  // calculated values
+  --image-width: calc(var(--card-width) - var(--card-padding) * 2);
+  --image-height: calc(var(--card-height) * 0.5);
+  --text-height: calc(var(--card-height) * 0.3);
+  --text-margin-top: calc(var(--card-height) * 0.3 * 0.382 - 12px);
+
   position: relative;
-  aspect-ratio: calc($card-aspect-ratio-width / $card-aspect-ratio-height);
-  width: $card-width;
+  aspect-ratio: 3 / 4;
+  width: var(--card-width);
   border-radius: 15px;
   overflow: hidden;
   transition-duration: 300ms;
@@ -213,6 +257,39 @@ const revealCard = () => {
   transition-timing-function: ease-out;
   transform: rotate3d(0);
 
+  &-small {
+    // dynamic values
+    --card-width: 200px;
+    --card-height: 266.66px; // width / 3 * 4
+    --card-padding: 7px;
+    --title-font-size: 10px;
+    --middle-font-size: 10px;
+    --bottom-font-size: 8px;
+    --back-font-size: 1.5rem;
+
+    // calculated values
+    --image-width: calc(var(--card-width) - var(--card-padding) * 2);
+    --image-height: calc(var(--card-height) * 0.5);
+    --text-height: calc(var(--card-height) * 0.3);
+    --text-margin-top: calc(var(--card-height) * 0.3 * 0.382 - 12px);
+  }
+
+  &-large {
+    // dynamic values
+    --card-width: 300px;
+    --card-height: 400px; // width / 3 * 4
+    --card-padding: 11px;
+    --title-font-size: 16px;
+    --middle-font-size: 16px;
+    --bottom-font-size: 12px;
+    --back-font-size: 1.5rem;
+
+    // calculated values
+    --image-width: calc(var(--card-width) - var(--card-padding) * 2);
+    --image-height: calc(var(--card-height) * 0.5);
+    --text-height: calc(var(--card-height) * 0.3);
+    --text-margin-top: calc(var(--card-height) * 0.3 * 0.382 - 12px);
+  }
   &-hover {
     &:hover {
       transition-duration: 150ms;
@@ -235,29 +312,15 @@ const revealCard = () => {
         #0000000f
       );
 
-      $image-width: calc($card-width - $card-padding * 2);
-      $image-height: calc($card-height * 0.5);
       clip-path: polygon(
-        0
-          math.percentage(
-            calc(1 / $image-height * ($image-height - $corner-cut-radius))
-          ),
-        0 math.percentage(calc(1 / $image-height * $corner-cut-radius)),
-        math.percentage(calc(1 / $image-width * $corner-cut-radius)) 0,
-        math.percentage(
-            calc(1 / $image-width * ($image-width - $corner-cut-radius))
-          )
-          0,
-        100% math.percentage(calc(1 / $image-height * $corner-cut-radius)),
-        100%
-          math.percentage(
-            calc(1 / $image-height * ($image-height - $corner-cut-radius))
-          ),
-        math.percentage(
-            calc(1 / $image-width * ($image-width - $corner-cut-radius))
-          )
-          100%,
-        math.percentage(calc(1 / $image-width * $corner-cut-radius)) 100%
+        10% 0,
+        90% 0,
+        100% 13.33%,
+        100% 86.67%,
+        90% 100%,
+        10% 100%,
+        0 86.67%,
+        0 13.33%
       );
     }
   }
@@ -268,7 +331,7 @@ const revealCard = () => {
     left: 0;
     height: 100%;
     width: 100%;
-    padding: $card-padding;
+    padding: var(--card-padding);
     display: flex;
     flex-direction: column;
     justify-content: space-between;
@@ -282,6 +345,9 @@ const revealCard = () => {
       &-open {
         animation: card-flip 100ms 100ms reverse forwards;
       }
+      &-close {
+        animation: card-flip 100ms forwards !important;
+      }
     }
     section {
       width: 100%;
@@ -289,26 +355,16 @@ const revealCard = () => {
 
       &.top {
         overflow: hidden;
-        $image-width: calc($card-width - $card-padding * 2);
-        $image-height: calc($card-height * 0.5);
 
-        // only cut bottom, because of subject image
         clip-path: polygon(
-          0 0,
-          100% 0,
-          100%
-            math.percentage(
-              calc(1 / $image-height * ($image-height - $corner-cut-radius))
-            ),
-          math.percentage(
-              calc(1 / $image-width * ($image-width - $corner-cut-radius))
-            )
-            100%,
-          math.percentage(calc(1 / $image-width * $corner-cut-radius)) 100%,
-          0
-            math.percentage(
-              calc(1 / $image-height * ($image-height - $corner-cut-radius))
-            )
+          10% 0,
+          90% 0,
+          100% 13.33%,
+          100% 86.67%,
+          90% 100%,
+          10% 100%,
+          0 86.67%,
+          0 13.33%
         );
 
         div.title {
@@ -320,7 +376,7 @@ const revealCard = () => {
           justify-content: space-between;
           align-items: center;
           background-color: var(--color-background);
-          font-size: 12px;
+          font-size: var(--title-font-size);
           font-weight: bold;
           padding: 1px 10px;
           width: 80%;
@@ -340,67 +396,46 @@ const revealCard = () => {
           z-index: 20;
         }
         div.background {
-          height: $image-height;
+          height: var(--image-height);
           margin-top: 5%;
           background-position: top;
           background-size: cover;
           background-repeat: no-repeat;
           clip-path: polygon(
-            0
-              math.percentage(
-                calc(1 / $image-height * ($image-height - $corner-cut-radius))
-              ),
-            0 math.percentage(calc(1 / $image-height * $corner-cut-radius)),
-            math.percentage(calc(1 / $image-width * $corner-cut-radius)) 0,
-            math.percentage(
-                calc(1 / $image-width * ($image-width - $corner-cut-radius))
-              )
-              0,
-            100% math.percentage(calc(1 / $image-height * $corner-cut-radius)),
-            100%
-              math.percentage(
-                calc(1 / $image-height * ($image-height - $corner-cut-radius))
-              ),
-            math.percentage(
-                calc(1 / $image-width * ($image-width - $corner-cut-radius))
-              )
-              100%,
-            math.percentage(calc(1 / $image-width * $corner-cut-radius)) 100%
+            10% 0,
+            90% 0,
+            100% 13.33%,
+            100% 86.67%,
+            90% 100%,
+            10% 100%,
+            0 86.67%,
+            0 13.33%
           );
         }
       }
       &.middle {
-        $text-height: calc($card-height * 0.3);
-        height: $text-height;
+        height: var(--text-height);
         display: flex;
         justify-content: center;
         align-items: flex-start;
         background-color: var(--color-background);
         color: var(--color-text);
-        font-size: 1.5rem;
         font-weight: bold;
         position: relative;
-        $text-width: $card-width - $card-padding * 2;
         clip-path: polygon(
           0 0,
-          math.percentage(
-              calc(1 / $text-width * ($text-width - $corner-cut-radius))
-            )
-            0,
-          100% math.percentage(calc(1 / $text-height * $corner-cut-radius)),
+          90% 0,
+          100% 22.5%,
           100% 100%,
-          math.percentage(calc(1 / $text-width * $corner-cut-radius)) 100%,
-          0
-            math.percentage(
-              calc(1 / $text-height * ($text-height - $corner-cut-radius))
-            )
+          10% 100%,
+          0 77.5%
         );
 
         p {
           text-align: center;
-          font-size: 12px;
+          font-size: var(--middle-font-size);
           width: 80%;
-          margin-top: calc($text-height * 0.382 - 12px);
+          margin-top: var(--text-margin-top);
         }
       }
       &.bottom {
@@ -412,7 +447,7 @@ const revealCard = () => {
         p {
           color: var(--color-background);
           font-weight: bold;
-          font-size: 10px;
+          font-size: var(--bottom-font-size);
         }
       }
     }
@@ -456,40 +491,29 @@ const revealCard = () => {
     align-items: center;
 
     .inner {
-      $corner-cut-radius: 35px;
-      $inner-width: calc($card-width - 24px);
-      $inner-height: calc($card-height - 24px);
+      --corner-cut-radius: 35px;
+      --inner-width: calc(var(--card-width) - 2.5 * var(--card-padding));
+      --inner-height: calc(var(--card-height) - 2.5 * var(--card-padding));
+
       display: flex;
       justify-content: center;
       align-items: center;
-      width: $inner-width;
-      height: $inner-height;
+      width: var(--inner-width);
+      height: var(--inner-height);
       background-color: var(--color-background);
       color: var(--color-text);
-      font-size: 1.5rem;
+      font-size: var(--back-font-size);
       font-weight: bold;
 
       clip-path: polygon(
-        0
-          math.percentage(
-            calc(1 / $inner-height * ($inner-height - $corner-cut-radius))
-          ),
-        0 math.percentage(calc(1 / $inner-height * $corner-cut-radius)),
-        math.percentage(calc(1 / $inner-width * $corner-cut-radius)) 0,
-        math.percentage(
-            calc(1 / $inner-width * ($inner-width - $corner-cut-radius))
-          )
-          0,
-        100% math.percentage(calc(1 / $inner-height * $corner-cut-radius)),
-        100%
-          math.percentage(
-            calc(1 / $inner-height * ($inner-height - $corner-cut-radius))
-          ),
-        math.percentage(
-            calc(1 / $inner-width * ($inner-width - $corner-cut-radius))
-          )
-          100%,
-        math.percentage(calc(1 / $inner-width * $corner-cut-radius)) 100%
+        13.33% 0,
+        86.67% 0,
+        100% 10%,
+        100% 90%,
+        86.67% 100%,
+        13.33% 100%,
+        0 90%,
+        0 10%
       );
     }
 
@@ -498,6 +522,10 @@ const revealCard = () => {
     }
     &.card-open {
       animation: card-flip 100ms forwards;
+    }
+    &.card-close {
+      transform: rotateY(90deg);
+      animation: card-flip 100ms 100ms forwards reverse;
     }
   }
 }

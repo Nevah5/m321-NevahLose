@@ -3,43 +3,17 @@
     <form>
       <h2>Join Game</h2>
       <div class="room-id-input" ref="inputs">
-        <input
-          type="text"
-          maxlength="1"
-          v-model="num1"
-          :disabled="isLoadingGame"
-        />
-        <input
-          type="text"
-          maxlength="1"
-          v-model="num2"
-          :disabled="isLoadingGame"
-        />
+        <input type="text" maxlength="1" :disabled="isLoadingGame" />
+        <input type="text" maxlength="1" :disabled="isLoadingGame" />
         <input
           class="space"
           type="text"
           maxlength="1"
-          v-model="num3"
           :disabled="isLoadingGame"
         />
-        <input
-          type="text"
-          maxlength="1"
-          v-model="num4"
-          :disabled="isLoadingGame"
-        />
-        <input
-          type="text"
-          maxlength="1"
-          v-model="num5"
-          :disabled="isLoadingGame"
-        />
-        <input
-          type="text"
-          maxlength="1"
-          v-model="num6"
-          :disabled="isLoadingGame"
-        />
+        <input type="text" maxlength="1" :disabled="isLoadingGame" />
+        <input type="text" maxlength="1" :disabled="isLoadingGame" />
+        <input type="text" maxlength="1" :disabled="isLoadingGame" />
         <div id="loading-background" v-if="isLoadingGame"></div>
         <LoadingIcon v-if="isLoadingGame" :dark="true" />
       </div>
@@ -64,12 +38,6 @@ import toastApi from "@/api/toastApi";
 
 const inputWrapper = useTemplateRef<HTMLInputElement>("inputs");
 const inputs = ref<NodeListOf<HTMLInputElement>>();
-const num1 = ref("");
-const num2 = ref("");
-const num3 = ref("");
-const num4 = ref("");
-const num5 = ref("");
-const num6 = ref("");
 const isLoadingNewGame = ref(false);
 const isLoadingGame = ref(false);
 const router = useRouter();
@@ -79,45 +47,62 @@ onMounted(() => {
     "input"
   ) as NodeListOf<HTMLInputElement>;
   inputs.value!.forEach((input) => {
-    input.addEventListener("keyup", handleInput);
+    input.addEventListener("keydown", handleInput);
     input.addEventListener("paste", handlePaste);
   });
 });
 
 const handleInput = (e: KeyboardEvent) => {
-  e.preventDefault();
-  const target = e.target as HTMLInputElement;
+  let target = e.target as HTMLInputElement;
   if (e.key === "Backspace") {
+    if (target.value === "") {
+      // if already empty, focus previous
+      const previous: HTMLInputElement | null =
+        target.previousElementSibling as HTMLInputElement;
+      if (previous == null) return;
+      target = previous;
+      previous.focus();
+    }
     const previous: HTMLInputElement | null =
       target.previousElementSibling as HTMLInputElement;
     if (previous == null) return;
-    previous.focus();
+    setTimeout(() => previous.focus(), 1);
   } else if (/\d/.test(e.key)) {
+    if (target.value !== "") {
+      // if already filled, replace
+      target.value = e.key;
+    }
     const next: HTMLInputElement | null =
       target.nextElementSibling as HTMLInputElement;
-    const code = `${num1.value}${num2.value}${num3.value}${num4.value}${num5.value}${num6.value}`;
-    if (next == null && code.length === 6) {
-      joinGame(code);
-      return;
-    }
-    next.focus();
+    setTimeout(() => {
+      let code = "";
+      document
+        .querySelectorAll("input")
+        .forEach((input) => (code += input.value));
+      if (next == null && code.length === 6) {
+        joinGame(code);
+        return;
+      }
+      next.focus();
+    }, 1);
   }
 };
 
 const handlePaste = (e: ClipboardEvent) => {
-  e.preventDefault();
   const paste = e.clipboardData?.getData("text");
   if (paste && paste.length <= 6) {
     const pasteArray = paste.split("");
-    inputs.value!.forEach((input, index) => {
+    const inputs = document.querySelectorAll("input");
+    inputs.forEach((input, index) => {
       input.value = pasteArray[index];
     });
-    inputs.value![pasteArray.length - 1].focus();
+    inputs[pasteArray.length - 1].focus();
     joinGame(paste);
   }
 };
 
 const joinGame = (roomId: string) => {
+  localStorage.setItem("isHost", "false");
   isLoadingGame.value = true;
   const token = localStorage.getItem("token");
   gameService
@@ -142,6 +127,7 @@ const createGame = async () => {
     const token = localStorage.getItem("token");
     const game: Game = await gameService.createGame(token!);
     localStorage.setItem("game_roomId", game.roomId);
+    localStorage.setItem("isHost", "true");
     setTimeout(() => {
       router.push("/game/" + game.id);
     }, Math.floor(Math.random() * 1000));

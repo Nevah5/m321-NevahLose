@@ -2,6 +2,8 @@
   <main>
     <LoadingOverlay :enabled="isLoading" />
     <LeaveGameButton @confirm="leaveGame" />
+    <StartGameButton v-if="isHost" />
+    <JoinedPlayersList v-if="!isLoading" :game-id="gameId" />
     <ChatComponent v-if="!isLoading" />
     <InviteCode :code="inviteCode" />
   </main>
@@ -12,7 +14,9 @@ import { gameService } from "@/api";
 import toastApi from "@/api/toastApi";
 import ChatComponent from "@/components/game/ChatComponent.vue";
 import InviteCode from "@/components/game/InviteCode.vue";
+import JoinedPlayersList from "@/components/game/JoinedPlayersList.vue";
 import LeaveGameButton from "@/components/game/LeaveGameButton.vue";
+import StartGameButton from "@/components/game/StartGameButton.vue";
 import LoadingOverlay from "@/components/page/LoadingOverlay.vue";
 import type { Client } from "@stomp/stompjs";
 import { onMounted, onUnmounted, ref } from "vue";
@@ -24,6 +28,7 @@ const inviteCode = ref("");
 const isLoading = ref(true);
 const router = useRouter();
 const client = ref<Client | null>(null);
+const isHost = ref(false);
 
 onMounted(async () => {
   isLoading.value = true;
@@ -36,6 +41,7 @@ onMounted(async () => {
       title: "Error retrieving invite code",
       message: "Invite code from localStorage was not set properly",
     });
+    router.push("/");
     return;
   }
   inviteCode.value = codeStored;
@@ -44,7 +50,6 @@ onMounted(async () => {
   const token = localStorage.getItem("token");
   try {
     client.value = await gameService.joinGame(gameId.value, token!);
-    isLoading.value = false;
   } catch (error) {
     toastApi.emit({
       title: "An error occurred",
@@ -52,6 +57,16 @@ onMounted(async () => {
     });
     router.push("/");
   }
+  isHost.value = localStorage.getItem("isHost") === "true";
+  isLoading.value = false;
+
+  gameService.terminateGameListener((message) => {
+    toastApi.emit({
+      title: "Game terminated",
+      message,
+    });
+    leaveGame();
+  });
 });
 
 onUnmounted(() => {
@@ -87,5 +102,17 @@ h1 {
   bottom: 10px;
   left: 10px;
   max-height: 30%;
+}
+.start-button {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+}
+.players {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 80%;
 }
 </style>

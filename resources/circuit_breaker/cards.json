@@ -1,0 +1,119 @@
+[
+  {
+    "id": "5fb8de95-b574-4743-aec3-e29d846aa7b5",
+    "name": "The Analyst",
+    "description": "Allows you to see the current game rules for one turn",
+    "backgroundFilename": "TheAnalyst.webp",
+    "subjectFilename": "TheAnalyst_subject.webp",
+    "cardType": "GET",
+    "amountInDeck": 4
+  },
+  {
+    "id": "9cf57f14-68c0-414e-b019-68adb8ba5322",
+    "name": "The Watcher",
+    "description": "Allows you to see a random player's card",
+    "backgroundFilename": "TheWatcher.webp",
+    "subjectFilename": "TheWatcher_subject.webp",
+    "cardType": "GET",
+    "amountInDeck": 4
+  },
+  {
+    "id": "9d42099d-9bc1-411c-ac68-7a8f0ea954e6",
+    "name": "The Tracker",
+    "description": "Allows you to see how many cards are left in the deck",
+    "backgroundFilename": "TheTracker.webp",
+    "subjectFilename": "TheTracker_subject.webp",
+    "cardType": "GET",
+    "amountInDeck": 4
+  },
+  {
+    "id": "2acbcead-a8a4-497e-b9a5-f5f7eeb84953",
+    "name": "The Cleanser",
+    "description": "Creates a game rule and makes players with exactly 0 cards win",
+    "backgroundFilename": "TheCleanser.webp",
+    "subjectFilename": "TheCleanser_subject.webp",
+    "cardType": "POST",
+    "amountInDeck": 4
+  },
+  {
+    "id": "58909f7c-b080-4a40-a564-f9ac347d1036",
+    "name": "The Strategist",
+    "description": "Creates a game rule and makes players with exactly 10 cards win",
+    "backgroundFilename": "TheStrategist.webp",
+    "subjectFilename": "TheStrategist_subject.webp",
+    "cardType": "POST",
+    "amountInDeck": 4
+  },
+  {
+    "id": "8b864cfb-7cd8-4c48-9654-62d1e77be76a",
+    "name": "The Forcer",
+    "description": "Creates a game rule and makes players draw 2 cards instead of 1",
+    "backgroundFilename": "TheForcer.webp",
+    "subjectFilename": "TheForcer_subject.webp",
+    "cardType": "POST",
+    "amountInDeck": 4
+  },
+  {
+    "id": "df85be3d-4fd6-43cb-bf32-19a3336d7b8b",
+    "name": "The Thief",
+    "description": "Allows you to steal a card from another player",
+    "backgroundFilename": "TheThief.webp",
+    "subjectFilename": "TheThief_subject.webp",
+    "cardType": "PUT",
+    "amountInDeck": 4
+  },
+  {
+    "id": "e66eeefa-e158-4184-ae30-4ed6484efe0f",
+    "name": "The Giver",
+    "description": "Allows you to give a card to another player",
+    "backgroundFilename": "TheGiver.webp",
+    "subjectFilename": "TheGiver_subject.webp",
+    "cardType": "PUT",
+    "amountInDeck": 4
+  },
+  {
+    "id": "fd03ab0d-73cd-46a1-b768-d55002939b84",
+    "name": "The Shifter",
+    "description": "Disables a random rule for everyone until your next play",
+    "backgroundFilename": "TheShifter.webp",
+    "subjectFilename": "TheShifter_subject.webp",
+    "cardType": "PUT",
+    "amountInDeck": 4
+  },
+  {
+    "id": "04bcb43f-7f00-49f3-8d8b-6c6627aee037",
+    "name": "The Nullifier",
+    "description": "Removed a random rule for everyone until your next play",
+    "backgroundFilename": "TheNullifier.webp",
+    "subjectFilename": "TheNullifier_subject.webp",
+    "cardType": "DELETE",
+    "amountInDeck": 4
+  },
+  {
+    "id": "254951c1-7852-4a4d-981b-9aefcee8bb14",
+    "name": "The Plucker",
+    "description": "Allows you to pick a specific card from a random player",
+    "backgroundFilename": "ThePlucker.webp",
+    "subjectFilename": "ThePlucker_subject.webp",
+    "cardType": "DELETE",
+    "amountInDeck": 4
+  },
+  {
+    "id": "dea55f53-9f12-4242-be10-d4e71f1d8847",
+    "name": "The Banisher",
+    "description": "Allows you to remove a card from another player",
+    "backgroundFilename": "TheBanisher.webp",
+    "subjectFilename": "TheBanisher_subject.webp",
+    "cardType": "DELETE",
+    "amountInDeck": 4
+  },
+  {
+    "id": "9e801512-0538-4322-8d1e-ee58ea6b87b5",
+    "name": "The Gambler",
+    "description": "Will act as a random card as soon as played",
+    "backgroundFilename": "TheGambler.webp",
+    "subjectFilename": "TheGambler_subject.webp",
+    "cardType": "OPTIONS",
+    "amountInDeck": 4
+  }
+]

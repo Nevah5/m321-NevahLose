@@ -6,9 +6,10 @@ import type {
   Card,
   Game,
   ChatMessage,
+  GamePlayer,
 } from "./types";
 import SockJS from "sockjs-client";
-import { Client, Stomp, type IMessage } from "@stomp/stompjs";
+import { Client, type IMessage } from "@stomp/stompjs";
 
 import axios from "axios";
 import { handleApiError } from "./errorHandler";
@@ -66,6 +67,10 @@ class CardService extends ApiService {
 
   async getCards(): Promise<Card[]> {
     return this.get<Card[]>("/cards");
+  }
+
+  async getRandom(amount: number): Promise<Card[]> {
+    return this.get<Card[]>("/cards/random?amount=" + amount);
   }
 }
 
@@ -160,9 +165,6 @@ class GameService extends ApiService {
   }
 
   subscribeChatEvents(callback: (message: ChatMessage) => void) {
-    this.stompClient!.subscribe(`/queue/chat`, (message: IMessage) => {
-      callback(JSON.parse(message.body) as ChatMessage);
-    });
     this.stompClient!.subscribe(`/user/queue/chat`, (message: IMessage) => {
       callback(JSON.parse(message.body) as ChatMessage);
     });
@@ -173,6 +175,16 @@ class GameService extends ApiService {
       destination: `/app/games.sendMessage`,
       body: JSON.stringify({ message }),
       headers: { Authorization: `Bearer ${token}` },
+    });
+  }
+
+  async getPlayers(gameId: string, token: string): Promise<GamePlayer[]> {
+    return this.get<GamePlayer[]>(`/games/${gameId}/players`, token);
+  }
+
+  async terminateGameListener(callback: (message: string) => void) {
+    this.stompClient!.subscribe(`/user/queue/game/terminate`, (message) => {
+      callback(message.body);
     });
   }
 }

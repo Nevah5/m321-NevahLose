@@ -4,10 +4,7 @@ import dev.geeler.apiaces.playerservice.model.Player;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
-import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -57,7 +54,7 @@ public class JwtServiceImpl implements JwtService {
 
     @Override
     public UUID extractUserId(String token) {
-        return UUID.fromString(extractClaims(token).getId());
+        return UUID.fromString((String) extractClaims(token).get("id"));
     }
 
     @Override

@@ -9,7 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 
-@CrossOrigin(origins = "*") // TODO: restrict this to the frontend URL
 @RequestMapping("/auth")
 @RestController
 public class AuthController {
@@ -20,6 +19,9 @@ public class AuthController {
 
     @PostMapping("/register")
     public JwtResponseDto register(@RequestBody PlayerDto playerDto, @Value("${application.security.jwt.expiration}") final long expiration) {
+        if (playerDto.getUsername().equals("")) {
+            throw new IllegalArgumentException("Username cannot be empty");
+        }
         final Player player = playerService.register(playerDto);
         return new JwtResponseDto(jwtService.generateToken(player), expiration / 1000);
     }

@@ -17,19 +17,22 @@ import java.util.UUID;
 public class GamePlayer {
     @Id
     @Getter
-    private UUID gameId;
+    protected UUID gameId;
 
     @Id
     @Getter
-    private UUID playerId;
+    protected UUID playerId;
+
+    @Getter
+    protected String username;
 
     @Getter
     @Temporal(TemporalType.TIMESTAMP)
-    private Date joinedAt;
+    protected Date joinedAt;
 
     @Getter
     @Temporal(TemporalType.TIMESTAMP)
-    private Date leftAt;
+    protected Date leftAt;
 
     public Builder toBuilder() {
         return new Builder(this);
@@ -49,6 +52,11 @@ public class GamePlayer {
 
         public Builder setGameId(final UUID gameId) {
             this.gamePlayer.gameId = gameId;
+            return this;
+        }
+
+        public Builder setUsername(final String username) {
+            this.gamePlayer.username = username;
             return this;
         }
 

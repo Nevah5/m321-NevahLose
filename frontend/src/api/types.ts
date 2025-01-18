@@ -10,6 +10,15 @@ export interface TokenResponse {
   expires_in: number;
 }
 
+export interface GamePlayer {
+  gameId: string;
+  playerId: string;
+  username: string;
+  joinedAt: number;
+  leftAt: number | null;
+  host: boolean;
+}
+
 export interface Player {
   id: string;
   username: string;
@@ -45,4 +54,5 @@ export interface ChatMessage {
   type: "ACTIVITY" | "MESSAGE";
   joined?: boolean;
   message?: string;
+  host: boolean;
 }

@@ -3,23 +3,24 @@ package dev.geeler.apiaces.playerservice.service;
 import dev.geeler.apiaces.playerservice.dto.PlayerDto;
 import dev.geeler.apiaces.playerservice.model.Player;
 import dev.geeler.apiaces.playerservice.repository.PlayerRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
+@Slf4j
 public class PlayerServiceImpl implements PlayerService {
     @Autowired
     private PlayerRepository playerRepository;
 
     @Override
     public Player register(PlayerDto playerDto) {
-        System.out.println("Registering player");
-        System.out.println(playerDto.getUsername());
-        System.out.println(playerDto.getUsername().length());
+        log.info("Registering player {}", playerDto.getUsername());
         if (playerDto.getUsername().length() > 20) {
             throw new IllegalArgumentException("Username is too long");
         }
@@ -32,7 +33,11 @@ public class PlayerServiceImpl implements PlayerService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        return Optional.of(playerRepository.findByUsername(username))
-                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+        return null;
+    }
+
+    @Override
+    public Optional<Player> loadById(UUID playerId) {
+        return playerRepository.findById(playerId);
     }
 }

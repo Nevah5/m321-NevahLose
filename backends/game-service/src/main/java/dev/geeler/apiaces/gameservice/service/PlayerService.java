@@ -20,4 +20,6 @@ public interface PlayerService {
     Optional<UUID> getCurrentGameId(UserPrincipal principal);
 
     Optional<String> getSessionId(UUID playerId);
+
+    boolean isOwnerOfGame(UUID playerId, UUID gameId);
 }

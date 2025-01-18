@@ -37,10 +37,23 @@ onMounted(async () => {
     localStorage.setItem("username", player.username);
     username.value = player.username;
   } catch (e: ApiError | any) {
-    toastApi.emit({
-      title: "Retrieving user information failed",
-      message: "Perhaps your session expired? Please try again.",
-    });
+    if (
+      e &&
+      typeof e === "object" &&
+      "code" in e &&
+      typeof e.code === "number" &&
+      e.code >= 500
+    ) {
+      toastApi.emit({
+        title: "Server Error",
+        message: "Something went wrong on our end.\n" + e.errorCode,
+      });
+    } else {
+      toastApi.emit({
+        title: "Retrieving user information failed",
+        message: "Perhaps your session expired? Please try again.",
+      });
+    }
     isLoading.value = true;
     localStorage.clear();
     router.push("/login");
