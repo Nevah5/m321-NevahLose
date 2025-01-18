@@ -183,7 +183,8 @@ h1 {
 }
 .inventory {
   position: absolute;
-  right: 15px;
-  bottom: 80px;
+  left: 50%;
+  transform: translateX(-50%);
+  bottom: 0;
 }
 </style>

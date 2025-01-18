@@ -1,17 +1,20 @@
 <template>
   <div class="inventory">
-    <CardComponent
-      v-for="card in cards"
-      :key="card.id"
-      :type="card.cardType"
-      :name="card.name"
-      :background-name="card.backgroundFilename"
-      :subject-name="card.subjectFilename"
-      :description="card.description"
-      :is-turnable="false"
-      :hover-effect="false"
-      size="small"
-    />
+    <h2>Card Inventory</h2>
+    <div class="card-wrapper">
+      <CardComponent
+        v-for="card in cards"
+        :key="card.id"
+        :type="card.cardType"
+        :name="card.name"
+        :background-name="card.backgroundFilename"
+        :subject-name="card.subjectFilename"
+        :description="card.description"
+        :is-turnable="false"
+        :hover-effect="false"
+        size="small"
+      />
+    </div>
   </div>
 </template>
 
@@ -27,8 +30,25 @@ const { cards } = defineProps<{
 <style scoped lang="scss">
 .inventory {
   display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
+  justify-content: flex-start;
+  align-items: center;
+  flex-direction: column;
   gap: 1rem;
+  background-color: rgba(#ffffff, 0.5);
+  height: 50px;
+  overflow: hidden;
+  transition: height 0.3s ease-in-out;
+  margin-bottom: 10px;
+
+  &:hover {
+    height: 600px;
+  }
+
+  .card-wrapper {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 1rem;
+  }
 }
 </style>
