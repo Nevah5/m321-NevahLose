@@ -2,7 +2,7 @@
   <div class="toasts">
     <div
       v-motion-pop-visible
-      class="toast"
+      :class="['toast', toast.type ? 'toast-' + toast.type : 'toast-error']"
       v-for="toast in activeToasts"
       :key="toast.id"
       :id="'toast-' + toast.id"
@@ -10,7 +10,12 @@
       @mouseleave="resumeTimeout(toast)"
     >
       <div class="background" style="width: 100%"></div>
-      <img alt="Warning Icon" class="icon" :src="warningIcon" :width="50" />
+      <img
+        alt="Warning Icon"
+        class="icon"
+        :src="toast.type == 'info' ? infoIcon : warningIcon"
+        :width="50"
+      />
       <h4>{{ toast.title }}</h4>
       <p>{{ toast.message }}</p>
       <CloseButton :size="25" @click="removeToast(toast)" />
@@ -24,6 +29,7 @@ import type { Toast, ToastTechnical } from "@/api/toastApi";
 import { onMounted, ref } from "vue";
 import CloseButton from "@/components/buttons/CloseButton.vue";
 import warningIcon from "@/assets/warning.svg";
+import infoIcon from "@/assets/info.svg";
 
 const DEFAULT_TIMEOUT = 5000;
 
@@ -147,6 +153,14 @@ const removeToast = (toast: ToastTechnical) => {
       right: 10px;
       padding: 5px;
       z-index: 1;
+    }
+
+    &.toast-info {
+      background: var(--color-info-light);
+
+      .background {
+        background-color: var(--color-info);
+      }
     }
   }
 }

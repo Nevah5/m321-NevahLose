@@ -16,6 +16,8 @@
   --color-primary: var(--vt-c-stratos);
   --color-warning: rgb(239, 95, 95);
   --color-warning-light: rgb(239, 154, 154);
+  --color-info: #7098e1;
+  --color-info-light: #86a8e6;
 
   --color-api-method-get: #65cb50;
   --color-api-method-post: #d3b718;
