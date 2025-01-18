@@ -125,7 +125,7 @@ class GameService extends ApiService {
           console.error(frame.body);
           reject(new Error(frame.body));
         },
-        debug: (str: string) => console.log(str),
+        // debug: (str: string) => console.log(str),
         onDisconnect: () => console.log("Websocket Disconnected"),
         onWebSocketError: (event) => {
           toastApi.emit({
@@ -137,7 +137,13 @@ class GameService extends ApiService {
         },
         onWebSocketClose: (event) => console.log("WebSocket closed", event),
         onConnect: () => {
-          console.log("Websocket Connected");
+          this.stompClient!.subscribe(`/user/queue/info`, (message) => {
+            toastApi.emit({
+              title: "Message from the server",
+              message: message.body,
+              type: "info",
+            });
+          });
           this.stompClient!.subscribe(`/user/queue/errors`, (message) => {
             const error: ApiError = JSON.parse(message.body);
             toastApi.emit({
