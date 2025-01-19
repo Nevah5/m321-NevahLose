@@ -63,7 +63,7 @@ class ApiService {
 
 class CardService extends ApiService {
   constructor(cardServiceUrl: string) {
-    super(`${cardServiceUrl}`);
+    super(`${cardServiceUrl}/v1`);
   }
 
   async getCards(): Promise<Card[]> {
@@ -77,7 +77,7 @@ class CardService extends ApiService {
 
 class PlayerService extends ApiService {
   constructor(playerServiceUrl: string) {
-    super(`${playerServiceUrl}`);
+    super(`${playerServiceUrl}/v1`);
   }
 
   async getSelf(token: string): Promise<Player> {
@@ -97,7 +97,7 @@ class GameService extends ApiService {
   private stompClient: Client | null = null;
 
   constructor(gameServiceUrl: string) {
-    super(`${gameServiceUrl}`);
+    super(`${gameServiceUrl}/v1`);
   }
 
   async getGameFromRoomId(roomId: string, token: string): Promise<Game> {
