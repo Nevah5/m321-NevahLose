@@ -97,15 +97,15 @@ class GameService extends ApiService {
   private stompClient: Client | null = null;
 
   constructor(gameServiceUrl: string) {
-    super(`${gameServiceUrl}/v1`);
+    super(`${gameServiceUrl}`);
   }
 
   async getGameFromRoomId(roomId: string, token: string): Promise<Game> {
-    return this.get<Game>(`/games/rooms/${roomId}`, token);
+    return this.get<Game>(`/v1/games/rooms/${roomId}`, token);
   }
 
   async createGame(token: string): Promise<Game> {
-    return this.post<Game>("/games/create", {}, token);
+    return this.post<Game>("/v1/games/create", {}, token);
   }
 
   async joinGame(gameId: string, token: string): Promise<Client> {
@@ -194,7 +194,7 @@ class GameService extends ApiService {
   }
 
   async getPlayers(gameId: string, token: string): Promise<GamePlayer[]> {
-    return this.get<GamePlayer[]>(`/games/${gameId}/players`, token);
+    return this.get<GamePlayer[]>(`/v1/games/${gameId}/players`, token);
   }
 
   async gameActivityListener(callback: (activity: GameActivity) => void) {
