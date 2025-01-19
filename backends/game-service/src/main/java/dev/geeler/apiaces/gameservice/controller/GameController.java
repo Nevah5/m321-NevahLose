@@ -11,7 +11,6 @@ import dev.geeler.apiaces.gameservice.model.game.GameStatus;
 import dev.geeler.apiaces.gameservice.service.ChatService;
 import dev.geeler.apiaces.gameservice.service.GameService;
 import dev.geeler.apiaces.gameservice.service.JwtService;
-import dev.geeler.apiaces.gameservice.service.KafkaService;
 import dev.geeler.apiaces.gameservice.service.PlayerService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.messaging.handler.annotation.MessageMapping;
@@ -36,8 +35,6 @@ public class GameController {
     private final PlayerService playerService;
 
     private final JwtService jwtService;
-
-    private final KafkaService kafkaProducerService;
 
     @GetMapping("/games/rooms/{roomId}")
     public Game getGame(@PathVariable Long roomId) {
