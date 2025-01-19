@@ -9,9 +9,9 @@ import java.util.UUID;
 
 @FeignClient(name = "card-service")
 public interface CardServiceClient {
-    @GetMapping("/cards")
+    @GetMapping("/v1/cards")
     List<Card> getCards();
 
-    @GetMapping("/cards/shuffled")
+    @GetMapping("/v1/cards/shuffled")
     List<UUID> getShuffledDeck();
 }
