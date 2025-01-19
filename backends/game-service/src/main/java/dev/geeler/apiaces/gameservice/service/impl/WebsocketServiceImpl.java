@@ -48,6 +48,17 @@ public class WebsocketServiceImpl implements WebsocketService {
                 response,
                 MessageHeadersUtil.createHeaders(sessionId)
         );
+    }
 
+    @Override
+    public void sendInfo(UUID playerId, String message) {
+        String sessionId = playerService.getSessionId(playerId).orElseThrow(() ->
+                new IllegalStateException("Player does not have a session id in this instance"));
+        simpMessagingTemplate.convertAndSendToUser(
+                sessionId,
+                "/queue/info",
+                message,
+                MessageHeadersUtil.createHeaders(sessionId)
+        );
     }
 }

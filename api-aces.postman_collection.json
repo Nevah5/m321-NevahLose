@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "3d1ecb39-3629-4d9e-b273-80ec86192d64",
+		"_postman_id": "4f3443e2-8547-4adc-ab89-dfa7a912a1fb",
 		"name": "API Aces",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "20343049"
@@ -15,11 +15,12 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{CARD_SERVICE_URL}}/cards",
+							"raw": "{{CARD_SERVICE_URL}}/v1/cards",
 							"host": [
 								"{{CARD_SERVICE_URL}}"
 							],
 							"path": [
+								"v1",
 								"cards"
 							]
 						}
@@ -32,11 +33,12 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{CARD_SERVICE_URL}}/cards/shuffled",
+							"raw": "{{CARD_SERVICE_URL}}/v1/cards/shuffled",
 							"host": [
 								"{{CARD_SERVICE_URL}}"
 							],
 							"path": [
+								"v1",
 								"cards",
 								"shuffled"
 							]
@@ -50,11 +52,12 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{CARD_SERVICE_URL}}/cards/{id}",
+							"raw": "{{CARD_SERVICE_URL}}/v1/cards/{id}",
 							"host": [
 								"{{CARD_SERVICE_URL}}"
 							],
 							"path": [
+								"v1",
 								"cards",
 								"{id}"
 							]
@@ -68,11 +71,12 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{CARD_SERVICE_URL}}/cards/random?amount=1",
+							"raw": "{{CARD_SERVICE_URL}}/v1/cards/random?amount=1",
 							"host": [
 								"{{CARD_SERVICE_URL}}"
 							],
 							"path": [
+								"v1",
 								"cards",
 								"random"
 							],
@@ -97,11 +101,12 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{PLAYER_SERVICE_URL}}/self",
+							"raw": "{{PLAYER_SERVICE_URL}}/v1/self",
 							"host": [
 								"{{PLAYER_SERVICE_URL}}"
 							],
 							"path": [
+								"v1",
 								"self"
 							]
 						}
@@ -111,11 +116,21 @@
 				{
 					"name": "/auth/register",
 					"request": {
+						"auth": {
+							"type": "noauth"
+						},
 						"method": "POST",
-						"header": [],
+						"header": [
+							{
+								"key": "Origin",
+								"value": "",
+								"type": "text",
+								"disabled": true
+							}
+						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"username\": \"\"\r\n}",
+							"raw": "{\r\n    \"username\": \"Test\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -123,11 +138,12 @@
 							}
 						},
 						"url": {
-							"raw": "{{PLAYER_SERVICE_URL}}/auth/register",
+							"raw": "{{PLAYER_SERVICE_URL}}/v1/auth/register",
 							"host": [
 								"{{PLAYER_SERVICE_URL}}"
 							],
 							"path": [
+								"v1",
 								"auth",
 								"register"
 							]
@@ -141,11 +157,12 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{PLAYER_SERVICE_URL}}/usernames/random",
+							"raw": "{{PLAYER_SERVICE_URL}}/v1/usernames/random",
 							"host": [
 								"{{PLAYER_SERVICE_URL}}"
 							],
 							"path": [
+								"v1",
 								"usernames",
 								"random"
 							]
@@ -196,11 +213,30 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{GAME_SERVICE_URL}}/stomp",
+							"raw": "{{GAME_SERVICE_URL}}/v1/stomp",
 							"host": [
 								"{{GAME_SERVICE_URL}}"
 							],
 							"path": [
+								"v1",
+								"stomp"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/stomp Copy",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{GAME_SERVICE_URL}}/v1/stomp",
+							"host": [
+								"{{GAME_SERVICE_URL}}"
+							],
+							"path": [
+								"v1",
 								"stomp"
 							]
 						}
@@ -213,11 +249,12 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{GAME_SERVICE_URL}}/games/rooms/353132",
+							"raw": "{{GAME_SERVICE_URL}}/v1/games/rooms/353132",
 							"host": [
 								"{{GAME_SERVICE_URL}}"
 							],
 							"path": [
+								"v1",
 								"games",
 								"rooms",
 								"353132"
@@ -232,11 +269,12 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{GAME_SERVICE_URL}}/games/{id}/players",
+							"raw": "{{GAME_SERVICE_URL}}/v1/games/{id}/players",
 							"host": [
 								"{{GAME_SERVICE_URL}}"
 							],
 							"path": [
+								"v1",
 								"games",
 								"{id}",
 								"players"
@@ -251,11 +289,12 @@
 						"method": "POST",
 						"header": [],
 						"url": {
-							"raw": "{{GAME_SERVICE_URL}}/games/create",
+							"raw": "{{GAME_SERVICE_URL}}/v1/games/create",
 							"host": [
 								"{{GAME_SERVICE_URL}}"
 							],
 							"path": [
+								"v1",
 								"games",
 								"create"
 							]

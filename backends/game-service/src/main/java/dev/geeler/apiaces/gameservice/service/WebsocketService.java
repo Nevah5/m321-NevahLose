@@ -10,4 +10,6 @@ public interface WebsocketService {
     void sendToUser(UUID playerId, String destination, Object payload);
 
     void sendError(UUID playerId, HttpResponse response);
+
+    void sendInfo(UUID playerId, String message);
 }

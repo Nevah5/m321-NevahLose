@@ -5,14 +5,15 @@ import dev.geeler.apiaces.playerservice.exception.NotFoundException;
 import dev.geeler.apiaces.playerservice.service.JwtService;
 import dev.geeler.apiaces.playerservice.service.PlayerService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.UUID;
 
 @RestController
+@RequestMapping("/v1")
 public class PlayerController {
     @Autowired
     private PlayerService playerService;

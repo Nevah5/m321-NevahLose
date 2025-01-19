@@ -7,9 +7,12 @@ import dev.geeler.apiaces.playerservice.service.JwtService;
 import dev.geeler.apiaces.playerservice.service.PlayerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-@RequestMapping("/auth")
+@RequestMapping("/v1/auth")
 @RestController
 public class AuthController {
     @Autowired

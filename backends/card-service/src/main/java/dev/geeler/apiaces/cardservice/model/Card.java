@@ -32,6 +32,19 @@ public class Card {
     @Getter
     private Integer amountInDeck;
 
+    public Card() {
+    }
+
+    public Card(Card card) {
+        this.id = card.id;
+        this.name = card.name;
+        this.description = card.description;
+        this.backgroundFilename = card.backgroundFilename;
+        this.subjectFilename = card.subjectFilename;
+        this.cardType = card.cardType;
+        this.amountInDeck = card.amountInDeck;
+    }
+
     // builder is not needed, but if it is, set to public
     private static class Builder {
         private final Card card;

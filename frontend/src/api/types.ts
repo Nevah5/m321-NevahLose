@@ -56,3 +56,19 @@ export interface ChatMessage {
   message?: string;
   host: boolean;
 }
+
+export interface GameActivity {
+  type:
+    | "GAME_START"
+    | "GAME_TERMINATE"
+    | "CURRENT_CARDS"
+    | "CARD_PLAYED"
+    | "CARD_DRAWN"
+    | "NEXT_PLAYER";
+  message?: string;
+  cardId?: string;
+  playerId?: string;
+  gameId: string;
+  turnOrder?: GamePlayer[];
+  cards?: string[];
+}

@@ -5,11 +5,13 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 import java.util.UUID;
 
 @Entity(name = "game-turn")
 @Table(name = "game_turns")
+@ToString
 public class GameTurn {
     @Id
     @Getter
@@ -41,6 +43,11 @@ public class GameTurn {
 
         public Builder() {
             this.gameTurn = new GameTurn();
+        }
+
+        public Builder setId(final UUID id) {
+            this.gameTurn.id = id;
+            return this;
         }
 
         public Builder setGameId(final UUID gameId) {

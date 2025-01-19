@@ -3,12 +3,12 @@ package dev.geeler.apiaces.gameservice.service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import dev.geeler.apiaces.gameservice.model.game.ChatMessage;
+import dev.geeler.apiaces.gameservice.model.game.GameActivity;
+import dev.geeler.apiaces.gameservice.model.game.GameActivityType;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
-
-import java.util.UUID;
 
 @Service
 @AllArgsConstructor
@@ -18,14 +18,26 @@ public class KafkaListenerService {
     private final WebsocketService websocketService;
     private final GameService gameService;
 
-    @KafkaListener(topicPattern = "games.terminate")
+    @KafkaListener(topicPattern = "games.activity")
     public void listenToGameTerminateTopics(String msg) {
         try {
-            UUID gameId = objectMapper.readValue(msg, UUID.class);
-            gameService.getConnectedPlayers(gameId).forEach(player -> websocketService.sendToUserIfConnected(
+            GameActivity activity = objectMapper.readValue(msg, GameActivity.class);
+            if (activity.getType() == GameActivityType.CURRENT_CARDS) {
+                gameService.getConnectedPlayers(activity.getGameId())
+                        .stream()
+                        .filter(player -> player.getPlayerId().equals(activity.getPlayerId()))
+                        .findFirst()
+                        .ifPresent(player -> websocketService.sendToUserIfConnected(
+                                player.getPlayerId(),
+                                "/queue/game",
+                                activity
+                        ));
+                return;
+            }
+            gameService.getConnectedPlayers(activity.getGameId()).forEach(player -> websocketService.sendToUserIfConnected(
                     player.getPlayerId(),
-                    "/queue/game/terminate",
-                    "The owner of this game has left the game."
+                    "/queue/game",
+                    activity
             ));
         } catch (Exception e) {
             log.error("Error processing game termination for gameId: " + msg, e);

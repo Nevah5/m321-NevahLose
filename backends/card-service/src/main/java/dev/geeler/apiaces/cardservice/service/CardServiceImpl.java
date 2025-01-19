@@ -5,6 +5,8 @@ import dev.geeler.apiaces.cardservice.repository.CardRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.UUID;
@@ -28,8 +30,17 @@ public class CardServiceImpl implements CardService {
 
     @Override
     public List<UUID> getShuffledDeck() {
-        // TODO: Implement shuffling
-        return cardRepository.findAll().stream().map(Card::getId).toList();
+        List<Card> cards = cardRepository.findAll();
+        List<Card> duplicatedCards = new ArrayList<>();
+
+        for (Card card : cards) {
+            for (int i = 0; i < card.getAmountInDeck(); i++) {
+                duplicatedCards.add(new Card(card)); // Assuming Card has a copy constructor
+            }
+        }
+
+        Collections.shuffle(duplicatedCards);
+        return duplicatedCards.stream().map(Card::getId).toList();
     }
 
     @Override

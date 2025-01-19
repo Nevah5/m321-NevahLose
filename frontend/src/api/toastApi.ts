@@ -14,6 +14,7 @@ interface Toast {
   title: string;
   message: string;
   timeout?: number;
+  type?: "error" | "info";
 }
 
 interface ToastTechnical extends Toast {

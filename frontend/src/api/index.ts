@@ -7,6 +7,7 @@ import type {
   Game,
   ChatMessage,
   GamePlayer,
+  GameActivity,
 } from "./types";
 import SockJS from "sockjs-client";
 import { Client, type IMessage } from "@stomp/stompjs";
@@ -62,7 +63,7 @@ class ApiService {
 
 class CardService extends ApiService {
   constructor(cardServiceUrl: string) {
-    super(`${cardServiceUrl}`);
+    super(`${cardServiceUrl}/v1`);
   }
 
   async getCards(): Promise<Card[]> {
@@ -76,7 +77,7 @@ class CardService extends ApiService {
 
 class PlayerService extends ApiService {
   constructor(playerServiceUrl: string) {
-    super(`${playerServiceUrl}`);
+    super(`${playerServiceUrl}/v1`);
   }
 
   async getSelf(token: string): Promise<Player> {
@@ -100,11 +101,11 @@ class GameService extends ApiService {
   }
 
   async getGameFromRoomId(roomId: string, token: string): Promise<Game> {
-    return this.get<Game>(`/games/rooms/${roomId}`, token);
+    return this.get<Game>(`/v1/games/rooms/${roomId}`, token);
   }
 
   async createGame(token: string): Promise<Game> {
-    return this.post<Game>("/games/create", {}, token);
+    return this.post<Game>("/v1/games/create", {}, token);
   }
 
   async joinGame(gameId: string, token: string): Promise<Client> {
@@ -124,7 +125,7 @@ class GameService extends ApiService {
           console.error(frame.body);
           reject(new Error(frame.body));
         },
-        debug: (str: string) => console.log(str),
+        // debug: (str: string) => console.log(str),
         onDisconnect: () => console.log("Websocket Disconnected"),
         onWebSocketError: (event) => {
           toastApi.emit({
@@ -134,9 +135,15 @@ class GameService extends ApiService {
           console.error(event);
           reject(new Error("WebSocket error"));
         },
-        onWebSocketClose: (event) => console.log("WebSocket closed", event),
+        // onWebSocketClose: (event) => console.log("WebSocket closed", event),
         onConnect: () => {
-          console.log("Websocket Connected");
+          this.stompClient!.subscribe(`/user/queue/info`, (message) => {
+            toastApi.emit({
+              title: "Message from the server",
+              message: message.body,
+              type: "info",
+            });
+          });
           this.stompClient!.subscribe(`/user/queue/errors`, (message) => {
             const error: ApiError = JSON.parse(message.body);
             toastApi.emit({
@@ -178,13 +185,21 @@ class GameService extends ApiService {
     });
   }
 
-  async getPlayers(gameId: string, token: string): Promise<GamePlayer[]> {
-    return this.get<GamePlayer[]>(`/games/${gameId}/players`, token);
+  async startGame(gameId: string, token: string) {
+    this.stompClient!.publish({
+      destination: `/app/games.startGame`,
+      body: JSON.stringify({ gameId }),
+      headers: { Authorization: `Bearer ${token}` },
+    });
   }
 
-  async terminateGameListener(callback: (message: string) => void) {
-    this.stompClient!.subscribe(`/user/queue/game/terminate`, (message) => {
-      callback(message.body);
+  async getPlayers(gameId: string, token: string): Promise<GamePlayer[]> {
+    return this.get<GamePlayer[]>(`/v1/games/${gameId}/players`, token);
+  }
+
+  async gameActivityListener(callback: (activity: GameActivity) => void) {
+    this.stompClient!.subscribe(`/user/queue/game`, (message) => {
+      callback(JSON.parse(message.body) as GameActivity);
     });
   }
 }
